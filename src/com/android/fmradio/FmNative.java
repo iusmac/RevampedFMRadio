@@ -151,4 +151,16 @@ public class FmNative {
      * @return (0, success; 1 failed; 2 not support)
      */
     static native int switchAntenna(int antenna);
+
+    // Method declarations for MTK libfmjni, needed for registerNativeMethods
+    static native int readRssi();
+    static native boolean stereoMono();
+    static native boolean setStereoMono(boolean b);
+    static native short readCapArray();
+    static native short readRdsBler();
+    static native short[] emcmd(short[] s);
+    static native boolean emsetth(int a, int b);
+    static native int[] getHardwareVersion();
+    static native boolean setDesenseChannel(float f, int a);
+    static native boolean setDesenseList(int a, float f);
 }
