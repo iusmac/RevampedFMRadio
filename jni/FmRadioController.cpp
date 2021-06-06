@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2015, The Linux Foundation. All rights reserved.
+Copyright (c) 2015,2022 The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -164,7 +164,7 @@ int FmRadioController ::Pwr_Up(int freq)
     char value[PROPERTY_VALUE_MAX] = {'\0'};
 
     ALOGI("%s,[freq=%d]\n", __func__, freq);
-    property_get("vendor.bluetooth.soc", value, NULL);
+    property_get("vendor.qcom.bluetooth.soc", value, NULL);
     ALOGD("BT soc is '%s'\n", value);
     if (fd_driver < 0) {
         ret = open_dev();
@@ -286,7 +286,7 @@ int FmRadioController ::Pwr_Down()
     int ret = 0;
     char value[PROPERTY_VALUE_MAX] = {'\0'};
 
-    property_get("vendor.bluetooth.soc", value, NULL);
+    property_get("vendor.qcom.bluetooth.soc", value, NULL);
 
     if((cur_fm_state != FM_OFF)) {
         Stop_Scan_Seek();
@@ -1126,7 +1126,7 @@ void FmRadioController :: handle_enabled_event
      ALOGI("FM handle ready Event\n");
      FmIoctlsInterface::set_control(fd_driver,
              V4L2_CID_PRV_AUDIO_PATH, AUDIO_DIGITAL_PATH);
-     property_get("vendor.bluetooth.soc", value, NULL);
+     property_get("vendor.qcom.bluetooth.soc", value, NULL);
      if (strcmp(value, "rome") != 0) {
          FmIoctlsInterface::set_calibration(fd_driver);
      }
