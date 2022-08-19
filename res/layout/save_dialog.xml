@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fm_recording_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dip" >
+
+        <TextView
+            android:id="@+id/save_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.87"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/save_dialog_title"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/save_dialog_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.87"
+            android:fontFamily="sans-serif"
+            android:hint="@string/edit_recording_name_hint"
+            android:maxLength="80"
+            android:paddingTop="20dip"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/save_dialog_caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.54"
+            android:fontFamily="sans-serif"
+            android:paddingTop="20dip"
+            android:text="@string/save_dialog_caption"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dip"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:paddingBottom="16dip"
+        android:paddingRight="16dip" >
+
+        <Button
+            android:id="@+id/save_dialog_button_discard"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dip"
+            android:alpha="0.87"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/btn_discard_recording"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/save_dialog_button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dip"
+            android:alpha="1"
+            android:background="?android:selectableItemBackground"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/btn_save_recording"
+            android:textColor="#FF4081"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>
