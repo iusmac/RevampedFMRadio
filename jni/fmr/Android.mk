@@ -22,8 +22,11 @@ LOCAL_SRC_FILES := \
     libfm_jni.cpp \
     common.cpp
 
-LOCAL_C_INCLUDES := $(JNI_H_INCLUDE) \
+LOCAL_C_INCLUDES := \
     frameworks/base/include/media
+
+LOCAL_HEADER_LIBRARIES := \
+    jni_headers
 
 LOCAL_SHARED_LIBRARIES := \
     libcutils \
