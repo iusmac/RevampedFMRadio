@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2014,2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
           android:enabled="true"/>
     <item android:id="@+id/fm_headset"
           android:showAsAction ="always"
-          android:icon="@drawable/btn_fm_headset_selector"
-          android:enabled="true">
+          android:icon="@drawable/btn_fm_speaker_selector"
+          android:enabled="false">
           <menu>
               <item android:id="@+id/earphone_menu"
                     android:title="@string/optmenu_earphone"

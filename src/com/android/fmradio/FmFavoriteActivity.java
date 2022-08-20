@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2014,2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -512,11 +512,7 @@ public class FmFavoriteActivity extends Activity {
                 case FmListener.MSGID_SWITCH_ANTENNA:
                     bundle = msg.getData();
                     boolean isHeadset = bundle.getBoolean(FmListener.KEY_IS_SWITCH_ANTENNA);
-                    // if receive headset plugout, need set headset mode on ui
-                    if (!isHeadset) {
-                        finish();
-                    }
-                    break;
+                    // nothing to do to UI since we're supporting wireless mode
                 default:
                     break;
             }

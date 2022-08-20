@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2014,2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     // Record whether searching progress is canceled
     private boolean mIsStopScanCalled = false;
     // Record whether is speaker used
-    private boolean mIsSpeakerUsed = false;
+    private boolean mIsSpeakerUsed = true;
     // Record whether device is open
     private boolean mIsDeviceOpen = false;
     // Record Power Status
@@ -279,6 +279,8 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 // switch antenna should not impact audio focus status
                 mValueHeadSetPlug = (intent.getIntExtra("state", -1) == HEADSET_PLUG_IN) ? 0 : 1;
 
+                mIsSpeakerUsed = !isHeadSetIn();
+
                 // Avoid Service is killed,and receive headset plug in
                 // broadcast again
                 if (!mIsServiceInited) {
@@ -290,29 +292,16 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                  * If ear phone insert and activity is
                  * foreground. power up FM automatic
                  */
-                if ((0 == mValueHeadSetPlug) && isActivityForeground()) {
+                if (isHeadSetIn() && isActivityForeground()) {
                     powerUpAsync(FmUtils.computeFrequency(mCurrentStation));
-                } else if (1 == mValueHeadSetPlug) {
-                    mFmServiceHandler.removeMessages(FmListener.MSGID_SCAN_FINISHED);
-                    mFmServiceHandler.removeMessages(FmListener.MSGID_SEEK_FINISHED);
-                    mFmServiceHandler.removeMessages(FmListener.MSGID_TUNE_FINISHED);
-                    mFmServiceHandler.removeMessages(
-                            FmListener.MSGID_POWERDOWN_FINISHED);
-                    mFmServiceHandler.removeMessages(
-                            FmListener.MSGID_POWERUP_FINISHED);
-                    focusChanged(AudioManager.AUDIOFOCUS_LOSS);
-
-                    // Need check to switch to earphone mode for audio will
-                    // change to AudioSystem.FORCE_NONE
-                    setForceUse(false);
-
-                    // Notify UI change to earphone mode, false means not speaker mode
-                    Bundle bundle = new Bundle(2);
-                    bundle.putInt(FmListener.CALLBACK_FLAG,
-                            FmListener.LISTEN_SPEAKER_MODE_CHANGED);
-                    bundle.putBoolean(FmListener.KEY_IS_SPEAKER_MODE, false);
-                    notifyActivityStateChanged(bundle);
                 }
+
+                // Notify UI
+                Bundle bundle = new Bundle(2);
+                bundle.putInt(FmListener.CALLBACK_FLAG,
+                        FmListener.LISTEN_SPEAKER_MODE_CHANGED);
+                bundle.putBoolean(FmListener.KEY_IS_SPEAKER_MODE, !isHeadSetIn());
+                notifyActivityStateChanged(bundle);
 
                 switchAntennaAsync(mValueHeadSetPlug);
             }
@@ -363,7 +352,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
      * @return true, antenna available; false, antenna not available
      */
     public boolean isAntennaAvailable() {
-        return mAudioManager.isWiredHeadsetOn();
+        return true; // force wireless
     }
 
     private void setForceUse(boolean isSpeaker) {
@@ -1986,7 +1975,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
      *
      * @return true for plug in; false for plug out
      */
-    private boolean isHeadSetIn() {
+    public boolean isHeadSetIn() {
         return (0 == mValueHeadSetPlug);
     }
 
@@ -2413,6 +2402,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 case FmListener.MSGID_POWERUP_FINISHED:
                     bundle = msg.getData();
                     handlePowerUp(bundle);
+                    mIsSpeakerUsed = !isHeadSetIn();
                     break;
 
                 // power down
@@ -2447,12 +2437,14 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                     // if earphone plug out and it is not play recorder
                     // state, show plug dialog.
                     if (0 == value) {
+                        mIsSpeakerUsed = false;
                         // powerUpAsync(FMRadioUtils.computeFrequency(mCurrentStation));
                         bundle.putInt(FmListener.CALLBACK_FLAG,
                                 FmListener.MSGID_SWITCH_ANTENNA);
                         bundle.putBoolean(FmListener.KEY_IS_SWITCH_ANTENNA, true);
                         notifyActivityStateChanged(bundle);
                     } else {
+                        mIsSpeakerUsed = true;
                         // ear phone plug out, and recorder state is not
                         // play recorder state,
                         // show dialog.
