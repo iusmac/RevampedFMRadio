@@ -10,9 +10,12 @@ LOCAL_SRC_FILES := \
     FmRadioController.cpp \
     LibfmJni.cpp
 
-LOCAL_C_INCLUDES := $(JNI_H_INCLUDE) \
+LOCAL_C_INCLUDES := \
     frameworks/base/core/jni/include \
     frameworks/base/include/media
+
+LOCAL_HEADER_LIBRARIES := \
+    jni_headers
 
 LOCAL_SHARED_LIBRARIES := \
     libcutils \
