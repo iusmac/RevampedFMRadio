@@ -117,7 +117,7 @@ public class FmRecorder implements AudioRecorder.Callback {
         }
 
         // get external storage directory
-        File sdDir = new File(recordingSdcard);
+        File sdDir = new File(recordingSdcard, Environment.DIRECTORY_RECORDINGS);
         File recordingDir = new File(sdDir, FM_RECORD_FOLDER);
         // exist a file named FM Recording, so can't create FM recording folder
         if (recordingDir.exists() && !recordingDir.isDirectory()) {
@@ -125,7 +125,7 @@ public class FmRecorder implements AudioRecorder.Callback {
             setError(ERROR_SDCARD_WRITE_FAILED);
             return;
         } else if (!recordingDir.exists()) { // try to create recording folder
-            boolean mkdirResult = recordingDir.mkdir();
+            boolean mkdirResult = recordingDir.mkdirs();
             if (!mkdirResult) { // create recording file failed
                 setError(ERROR_RECORDER_INTERNAL);
                 return;

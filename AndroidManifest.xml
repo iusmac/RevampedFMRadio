@@ -21,9 +21,8 @@
     android:versionCode="2"
     android:versionName="2.0" >
 
-    <!-- FM uses AudioPatch which is new in sdk 21 -->
     <uses-sdk
-        android:minSdkVersion="21"
+        android:minSdkVersion="31"
         android:targetSdkVersion="23"
         android:usesCleartextTraffic="false" />
 

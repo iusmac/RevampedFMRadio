@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2014,2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -208,7 +209,8 @@ public class FmSaveDialog extends DialogFragment {
         @Override
         public void onClick(View v) {
 
-            File recordingFolderPath = new File(mRecordingSdcard, "FM Recording");
+            File sdDir = new File(mRecordingSdcard, Environment.DIRECTORY_RECORDINGS);
+            File recordingFolderPath = new File(sdDir, FmRecorder.FM_RECORD_FOLDER);
 
             switch (v.getId()) {
                 case R.id.save_dialog_button_save:
