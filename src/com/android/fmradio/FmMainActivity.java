@@ -877,12 +877,12 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                             try {
                                 playMusicIntent.setClassName("com.google.android.music",
                                         "com.google.android.music.AudioPreview");
-                                playMusicIntent.setDataAndType(playUri, "audio/3gpp");
+                                playMusicIntent.setDataAndType(playUri, "audio/mpeg");
                                 startActivity(playMusicIntent);
                             } catch (IllegalArgumentException | ActivityNotFoundException e1) {
                                 try {
                                     playMusicIntent = new Intent(Intent.ACTION_VIEW);
-                                    playMusicIntent.setDataAndType(playUri, "audio/3gpp");
+                                    playMusicIntent.setDataAndType(playUri, "audio/mpeg");
                                     startActivity(playMusicIntent);
                                 } catch (ActivityNotFoundException e2) {
                                     // No activity respond
