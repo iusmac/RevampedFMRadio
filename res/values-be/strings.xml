@@ -17,4 +17,8 @@
 <resources>
     <string name="btn_discard_recording">Адхіліць</string>
     <string name="fm_station_list_menu_refresh">Абнавіць</string>
+    <string name="audio_db_artist_name">Мае радыёзапісы</string>
+    <string name="audio_db_album_name">Радыёзапісы</string>
+    <string name="audio_db_playlist_name">Радыёзапісы</string>
+    <string name="audio_save_dir_name">Радыёзапісы</string>
 </resources>

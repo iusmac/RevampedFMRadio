@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Η εγγραφή δεν αποθηκεύτηκε</string>
     <string name="toast_listen">ΑΚΡΟΑΣΗ</string>
     <string name="toast_station_renamed">Ο σταθμός μετονομάστηκε</string>
+    <string name="audio_db_artist_name">Οι ηχογραφήσεις FM μου</string>
+    <string name="audio_db_album_name">Ηχογραφήσεις FM</string>
+    <string name="audio_db_playlist_name">Ηχογραφήσεις FM</string>
+    <string name="audio_save_dir_name">Ηχογραφήσεις FM</string>
 </resources>

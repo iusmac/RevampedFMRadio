@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Ni chadwyd y recordiad</string>
     <string name="toast_listen">GWRANDO</string>
     <string name="toast_station_renamed">Mae\'r orsaf wedi ei hailenwi</string>
+    <string name="audio_db_artist_name">Fy recordiadau FM</string>
+    <string name="audio_db_album_name">Recordiadau FM</string>
+    <string name="audio_db_playlist_name">Recordiadau FM</string>
+    <string name="audio_save_dir_name">Recordiadau FM</string>
 </resources>

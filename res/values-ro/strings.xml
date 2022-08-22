@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Înregistrarea nu a fost salvată</string>
     <string name="toast_listen">ASCULTAȚI</string>
     <string name="toast_station_renamed">Postul a fost redenumit</string>
+    <string name="audio_db_artist_name">Înregistrările mele FM</string>
+    <string name="audio_db_album_name">Înregistrări FM</string>
+    <string name="audio_db_playlist_name">Înregistrări FM</string>
+    <string name="audio_save_dir_name">Înregistrări FM</string>
 </resources>

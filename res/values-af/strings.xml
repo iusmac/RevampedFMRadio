@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Opname nie gestoor nie</string>
     <string name="toast_listen">LUISTER</string>
     <string name="toast_station_renamed">Die stasie is hernoem</string>
+    <string name="audio_db_artist_name">My FM opnames</string>
+    <string name="audio_db_album_name">FM opnames</string>
+    <string name="audio_db_playlist_name">FM opnames</string>
+    <string name="audio_save_dir_name">FM opnames</string>
 </resources>

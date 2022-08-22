@@ -19,10 +19,12 @@
     <item android:id="@+id/fm_station_list"
           android:showAsAction ="always"
           android:title="@string/station_title"
+          android:iconTint="@color/toolbar_fm_station_list_color"
           android:icon="@drawable/btn_fm_list_selector"
           android:enabled="true"/>
     <item android:id="@+id/fm_headset"
           android:showAsAction ="always"
+          android:iconTint="@color/toolbar_fm_headset_color"
           android:icon="@drawable/btn_fm_speaker_selector"
           android:enabled="false">
           <menu>

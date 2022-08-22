@@ -18,4 +18,8 @@
     <string name="app_name">FM رادىيو</string>
     <string name="optmenu_speaker">ياڭراتقۇ</string>
     <string name="save">ساقلاڭ</string>
+    <string name="audio_db_artist_name">مېنىڭ FM ئۈن خاتىرەم</string>
+    <string name="audio_db_album_name">FM ئۈن خاتىرىلەر</string>
+    <string name="audio_db_playlist_name">FM ئۈن خاتىرىلەر</string>
+    <string name="audio_save_dir_name">FM ئۈن خاتىرىلەر</string>
 </resources>

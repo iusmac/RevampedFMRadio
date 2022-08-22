@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">ไม่ได้บันทึกรายการ</string>
     <string name="toast_listen">ฟัง</string>
     <string name="toast_station_renamed">เปลี่ยนชื่อสถานีแล้ว</string>
+    <string name="audio_db_artist_name">การบันทึก FM ของฉัน</string>
+    <string name="audio_db_album_name">การบันทึก FM</string>
+    <string name="audio_db_playlist_name">การบันทึก FM</string>
+    <string name="audio_save_dir_name">การบันทึก FM</string>
 </resources>

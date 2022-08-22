@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Opnam net gespäichert</string>
     <string name="toast_listen">LAUSCHTEREN</string>
     <string name="toast_station_renamed">De Sender gouf ëmbenannt</string>
+    <string name="audio_db_artist_name">Meng Radioopnamen</string>
+    <string name="audio_db_album_name">Radioopnamen</string>
+    <string name="audio_db_playlist_name">Radioopnamen</string>
+    <string name="audio_save_dir_name">Radioopnamen</string>
 </resources>

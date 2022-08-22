@@ -49,7 +49,7 @@
                 android:paddingLeft="16dip"
                 android:paddingTop="56dip"
                 android:text="@string/fm_symbol"
-                android:textColor="@color/text_fm_color"
+                android:textColor="@color/header_fm_label_color"
                 android:textSize="@dimen/text_fm_size" />
 
             <TextView
@@ -58,12 +58,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:alpha="0.87"
                 android:fontFamily="sans-serif-light"
                 android:gravity="left"
                 android:paddingLeft="16dip"
                 android:paddingTop="64dip"
-                android:textColor="@color/white_color"
+                android:textColor="@color/header_station_value_color"
                 android:textSize="@dimen/station_value_size" />
 
             <TextView
@@ -77,7 +76,7 @@
                 android:gravity="left"
                 android:paddingLeft="16dip"
                 android:singleLine="true"
-                android:textColor="@color/white_color"
+                android:textColor="@color/header_station_name_color"
                 android:textSize="@dimen/station_name_size" />
 
             <TextView
@@ -92,15 +91,14 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:paddingLeft="16dip"
                 android:singleLine="true"
-                android:textColor="@color/white_color"
+                android:textColor="@color/header_station_rds_color"
                 android:textSize="@dimen/station_rds_size" />
 
             <LinearLayout
                 android:id="@+id/rl_imgbtnpart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/fm_rl_imgbtnpart_margin_left"
                 android:layout_marginRight="@dimen/fm_rl_imgbtnpart_margin_right"
                 android:gravity="center"
@@ -119,7 +117,8 @@
                         android:layout_width="@dimen/fm_rl_imgbtn_size"
                         android:layout_height="@dimen/fm_rl_imgbtn_size"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/circle_button"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/prevstation_button_color"
                         android:contentDescription="@string/talk_prev_station"
                         android:enabled="false"
                         android:src="@drawable/btn_fm_previous" />
@@ -136,7 +135,8 @@
                         android:layout_width="@dimen/fm_rl_imgbtn_size"
                         android:layout_height="@dimen/fm_rl_imgbtn_size"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/circle_button"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/decrstation_button_color"
                         android:contentDescription="@string/talk_decrease"
                         android:enabled="false"
                         android:src="@drawable/btn_fm_decrease_selector" />
@@ -155,10 +155,10 @@
                         android:layout_width="@dimen/fm_rl_imgbtn_size"
                         android:layout_height="@dimen/fm_rl_imgbtn_size"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/circle_button"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/talk_add_favorite"
                         android:enabled="false"
-                        android:src="@drawable/btn_fm_favorite_off" />
+                        android:src="@drawable/btn_fm_favorite_off_selector" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -172,7 +172,8 @@
                         android:layout_width="@dimen/fm_rl_imgbtn_size"
                         android:layout_height="@dimen/fm_rl_imgbtn_size"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/circle_button"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/incstation_button_color"
                         android:contentDescription="@string/talk_increase"
                         android:enabled="false"
                         android:src="@drawable/btn_fm_increase_selector" />
@@ -189,7 +190,8 @@
                         android:layout_width="@dimen/fm_rl_imgbtn_size"
                         android:layout_height="@dimen/fm_rl_imgbtn_size"
                         android:adjustViewBounds="true"
-                        android:background="@drawable/circle_button"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:tint="@color/nextstation_button_color"
                         android:contentDescription="@string/talk_next_station"
                         android:enabled="false"
                         android:src="@drawable/btn_fm_next_selector" />

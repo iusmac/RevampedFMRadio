@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Optagelse ikke gemt</string>
     <string name="toast_listen">LYT</string>
     <string name="toast_station_renamed">Stationen er blevet omdøbt</string>
+    <string name="audio_db_artist_name">Mine FM-optagelser</string>
+    <string name="audio_db_album_name">FM-optagelser</string>
+    <string name="audio_db_playlist_name">FM-optagelser</string>
+    <string name="audio_save_dir_name">FM-optagelser</string>
 </resources>

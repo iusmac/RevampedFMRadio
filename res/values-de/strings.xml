@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Aufnahme nicht gespeichert</string>
     <string name="toast_listen">Hören</string>
     <string name="toast_station_renamed">Der Sender wurde umbenannt.</string>
+    <string name="audio_db_artist_name">Meine Radioaufnahmen</string>
+    <string name="audio_db_album_name">Radioaufnahmen</string>
+    <string name="audio_db_playlist_name">Radioaufnahmen</string>
+    <string name="audio_save_dir_name">Radioaufnahmen</string>
 </resources>

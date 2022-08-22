@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Posnetek ni bil shranjen</string>
     <string name="toast_listen">POSLUŠAJ</string>
     <string name="toast_station_renamed">Postaja je bila preimenovana</string>
+    <string name="audio_db_artist_name">Moji posnetki FM</string>
+    <string name="audio_db_album_name">Posnetki FM</string>
+    <string name="audio_db_playlist_name">Posnetki FM</string>
+    <string name="audio_save_dir_name">Posnetki FM</string>
 </resources>

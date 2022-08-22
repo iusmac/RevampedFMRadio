@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">A gravação foi descartada</string>
     <string name="toast_listen">ESCUTAR</string>
     <string name="toast_station_renamed">O nome da estação foi alterado</string>
+    <string name="audio_db_artist_name">Minhas Gravações FM</string>
+    <string name="audio_db_album_name">Gravações FM</string>
+    <string name="audio_db_playlist_name">Gravações FM</string>
+    <string name="audio_save_dir_name">Gravações FM</string>
 </resources>

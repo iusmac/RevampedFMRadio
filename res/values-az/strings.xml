@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Yazı saxlanmadı</string>
     <string name="toast_listen">QULAQ AS</string>
     <string name="toast_station_renamed">Stansiyanın adı dəyişdirilib</string>
+    <string name="audio_db_artist_name">FM səsyazmalarım</string>
+    <string name="audio_db_album_name">FM səsyazmaları</string>
+    <string name="audio_db_playlist_name">FM səsyazmaları</string>
+    <string name="audio_save_dir_name">FM səsyazmaları</string>
 </resources>

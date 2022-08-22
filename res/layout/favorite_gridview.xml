@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2014,2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -18,11 +18,15 @@
 <GridView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/gridview"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:listSelector="@android:color/transparent"
     android:gravity="center"
     android:horizontalSpacing="8dp"
     android:numColumns="3"
-    android:verticalSpacing="8dp" >
-</GridView>
+    android:verticalSpacing="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="8dp"
+    android:clipToPadding="false" />

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">未儲存錄音內容</string>
     <string name="toast_listen">收聽</string>
     <string name="toast_station_renamed">電台已重新命名</string>
+    <string name="audio_db_artist_name">我的 FM 錄音</string>
+    <string name="audio_db_album_name">FM 錄音</string>
+    <string name="audio_db_playlist_name">FM 錄音</string>
+    <string name="audio_save_dir_name">FM 錄音</string>
 </resources>

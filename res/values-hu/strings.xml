@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">A felvétel nincs mentve</string>
     <string name="toast_listen">HALLGATÁS</string>
     <string name="toast_station_renamed">Az állomást átnevezte</string>
+    <string name="audio_db_artist_name">Saját FM felvételek</string>
+    <string name="audio_db_album_name">FM felvételek</string>
+    <string name="audio_db_playlist_name">FM felvételek</string>
+    <string name="audio_save_dir_name">FM felvételek</string>
 </resources>

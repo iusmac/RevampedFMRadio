@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Opname net bewarre</string>
     <string name="toast_listen">LÚSTERJE</string>
     <string name="toast_station_renamed">De namme fan de stjoerder is wizige</string>
+    <string name="audio_db_artist_name">Myn FM-opnamen</string>
+    <string name="audio_db_album_name">FM-opnamen</string>
+    <string name="audio_db_playlist_name">FM-opnamen</string>
+    <string name="audio_save_dir_name">FM-opnamen</string>
 </resources>

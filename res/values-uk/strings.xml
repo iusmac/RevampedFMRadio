@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Запис не збережено</string>
     <string name="toast_listen">СЛУХАТИ</string>
     <string name="toast_station_renamed">Станцію перейменовано</string>
+    <string name="audio_db_artist_name">Мої записи з FM</string>
+    <string name="audio_db_album_name">Записи з FM</string>
+    <string name="audio_db_playlist_name">Записи з FM</string>
+    <string name="audio_save_dir_name">Записи з FM</string>
 </resources>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Inspelningen har inte sparats</string>
     <string name="toast_listen">LYSSNA</string>
     <string name="toast_station_renamed">Kanalen har döpts om</string>
+    <string name="audio_db_artist_name">Mina FM-inspelningar</string>
+    <string name="audio_db_album_name">FM-inspelningar</string>
+    <string name="audio_db_playlist_name">FM-inspelningar</string>
+    <string name="audio_save_dir_name">FM-inspelningar</string>
 </resources>

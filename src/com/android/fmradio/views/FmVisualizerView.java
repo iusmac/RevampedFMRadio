@@ -17,6 +17,7 @@
 package com.android.fmradio.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,6 +25,9 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.android.fmradio.R;
+import com.android.fmradio.Utils;
 
 /**
  * The view used to display the visualizer
@@ -38,14 +42,14 @@ public final class FmVisualizerView extends View {
 
     private boolean mAnimate = false;
 
-    private int mFrequency = 100;
+    private int mFrequency = 50;
 
     private static final int COLUME_PADDING_COUNTS = 2;
 
-    private static final int COLUME_COUNTS = 3;
+    private static final int COLUME_COUNTS = 6;
 
     private static final float[] DEFALT_VISUALIZER_LEVEL = new float[] {
-            +0.4f, 1f, -0.2f
+            +0.2f, +0.4f, -0.3f, 1f, +0.7f, -0.2f
     };
 
     private float[] mPrevLevels = DEFALT_VISUALIZER_LEVEL;
@@ -59,7 +63,7 @@ public final class FmVisualizerView extends View {
      */
     public FmVisualizerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
     /**
@@ -70,7 +74,7 @@ public final class FmVisualizerView extends View {
      */
     public FmVisualizerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     /**
@@ -80,11 +84,16 @@ public final class FmVisualizerView extends View {
      */
     public FmVisualizerView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
-    private void init() {
-        mPaint.setColor(0xff607d8b);
+    private void init(Context context) {
+        final Resources r = context.getResources();
+        int bgColor = Utils
+            .setColorAlphaComponent(
+                    r.getColor(
+                        R.color.favorite_station_more_accent_playing_color), 55);
+        mPaint.setColor(bgColor);
         mPaint.setAntiAlias(true);
         mPaint.setStrokeWidth(0.3f);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -160,7 +169,7 @@ public final class FmVisualizerView extends View {
 
         float levels[] = new float[COLUME_COUNTS];
         if (!mAnimate) {
-            levels = DEFALT_VISUALIZER_LEVEL;
+            levels = mPrevLevels;
         } else {
             levels = generate(COLUME_COUNTS);
         }

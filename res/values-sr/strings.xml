@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Снимак није сачуван</string>
     <string name="toast_listen">ПУСТИ</string>
     <string name="toast_station_renamed">Назив станице је промењен</string>
+    <string name="audio_db_artist_name">Моји радио-снимци</string>
+    <string name="audio_db_album_name">Радио-снимци</string>
+    <string name="audio_db_playlist_name">Радио-снимци</string>
+    <string name="audio_save_dir_name">Радио-снимци</string>
 </resources>

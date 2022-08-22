@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">ჩანაწერი არ გადაარჩინა</string>
     <string name="toast_listen">მოუსმინეთ</string>
     <string name="toast_station_renamed">სადგური ეწოდა</string>
+    <string name="audio_db_artist_name">ჩემი FM-ჩანაწერები</string>
+    <string name="audio_db_album_name">FM-ჩანაწერები</string>
+    <string name="audio_db_playlist_name">FM-ჩანაწერები</string>
+    <string name="audio_save_dir_name">FM-ჩანაწერები</string>
 </resources>

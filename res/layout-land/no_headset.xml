@@ -24,7 +24,7 @@
         android:id="@+id/no_middle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fm_noheadset_img_part_height_land"
-        android:background="@color/theme_windowBackground"
+        android:background="#607D8B"
         android:orientation="vertical"
         android:gravity="bottom" >
         <ImageView
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/no_middle"
-        android:background="@color/white_color"
+        android:background="#FFFFFF"
         android:gravity="center" >
 
         <TextView
@@ -51,7 +51,7 @@
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/fm_no_headset_text"
-            android:textColor="@color/black_color"
+            android:textColor="#000000"
             android:textSize="@dimen/fm_noheadset_text_size" />
 
     </LinearLayout>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">L\'enregistrament no s\'ha desat.</string>
     <string name="toast_listen">ESCOLTA</string>
     <string name="toast_station_renamed">S\'ha canviat el nom de l\'emissora.</string>
+    <string name="audio_db_artist_name">Les meves gravacions FM</string>
+    <string name="audio_db_album_name">Gravacions FM</string>
+    <string name="audio_db_playlist_name">Gravacions FM</string>
+    <string name="audio_save_dir_name">Gravacions FM</string>
 </resources>

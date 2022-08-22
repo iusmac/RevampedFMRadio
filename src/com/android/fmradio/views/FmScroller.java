@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2014,2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,18 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.hardware.display.DisplayManagerGlobal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.DisplayInfo;
 import android.view.LayoutInflater;
@@ -44,6 +48,8 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.animation.Interpolator;
 import android.widget.AdapterView;
@@ -61,8 +67,11 @@ import android.widget.TextView;
 
 import com.android.fmradio.FmStation;
 import com.android.fmradio.FmUtils;
+import com.android.fmradio.Utils;
 import com.android.fmradio.R;
 import com.android.fmradio.FmStation.Station;
+
+import android.support.v7.widget.CardView;
 
 /**
  * Modified from Contact MultiShrinkScroll Handle the touch event and change
@@ -107,6 +116,17 @@ public class FmScroller extends FrameLayout {
     private Adjuster mAdjuster;
     private int mCurrentStation;
     private boolean mIsFmPlaying;
+
+    ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(final View view, final Outline outline) {
+            float cornerRadiusDP = 28f;
+            float cornerRadius =
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        cornerRadiusDP, getResources().getDisplayMetrics());
+            outline.setRoundRect(0, 0, view.getWidth(), (int) (view.getHeight() + cornerRadius), cornerRadius);
+        }
+    };
 
     private FavoriteAdapter mAdapter;
     private final Scroller mScroller;
@@ -192,8 +212,33 @@ public class FmScroller extends FrameLayout {
      */
     public void initialize() {
         mScrollView = (ScrollView) findViewById(R.id.content_scroller);
+
+        mScrollView.setOutlineProvider(mViewOutlineProvider);
+        mScrollView.setClipToOutline(true);
+
+        int scrollViewBgColor = getContext().getColor(R.color.fav_container_bg_color);
+        scrollViewBgColor = Utils.setColorAlphaComponent(scrollViewBgColor, 90);
+        GradientDrawable bg = (GradientDrawable) mScrollView.getBackground();
+        bg.setColor(scrollViewBgColor);
+
+        mScrollView.getViewTreeObserver()
+            .addOnScrollChangedListener(new OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    // Expand header once nested scroll view reaches top
+                    if (!mScrollView.canScrollVertically(-1)) {
+                        refreshStateHeight();
+                        expandHeader();
+                    }
+                }
+            });
+
         mScrollViewChild = findViewById(R.id.favorite_container);
         mHeader = findViewById(R.id.main_header_parent);
+
+        int headerBgColor = getContext().getColor(R.color.header_bg_color);
+        headerBgColor = Utils.setColorAlphaComponent(headerBgColor, 80);
+        mHeader.setBackgroundColor(headerBgColor);
 
         mMainHandler = new Handler(Looper.getMainLooper());
 
@@ -810,6 +855,13 @@ public class FmScroller extends FrameLayout {
             if (null == convertView) {
                 viewHolder = new ViewHolder();
                 convertView = mInflater.inflate(R.layout.favorite_gridview_item, null);
+
+                int cardBgColor = getContext().getColor(R.color.favorite_tile_bg_color);
+                cardBgColor = Utils.setColorAlphaComponent(cardBgColor, 60);
+                viewHolder.mCardView = (CardView) convertView.findViewById(R.id.card_view);
+                viewHolder.mCardView.setCardBackgroundColor(cardBgColor);
+
+                viewHolder.mFmLabel = (TextView) convertView.findViewById(R.id.fm_label);
                 viewHolder.mStationFreq = (TextView) convertView.findViewById(R.id.station_freq);
                 viewHolder.mPlayIndicator = (FmVisualizerView) convertView
                         .findViewById(R.id.fm_play_indicator);
@@ -840,8 +892,16 @@ public class FmScroller extends FrameLayout {
                 }
 
                 viewHolder.mStationFreq.setText(FmUtils.formatStation(stationFreq));
+                if (null == name || "".equals(name)) {
+                    viewHolder.mStationName.setVisibility(View.GONE);
+                } else {
+                    viewHolder.mStationName.setSelected(true);
+                    viewHolder.mStationName.setVisibility(View.VISIBLE);
+                }
                 viewHolder.mStationName.setText(name);
 
+                int fmLabelColorId, stationFreqColorId, stationNameColorId,
+                    moreButtonAccentColorId;
                 if (mCurrentStation == stationFreq) {
                     viewHolder.mPlayIndicator.setVisibility(View.VISIBLE);
                     if (mIsFmPlaying) {
@@ -849,17 +909,29 @@ public class FmScroller extends FrameLayout {
                     } else {
                         viewHolder.mPlayIndicator.stopAnimation();
                     }
-                    viewHolder.mStationFreq.setTextColor(Color.parseColor("#607D8B"));
-                    viewHolder.mStationFreq.setAlpha(1f);
-                    viewHolder.mStationName.setMaxLines(1);
+                    fmLabelColorId = stationFreqColorId =
+                    stationNameColorId =
+                        R.color.favorite_station_accent_playing_color;
+                    moreButtonAccentColorId =
+                        R.color.favorite_station_more_accent_playing_color;
                 } else {
                     viewHolder.mPlayIndicator.setVisibility(View.GONE);
                     viewHolder.mPlayIndicator.stopAnimation();
-                    viewHolder.mStationFreq.setTextColor(Color.parseColor("#000000"));
-                    viewHolder.mStationFreq.setAlpha(0.87f);
-                    viewHolder.mStationName.setMaxLines(2);
+                    fmLabelColorId = R.color.favorite_fm_label_color;
+                    stationFreqColorId = R.color.favorite_station_freq_color;
+                    stationNameColorId = R.color.favorite_station_name_color;
+                    moreButtonAccentColorId = R.color.favorite_station_more_accent_color;
                 }
-
+                Resources r = getResources();
+                viewHolder.mFmLabel.setTextColor(r.getColor(fmLabelColorId));
+                viewHolder.mStationFreq.setTextColor(r.getColor(stationFreqColorId));
+                viewHolder.mStationName.setTextColor(r.getColor(stationNameColorId));
+                viewHolder.mMoreButton.setColorFilter(r.getColor(moreButtonAccentColorId),
+                        PorterDuff.Mode.SRC_ATOP);
+                int moreButtonBgColor = Utils
+                    .setColorAlphaComponent(r.getColor(moreButtonAccentColorId), 10);
+                viewHolder.mMoreButton
+                    .getBackground().setTint(moreButtonBgColor);
                 viewHolder.mMoreButton.setTag(viewHolder.mPopupMenuAnchor);
                 viewHolder.mMoreButton.setOnClickListener(new OnClickListener() {
                     @Override
@@ -976,7 +1048,8 @@ public class FmScroller extends FrameLayout {
 
     private void showPopupMenu(View anchor, final int frequency) {
         dismissPopupMenu();
-        mPopupMenu = new PopupMenu(getContext(), anchor);
+        Context wrapper = new ContextThemeWrapper(getContext(), R.style.AppThemeMain_FavoriteTilePopupStyle);
+        mPopupMenu = new PopupMenu(wrapper, anchor);
         Menu menu = mPopupMenu.getMenu();
         mPopupMenu.getMenuInflater().inflate(R.menu.gridview_item_more_menu, menu);
         mPopupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -1346,8 +1419,7 @@ public class FmScroller extends FrameLayout {
                         mFmDescriptionTextSizeRate);
                 mFmDescriptionText.setTextSize(newTextSize / mDensity);
                 boolean reachTop = (mSecondTargetHeight == getHeaderHeight());
-                mFmDescriptionText.setTextColor(reachTop ? Color.WHITE
-                        : getResources().getColor(R.color.text_fm_color));
+                mFmDescriptionText.setTextColor(getResources().getColor(R.color.header_fm_label_color));
                 mFmDescriptionText.setAlpha(reachTop ? 0.87f : 1.0f);
 
                 // 2. frequency text (text size, padding and margin)
@@ -1572,8 +1644,10 @@ public class FmScroller extends FrameLayout {
     }
 
     private final class ViewHolder {
+        CardView mCardView;
         ImageView mMoreButton;
         FmVisualizerView mPlayIndicator;
+        TextView mFmLabel;
         TextView mStationFreq;
         TextView mStationName;
         View mPopupMenuAnchor;

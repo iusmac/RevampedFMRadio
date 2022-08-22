@@ -34,8 +34,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/theme_windowBackground"
-            android:elevation="@dimen/fm_middle_shadow"
+            android:background="@color/header_bg_color"
             android:id="@+id/main_header_parent">
             <include layout="@layout/main_header" />
         </FrameLayout>

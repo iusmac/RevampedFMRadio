@@ -21,6 +21,7 @@
     android:layout_height="wrap_content"
     android:focusable="false"
     android:focusableInTouchMode="false"
+    android:listSelector="@android:color/transparent"
     android:gravity="center"
     android:horizontalSpacing="8dp"
     android:numColumns="5"

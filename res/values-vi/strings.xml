@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Bản ghi chưa được lưu</string>
     <string name="toast_listen">NGHE</string>
     <string name="toast_station_renamed">Đài đã được đổi tên</string>
+    <string name="audio_db_artist_name">Bản ghi âm FM của tôi</string>
+    <string name="audio_db_album_name">Bản ghi âm FM</string>
+    <string name="audio_db_playlist_name">Bản ghi âm FM</string>
+    <string name="audio_save_dir_name">Bản ghi âm FM</string>
 </resources>

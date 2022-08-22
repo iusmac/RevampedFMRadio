@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">रेकॉर्डिंग जतन केले नाही</string>
     <string name="toast_listen">ऐका</string>
     <string name="toast_station_renamed">स्‍टेशन पुनर्नामित केले गेले आहे</string>
+    <string name="audio_db_artist_name">माझी FM रेकॉर्डिंग्स</string>
+    <string name="audio_db_album_name">FM रेकॉर्डिंग्ज</string>
+    <string name="audio_db_playlist_name">FM रेकॉर्डिंग्ज</string>
+    <string name="audio_save_dir_name">FM रेकॉर्डिंग्ज</string>
 </resources>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Opname niet opgeslagen</string>
     <string name="toast_listen">LUISTEREN</string>
     <string name="toast_station_renamed">De naam van de zender is gewijzigd</string>
+    <string name="audio_db_artist_name">Mijn FM-opnamen</string>
+    <string name="audio_db_album_name">FM-opnamen</string>
+    <string name="audio_db_playlist_name">FM-opnamen</string>
+    <string name="audio_save_dir_name">FM-opnamen</string>
 </resources>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Kaydedilmedi</string>
     <string name="toast_listen">DİNLE</string>
     <string name="toast_station_renamed">İstasyonun adı değiştirildi</string>
+    <string name="audio_db_artist_name">FM kayıtlarım</string>
+    <string name="audio_db_album_name">FM kayıtları</string>
+    <string name="audio_db_playlist_name">FM kayıtları</string>
+    <string name="audio_save_dir_name">FM kayıtları</string>
 </resources>

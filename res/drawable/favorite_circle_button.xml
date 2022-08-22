@@ -16,12 +16,17 @@
 -->
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/theme_primarydark_color" >
+    android:color="@color/favorite_station_more_ripple_color" >
     <item android:id="@android:id/mask">
         <shape android:shape="oval">
-            <solid android:color="@color/theme_primarydark_color" />
+            <solid android:color="@color/favorite_station_more_ripple_color" />
             <corners android:radius="90dp"/>
         </shape>
     </item>
-<!--     <item android:drawable="@color/theme_primary_color" /> -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#000000" />
+            <corners android:radius="90dp"/>
+        </shape>
+    </item>
 </ripple>

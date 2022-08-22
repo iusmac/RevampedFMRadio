@@ -23,12 +23,15 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.fmradio.R;
 
@@ -40,7 +43,10 @@ public class FmFavoriteEditDialog extends DialogFragment {
     private static final String STATION_NAME = "station_name";
     private static final String STATION_FREQ = "station_freq";
     private EditFavoriteListener mListener = null;
+    private TextView mTitle = null;
     private EditText mStationNameEditor = null;
+    private Button mButtonSave = null;
+    private Button mButtonDiscard = null;
 
     /**
      * Create edit favorite dialog instance, caller should implement edit
@@ -82,33 +88,37 @@ public class FmFavoriteEditDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String stationName = getArguments().getString(STATION_NAME);
-        final int stationFreq = getArguments().getInt(STATION_FREQ);
-        View v = View.inflate(getActivity(), R.layout.editstation, null);
-        mStationNameEditor = (EditText) v.findViewById(
-                R.id.dlg_edit_station_name_text);
+        View view = View.inflate(getActivity(), R.layout.alertdialog, null);
+        mStationNameEditor = (EditText) view.findViewById(
+                R.id.alertdialog_edittext);
 
         if (null == stationName || "".equals(stationName.trim())) {
             stationName = "";
         }
 
+        mTitle = (TextView) view.findViewById(R.id.alertdialog_title);
+        mTitle.setText(R.string.rename);
+
         mStationNameEditor.requestFocus();
         mStationNameEditor.requestFocusFromTouch();
         // Edit
         mStationNameEditor.setText(stationName);
+        mStationNameEditor.setHint(R.string.station_rename_hint);
+        mStationNameEditor.setFilters(new InputFilter[] {
+            new InputFilter.LengthFilter(60)
+        });
         Editable text = mStationNameEditor.getText();
         Selection.setSelection(text, text.length());
-        return new AlertDialog.Builder(getActivity())
-                // Must call setTitle here or the title will not be displayed.
-                .setTitle(getString(R.string.rename)).setView(v)
-                .setPositiveButton(R.string.save,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String newName = mStationNameEditor.getText().toString().trim();
-                                mListener.editFavorite(stationFreq, newName);
-                            }
-                        })
-                .setNegativeButton(android.R.string.cancel, null)
-                .create();
+
+        mButtonSave = (Button) view.findViewById(R.id.alertdialog_button_ok);
+        mButtonSave.setText(R.string.save);
+        mButtonSave.setOnClickListener(mButtonOnClickListener);
+
+        mButtonDiscard = (Button) view.findViewById(R.id.alertdialog_button_cancel);
+        mButtonDiscard.setText(android.R.string.cancel);
+        mButtonDiscard.setOnClickListener(mButtonOnClickListener);
+
+        return new AlertDialog.Builder(getActivity()).setView(view).create();
     }
 
     /**
@@ -159,7 +169,31 @@ public class FmFavoriteEditDialog extends DialogFragment {
         if (dialog == null) {
             return;
         }
-        final Button button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        button.setEnabled(isEnabled);
+        mButtonSave.setEnabled(isEnabled);
     }
+
+    private OnClickListener mButtonOnClickListener = new OnClickListener() {
+        /**
+         * Define the button operation
+         */
+        @Override
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case R.id.alertdialog_button_ok:
+                    String newName = mStationNameEditor.getText().toString().trim();
+                    final int stationFreq = getArguments().getInt(STATION_FREQ);
+                    mListener.editFavorite(stationFreq, newName);
+                    dismissAllowingStateLoss();
+                break;
+
+                case R.id.alertdialog_button_cancel:
+                    dismissAllowingStateLoss();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 }

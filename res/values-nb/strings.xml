@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Opptaket er ikke lagret</string>
     <string name="toast_listen">LYTT</string>
     <string name="toast_station_renamed">Stasjonen har fått nytt navn.</string>
+    <string name="audio_db_artist_name">Mine FM opptak</string>
+    <string name="audio_db_album_name">FM opptak</string>
+    <string name="audio_db_playlist_name">FM opptak</string>
+    <string name="audio_save_dir_name">FM opptak</string>
 </resources>

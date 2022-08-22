@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">ההקלטה לא נשמרה</string>
     <string name="toast_listen">האזן</string>
     <string name="toast_station_renamed">שם התחנה השתנה</string>
+    <string name="audio_db_artist_name">הקלטות ה- FM שלי</string>
+    <string name="audio_db_album_name">הקלטות FM</string>
+    <string name="audio_db_playlist_name">הקלטות FM</string>
+    <string name="audio_save_dir_name">הקלטות FM</string>
 </resources>

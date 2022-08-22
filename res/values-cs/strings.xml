@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Nahrávka nebyla uložena</string>
     <string name="toast_listen">POSLOUCHAT</string>
     <string name="toast_station_renamed">Název stanice byl změněn</string>
+    <string name="audio_db_artist_name">Mé nahrávky FM</string>
+    <string name="audio_db_album_name">Nahrávky FM</string>
+    <string name="audio_db_playlist_name">Nahrávky FM</string>
+    <string name="audio_save_dir_name">Nahrávky FM</string>
 </resources>

@@ -18,7 +18,8 @@ package com.android.fmradio;
 
 import android.app.ActivityManager;
 import android.app.Notification;
-import android.app.Notification.BigTextStyle;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -100,6 +101,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     // Notification id
     private static final int NOTIFICATION_ID = 1;
 
+    // Notification channel
+    public static final String NOTIFICATION_CHANNEL = "fmradio_notification_channel";
+
     // ignore audio data
     private static final int AUDIO_FRAMES_TO_IGNORE_COUNT = 3;
 
@@ -158,6 +162,11 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     // Record Power Status
     private int mPowerStatus = POWER_DOWN;
 
+    // Notification manager
+    private static Object mNotificationLock = new Object();
+    private NotificationManager mNotificationManager = null;
+    private NotificationChannel mNotificationChannel = null;
+
     public static int POWER_UP = 0;
     public static int DURING_POWER_UP = 1;
     public static int POWER_DOWN = 2;
@@ -213,9 +222,6 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     // Audio Patch
     private AudioPatch mAudioPatch = null;
     private Object mRenderLock = new Object();
-
-    private Notification.Builder mNotificationBuilder = null;
-    private BigTextStyle mNotificationStyle = null;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -1772,78 +1778,93 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 || (getRecorderState() == FmRecorder.STATE_RECORDING)) {
             return;
         }
-        String stationName = "";
-        String radioText = "";
-        ContentResolver resolver = mContext.getContentResolver();
-        Cursor cursor = null;
-        try {
-            cursor = resolver.query(
-                    Station.CONTENT_URI,
-                    FmStation.COLUMNS,
-                    Station.FREQUENCY + "=?",
-                    new String[] { String.valueOf(mCurrentStation) },
-                    null);
-            if (cursor != null && cursor.moveToFirst()) {
-                // If the station name is not exist, show program service(PS) instead
-                stationName = cursor.getString(cursor.getColumnIndex(Station.STATION_NAME));
-                if (TextUtils.isEmpty(stationName)) {
-                    stationName = cursor.getString(cursor.getColumnIndex(Station.PROGRAM_SERVICE));
+        synchronized (mNotificationLock) {
+            String stationName = "";
+            String radioText = "";
+            ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = null;
+            try {
+                cursor = resolver.query(
+                        Station.CONTENT_URI,
+                        FmStation.COLUMNS,
+                        Station.FREQUENCY + "=?",
+                        new String[] { String.valueOf(mCurrentStation) },
+                        null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    // If the station name is not exist, show program service(PS) instead
+                    stationName = cursor.getString(cursor.getColumnIndex(Station.STATION_NAME));
+                    if (TextUtils.isEmpty(stationName)) {
+                        stationName = cursor.getString(cursor.getColumnIndex(Station.PROGRAM_SERVICE));
+                    }
+                    radioText = cursor.getString(cursor.getColumnIndex(Station.RADIO_TEXT));
+
+                } else {
+                    Log.d(TAG, "showPlayingNotification, cursor is null");
                 }
-                radioText = cursor.getString(cursor.getColumnIndex(Station.RADIO_TEXT));
-
-            } else {
-                Log.d(TAG, "showPlayingNotification, cursor is null");
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
+
+            Intent aIntent = new Intent(Intent.ACTION_MAIN);
+            aIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            aIntent.setClassName(getPackageName(), mTargetClassName);
+            PendingIntent pAIntent = PendingIntent.getActivity(mContext, 0, aIntent, 0);
+
+            if (mNotificationManager == null) {
+                mNotificationManager = (NotificationManager)
+                    mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             }
-        }
 
-        Intent aIntent = new Intent(Intent.ACTION_MAIN);
-        aIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        aIntent.setClassName(getPackageName(), mTargetClassName);
-        PendingIntent pAIntent = PendingIntent.getActivity(mContext, 0, aIntent, 0);
+            if (mNotificationChannel == null) {
+                mNotificationChannel =
+                    new NotificationChannel(NOTIFICATION_CHANNEL,
+                            mContext.getString(R.string.app_name),
+                            NotificationManager.IMPORTANCE_LOW);
 
-        if (null == mNotificationBuilder) {
-            mNotificationBuilder = new Notification.Builder(mContext);
-            mNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-            mNotificationBuilder.setShowWhen(false);
-            mNotificationBuilder.setAutoCancel(true);
+                mNotificationManager.createNotificationChannel(mNotificationChannel);
+            }
+
+            Notification.Builder notificationBuilder;
+            notificationBuilder = new Notification.Builder(mContext, NOTIFICATION_CHANNEL);
+            notificationBuilder.setSmallIcon(R.drawable.ic_notification);
+            notificationBuilder.setShowWhen(false);
+            notificationBuilder.setAutoCancel(true);
 
             Intent intent = new Intent(FM_SEEK_PREVIOUS);
             intent.setClass(mContext, FmService.class);
             PendingIntent pIntent = PendingIntent.getService(mContext, 0, intent, 0);
-            mNotificationBuilder.addAction(R.drawable.btn_fm_prevstation,
+            notificationBuilder.addAction(R.drawable.btn_fm_prevstation,
                     getString(R.string.notif_previous), pIntent);
             intent = new Intent(FM_TURN_OFF);
             intent.setClass(mContext, FmService.class);
             pIntent = PendingIntent.getService(mContext, 0, intent, 0);
-            mNotificationBuilder.addAction(R.drawable.btn_fm_rec_stop_enabled,
+            notificationBuilder.addAction(R.drawable.btn_fm_rec_stop_enabled,
                     getString(R.string.notif_stop), pIntent);
             intent = new Intent(FM_SEEK_NEXT);
             intent.setClass(mContext, FmService.class);
             pIntent = PendingIntent.getService(mContext, 0, intent, 0);
-            mNotificationBuilder.addAction(R.drawable.btn_fm_nextstation,
+            notificationBuilder.addAction(R.drawable.btn_fm_nextstation,
                     getString(R.string.notif_next) , pIntent);
-        }
-        mNotificationBuilder.setContentIntent(pAIntent);
-        Bitmap largeIcon = FmUtils.createNotificationLargeIcon(mContext,
-                FmUtils.formatStation(mCurrentStation));
-        mNotificationBuilder.setLargeIcon(largeIcon);
-        // Show FM Radio if empty
-        if (TextUtils.isEmpty(stationName)) {
-            stationName = getString(R.string.app_name);
-        }
-        mNotificationBuilder.setContentTitle(stationName);
-        // If radio text is "" or null, we also need to update notification.
-        mNotificationBuilder.setContentText(radioText);
-        Log.d(TAG, "showPlayingNotification PS:" + stationName + ", RT:" + radioText);
+            notificationBuilder.setContentIntent(pAIntent);
+            Bitmap largeIcon = FmUtils.createNotificationLargeIcon(mContext,
+                    FmUtils.formatStation(mCurrentStation));
+            notificationBuilder.setLargeIcon(largeIcon);
+            // Show FM Radio if empty
+            if (TextUtils.isEmpty(stationName)) {
+                stationName = getString(R.string.app_name);
+            }
+            notificationBuilder.setContentTitle(stationName);
+            // If radio text is "" or null, we also need to update notification.
+            notificationBuilder.setContentText(radioText);
+            Log.d(TAG, "showPlayingNotification PS:" + stationName + ", RT:" + radioText);
 
-        Notification n = mNotificationBuilder.build();
-        n.flags &= ~Notification.FLAG_NO_CLEAR;
-        startForeground(NOTIFICATION_ID, n);
+            Notification n = notificationBuilder.build();
+            n.flags &= ~Notification.FLAG_NO_CLEAR;
+            startForeground(NOTIFICATION_ID, n);
+        }
     }
 
     /**

@@ -115,4 +115,12 @@
     <string name="toast_listen">LISTEN</string>
     <!-- Snackbar message shown after we rename a favorite station [CHAR LIMIT=50] -->
     <string name="toast_station_renamed">The station has been renamed</string>
+    <!-- All recordings will show up in the media database with this 'artist' name -->
+    <string name="audio_db_artist_name">My FM recordings</string>
+    <!-- All recordings will show up in the media database with this 'album' name -->
+    <string name="audio_db_album_name">FM recordings</string>
+    <!-- All recordings will show up in the media database in a playlist with this name -->
+    <string name="audio_db_playlist_name">FM recordings</string>
+    <!-- All recordings will be saved in directory with this name -->
+    <string name="audio_save_dir_name">FM recordings</string>
 </resources>

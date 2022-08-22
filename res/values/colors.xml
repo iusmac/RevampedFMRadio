@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2014,2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,18 +15,106 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Color of the selected tab underline -->
-    <color name="white_color">#FFFFFF</color>
-    <color name="black_color">#000000</color>
-    <color name="floating_action_button_icon_color">@color/white_color</color>
-    <color name="fm_main_color">#004466</color>
-    <color name="theme_title_color">#DEFFFFFF</color>
-    <color name="theme_primarydark_color">#455A64</color>
-    <color name="theme_primary_color">#607D8B</color>
-    <color name="theme_windowBackground">#607D8B</color>
-    <color name="floating_action_button_touch_tint">#80ffffff</color>
-    <color name="actionbar_overflow_title_color">#DE000000</color>
-    <color name="actionbar_overflow_title_disabled_color">#33000000</color>
-    <!-- FM main page text color -->
-    <color name="text_fm_color">#CFD8DC</color>
+    <!-- Icon -->
+    <color name="launcher_background_color">@android:color/system_accent1_100</color>
+    <color name="launcher_foreground_color">@android:color/system_neutral2_700</color>
+
+    <!-- Backgrounds -->
+    <color name="main_background_darker">@android:color/system_neutral1_100</color>
+    <color name="main_background_lighter">@android:color/system_neutral1_50</color>
+
+    <!-- Generic -->
+    <color name="ripple_color">@android:color/system_neutral2_200</color>
+
+    <!-- Action bar (No title) -->
+    <color name="actionbar_untitled_statusbar_bg_color">@color/main_background_darker</color>
+    <color name="actionbar_untitled_bg_color">@color/actionbar_untitled_statusbar_bg_color</color>
+
+    <!-- Action bar (No title) (Popup) -->
+    <color name="actionbar_untitled_popup_bg_color">@color/main_background_lighter</color>
+    <color name="actionbar_untitled_popup_text_color">@android:color/system_accent2_800</color>
+    <color name="actionbar_untitled_popup_text_disable_color">@android:color/system_neutral2_500</color>
+
+    <!-- Action bar (With title) -->
+    <color name="actionbar_statusbar_bg_color">@color/main_background_lighter</color>
+    <color name="actionbar_bg_color">@color/main_background_lighter</color>
+    <color name="actionbar_title_color">@android:color/system_neutral2_800</color>
+
+    <!-- Alert Dialog -->
+    <color name="alertdialog_title_color">@android:color/system_neutral2_800</color>
+    <color name="alertdialog_input_color">@color/text_input_color</color>
+    <color name="alertdialog_caption_color">@android:color/system_neutral2_600</color>
+    <color name="alertdialog_cancel_btn_color">@android:color/system_neutral2_800</color>
+    <color name="alertdialog_ok_btn_color">@android:color/system_neutral2_800</color>
+    <color name="alertdialog_ok_btn_disable_color">@android:color/system_neutral2_500</color>
+
+    <!-- Text input -->
+    <color name="text_input_color">@android:color/system_neutral2_800</color>
+    <color name="text_input_hint_color">@android:color/system_neutral2_600</color>
+
+    <!-- Text selection -->
+    <color name="text_selection_color">@android:color/system_neutral2_500</color>
+    <color name="text_selection_highlight_color">@android:color/system_neutral2_200</color>
+
+    <!-- Toolbar (Main) -->
+    <color name="toolbar_fm_station_list_color">@android:color/system_neutral2_500</color>
+    <color name="toolbar_fm_headset_color">@android:color/system_neutral2_500</color>
+    <color name="toolbar_more_dots_color">@android:color/system_neutral2_500</color>
+
+    <!-- Header -->
+    <color name="header_bg_color">@color/main_background_darker</color>
+    <color name="header_fm_label_color">@android:color/system_neutral2_500</color>
+    <color name="header_station_value_color">@android:color/system_accent1_600</color>
+    <color name="header_station_name_color">@android:color/system_neutral2_500</color>
+    <color name="header_station_rds_color">@android:color/system_neutral2_500</color>
+
+    <!-- Control buttons -->
+    <color name="prevstation_button_color">@android:color/system_neutral2_500</color>
+    <color name="decrstation_button_color">@android:color/system_neutral2_500</color>
+    <color name="addstation_on_button_color">@android:color/system_accent1_500</color>
+    <color name="addstation_off_button_color">@android:color/system_neutral2_500</color>
+    <color name="incstation_button_color">@android:color/system_neutral2_500</color>
+    <color name="nextstation_button_color">@android:color/system_neutral2_500</color>
+    <color name="play_button_color">@android:color/system_accent1_500</color>
+    <color name="play_button_selector_color">@android:color/system_accent1_0</color>
+    <color name="play_button_ripple_tint">@android:color/system_accent1_100</color>
+
+    <!-- Favorites container -->
+    <color name="fav_container_bg_color">@color/main_background_lighter</color>
+    <color name="fav_container_favorite_label_color">@android:color/system_accent2_800</color>
+
+    <!-- Favorite tile -->
+    <color name="favorite_tile_bg_color">@android:color/system_accent1_10</color>
+    <color name="favorite_popup_bg_color">@color/main_background_darker</color>
+    <color name="favorite_popup_text_color">@android:color/system_neutral2_500</color>
+    <color name="favorite_fm_label_color">@color/header_fm_label_color</color>
+    <color name="favorite_station_more_accent_color">@android:color/system_neutral2_500</color>
+    <color name="favorite_station_more_accent_playing_color">@android:color/system_accent1_500</color>
+    <color name="favorite_station_more_ripple_color">@android:color/system_neutral2_200</color>
+    <color name="favorite_station_freq_color">@android:color/system_neutral2_800</color>
+    <color name="favorite_station_name_color">@android:color/system_neutral2_800</color>
+    <color name="favorite_station_accent_playing_color">@android:color/system_accent1_600</color>
+
+    <!-- Snackbar -->
+    <color name="snackbar_bg_color">@color/main_background_darker</color>
+    <color name="snackbar_text_color">@android:color/system_neutral2_800</color>
+
+    <!-- Notification -->
+    <color name="notification_icon_bg_color">@color/main_background_darker</color>
+    <color name="notification_icon_text_color">@android:color/system_neutral2_500</color>
+
+    <!-- Station list -->
+    <color name="station_list_actionbar_reload_color">@color/actionbar_title_color</color>
+    <color name="station_list_empty_tint">@color/actionbar_title_color</color>
+
+    <!-- Recording -->
+    <color name="recording_minutes_color">@android:color/system_neutral2_500</color>
+    <color name="recording_seconds_color">@android:color/system_neutral2_500</color>
+    <color name="recording_fm_label_color">@android:color/system_neutral2_500</color>
+    <color name="recording_frequency_color">@android:color/system_neutral2_800</color>
+    <color name="recording_station_color">@android:color/system_neutral2_800</color>
+    <color name="recording_rds_color">@color/recording_station_color</color>
+    <color name="recording_line_bg_color">@android:color/system_neutral2_200</color>
+    <color name="recording_dot_tint">#ff0101</color>
+    <color name="recording_stop_btn_color">@android:color/system_accent2_800</color>
 </resources>

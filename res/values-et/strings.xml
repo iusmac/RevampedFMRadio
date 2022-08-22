@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Salvestist ei talletatud</string>
     <string name="toast_listen">KUULAMINE</string>
     <string name="toast_station_renamed">Jaam on ümber nimetatud</string>
+    <string name="audio_db_artist_name">Minu FM-salvestised</string>
+    <string name="audio_db_album_name">FM-salvestised</string>
+    <string name="audio_db_playlist_name">FM-salvestised</string>
+    <string name="audio_save_dir_name">FM-salvestised</string>
 </resources>

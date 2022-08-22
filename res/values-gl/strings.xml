@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Non se gardou a gravación</string>
     <string name="toast_listen">ESCOITAR</string>
     <string name="toast_station_renamed">Cambiouse o nome da emisora</string>
+    <string name="audio_db_artist_name">As miñas gravacións de radio</string>
+    <string name="audio_db_album_name">Gravacións de radio</string>
+    <string name="audio_db_playlist_name">Gravacións de radio</string>
+    <string name="audio_save_dir_name">Gravacións de radio</string>
 </resources>

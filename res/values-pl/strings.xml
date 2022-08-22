@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Nagranie nie zostało zapisane</string>
     <string name="toast_listen">POSŁUCHAJ</string>
     <string name="toast_station_renamed">Nazwa stacji została zmieniona</string>
+    <string name="audio_db_artist_name">Moje nagrania FM</string>
+    <string name="audio_db_album_name">Nagrania FM</string>
+    <string name="audio_db_playlist_name">Nagrania FM</string>
+    <string name="audio_save_dir_name">Nagrania FM</string>
 </resources>

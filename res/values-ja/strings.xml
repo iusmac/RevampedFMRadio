@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">録音は保存されていません</string>
     <string name="toast_listen">再生</string>
     <string name="toast_station_renamed">放送局の名前が変更されました</string>
+    <string name="audio_db_artist_name">FM録音</string>
+    <string name="audio_db_album_name">FM録音</string>
+    <string name="audio_db_playlist_name">FM録音</string>
+    <string name="audio_save_dir_name">FM録音</string>
 </resources>

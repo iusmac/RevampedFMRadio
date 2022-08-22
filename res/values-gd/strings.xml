@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Cha deach an clàradh a shàbhaladh</string>
     <string name="toast_listen">ÈIST</string>
     <string name="toast_station_renamed">Chaidh ainm ùr a chur air an stèisean</string>
+    <string name="audio_db_artist_name">Na clàraidhean FM agam</string>
+    <string name="audio_db_album_name">Clàraidhean FM</string>
+    <string name="audio_db_playlist_name">Clàraidhean FM</string>
+    <string name="audio_save_dir_name">Clàraidhean FM</string>
 </resources>

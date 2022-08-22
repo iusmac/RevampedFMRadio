@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Regjistrimi nuk u ruajt</string>
     <string name="toast_listen">DËGJO</string>
     <string name="toast_station_renamed">Statcioni është ri emërtuar</string>
+    <string name="audio_db_artist_name">Regjistrimet e mia FM</string>
+    <string name="audio_db_album_name">Regjistrimet FM</string>
+    <string name="audio_db_playlist_name">Regjistrimet FM</string>
+    <string name="audio_save_dir_name">Regjistrimet FM</string>
 </resources>

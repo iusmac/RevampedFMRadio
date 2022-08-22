@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2014,2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -27,14 +27,15 @@
         android:layout_width="@dimen/play_button_height"
         android:layout_height="@dimen/play_button_height"
         android:gravity="center"
-        android:background="@drawable/fb_red" >
+        android:background="@drawable/play_button_circle" >
 
         <ImageButton
             android:id="@+id/play_button"
-            android:layout_width="56dip"
-            android:layout_height="56dip"
+            android:layout_width="@dimen/play_button_width"
+            android:layout_height="@dimen/play_button_height"
             android:background="@drawable/circle_button"
             android:contentDescription="@string/fm_turn_on"
+            android:tint="@color/play_button_selector_color"
             android:src="@drawable/btn_fm_start_selector" />
     </LinearLayout>
 

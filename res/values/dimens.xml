@@ -34,8 +34,6 @@
     <dimen name="play_button_margin_bottom">16dp</dimen>
     <!-- Offset of bottom margin of the floating action button used when dialpad is up -->
     <dimen name="play_button_dialpad_margin_bottom_offset">4dp</dimen>
-    <!-- The middle shadow elevation value between top and bottom layouts -->
-    <dimen name="fm_middle_shadow">4dp</dimen>
 
     <!-- FM no headset page port-->
     <dimen name="fm_noheadset_img_part_height">320dp</dimen>
@@ -97,7 +95,6 @@
     <dimen name="fm_list_item_left_down_margin_top">16dp</dimen>
     <dimen name="fm_search_progress_margin_top">16dp</dimen>
     <dimen name="fm_empty_text_margin_top">16dp</dimen>
-    <dimen name="fm_list_item_height">70dp</dimen>
     <dimen name="fm_list_name_width">150dp</dimen>
     <dimen name="fm_list_freq_width">50dp</dimen>
     <dimen name="fm_list_rds_width">150dp</dimen>
@@ -108,8 +105,6 @@
     <dimen name="fm_rds_text_size">14dp</dimen>
     <dimen name="fm_station_searching_tips_size">16dp</dimen>
     <dimen name="fm_list_progress_width">120dp</dimen>
-    <!-- station list page land-->
-    <dimen name="fm_list_item_height_land">72dp</dimen>
 
     <!-- text size -->
     <dimen name="fm_description_text_size">14dp</dimen>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Rekaman tidak disimpan</string>
     <string name="toast_listen">DENGARKAN</string>
     <string name="toast_station_renamed">Stasiun radio ini telah berganti nama</string>
+    <string name="audio_db_artist_name">Rekaman FM saya</string>
+    <string name="audio_db_album_name">Rekaman FM</string>
+    <string name="audio_db_playlist_name">Rekaman FM</string>
+    <string name="audio_save_dir_name">Rekaman FM</string>
 </resources>

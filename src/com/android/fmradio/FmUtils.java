@@ -278,12 +278,12 @@ public class FmUtils {
         int height = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
         LinearLayout iconLayout = new LinearLayout(c);
         iconLayout.setOrientation(LinearLayout.VERTICAL);
-        iconLayout.setBackgroundColor(c.getResources().getColor(R.color.theme_primary_color));
+        iconLayout.setBackgroundColor(c.getResources().getColor(R.color.notification_icon_bg_color));
         iconLayout.setDrawingCacheEnabled(true);
         iconLayout.layout(0, 0, width, height);
         TextView iconText = new TextView(c);
         iconText.setTextSize(24.0f);
-        iconText.setTextColor(res.getColor(R.color.theme_title_color));
+        iconText.setTextColor(res.getColor(R.color.notification_icon_text_color));
         iconText.setText(text);
         iconText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));

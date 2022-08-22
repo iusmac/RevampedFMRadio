@@ -16,12 +16,11 @@
 -->
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/floating_action_button_touch_tint" >
+    android:color="@color/play_button_ripple_tint" >
     <item android:id="@android:id/mask">
         <shape android:shape="oval">
-            <solid android:color="@color/floating_action_button_touch_tint" />
+            <solid android:color="@color/play_button_ripple_tint" />
             <corners android:radius="90dp"/>
         </shape>
     </item>
-<!--     <item android:drawable="@color/theme_primary_color" /> -->
 </ripple>

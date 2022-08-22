@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">Записът не бе запазен</string>
     <string name="toast_listen">СЛУШАНЕ</string>
     <string name="toast_station_renamed">Станцията е преименувана</string>
+    <string name="audio_db_artist_name">Моите радиозаписи</string>
+    <string name="audio_db_album_name">Радиозаписи</string>
+    <string name="audio_db_playlist_name">Радиозаписи</string>
+    <string name="audio_save_dir_name">Радиозаписи</string>
 </resources>

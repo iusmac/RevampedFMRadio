@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -33,8 +32,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,9 +42,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,6 +52,9 @@ import android.widget.Toast;
 
 import com.android.fmradio.FmService.OnExitListener;
 import com.android.fmradio.FmStation.Station;
+import com.android.fmradio.Utils;
+
+import android.support.v7.widget.CardView;
 
 /**
  * This class interact with user, provider edit station information, such as add
@@ -70,13 +70,13 @@ public class FmFavoriteActivity extends Activity {
 
     private static final String GPS_NOT_LOCATED_DIALOG = "GPS_NOT_LOCATED_DIALOG";
 
-    private ListView mLvFavorites = null; // list view
-
     LinearLayout mSearchTips = null;
 
     private Context mContext = null; // application context
 
     private OnExitListener mExitListener = null;
+
+    private GridView mGridView;
 
     private MyFavoriteAdapter mMyAdapter;
 
@@ -101,7 +101,7 @@ public class FmFavoriteActivity extends Activity {
         // Bind the activity to FM audio stream.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        setContentView(R.layout.favorite);
+        setContentView(R.layout.station_list);
         // display action bar and navigation button
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(getString(R.string.station_title));
@@ -110,15 +110,18 @@ public class FmFavoriteActivity extends Activity {
         mContext = getApplicationContext();
 
         mMyAdapter = new MyFavoriteAdapter(mContext);
-        mLvFavorites = (ListView) findViewById(R.id.station_list);
+        mGridView = (GridView) findViewById(R.id.gridview);
         mSearchTips = (LinearLayout) findViewById(R.id.search_tips);
         mSearchProgress = (ProgressBar) findViewById(R.id.search_progress);
-        mLvFavorites.setAdapter(mMyAdapter); // set adapter
-        mMyAdapter.swipResult(getData());
 
-        mLvFavorites.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setAdapter(mMyAdapter); // set adapter
+        mMyAdapter.swipResult(getData());
+        mGridView.setFocusable(false);
+        mGridView.setFocusableInTouchMode(false);
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             /**
-             * Click list item will finish activity and pass value to other activity
+             * Click card item will finish activity and pass value to other activity
              *
              * @param parent adapter view
              * @param view item view
@@ -173,7 +176,7 @@ public class FmFavoriteActivity extends Activity {
                     refreshMenuItem(false);
 
                     mMyAdapter.swipResult(null);
-                    mLvFavorites.setEmptyView(mSearchTips);
+                    mGridView.setEmptyView(mSearchTips);
                     mSearchProgress.setIndeterminate(true);
 
                     // If current location and last location exceed defined distance, delete the RDS database
@@ -222,16 +225,7 @@ public class FmFavoriteActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.fm_station_list_menu, menu);
         mMenuRefresh = menu.findItem(R.id.fm_station_list_refresh);
-        resetMenuTitleColor(true);
         return true;
-    }
-
-    private void resetMenuTitleColor(boolean enabled) {
-        SpannableString ss = new SpannableString(mMenuRefresh.getTitle());
-        int titleColor = enabled ? getResources().getColor(R.color.actionbar_overflow_title_color)
-                : getResources().getColor(R.color.actionbar_overflow_title_disabled_color);
-        ss.setSpan(new ForegroundColorSpan(titleColor), 0, ss.length(), 0);
-        mMenuRefresh.setTitle(ss);
     }
 
     @Override
@@ -244,11 +238,10 @@ public class FmFavoriteActivity extends Activity {
     }
 
     static final class ViewHolder {
+        CardView mCardView;
         ImageView mStationTypeView;
         TextView mStationFreqView;
         TextView mStationNameView;
-        TextView mStationRdsView;
-        RelativeLayout mImgLayout;
     }
 
     private Cursor getData() {
@@ -297,17 +290,19 @@ public class FmFavoriteActivity extends Activity {
             ViewHolder viewHolder = null;
             if (null == convertView) {
                 viewHolder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.station_item, null);
+                convertView = mInflater.inflate(R.layout.station_gridview_item, null);
+
+                int cardBgColor = mContext.getColor(R.color.favorite_tile_bg_color);
+                cardBgColor = Utils.setColorAlphaComponent(cardBgColor, 60);
+                viewHolder.mCardView = (CardView) convertView.findViewById(R.id.card_view);
+                viewHolder.mCardView.setCardBackgroundColor(cardBgColor);
+
                 viewHolder.mStationTypeView = (ImageView) convertView
-                        .findViewById(R.id.lv_station_type);
+                        .findViewById(R.id.lv_station_add_favorite);
                 viewHolder.mStationFreqView = (TextView) convertView
                         .findViewById(R.id.lv_station_freq);
                 viewHolder.mStationNameView = (TextView) convertView
                         .findViewById(R.id.lv_station_name);
-                viewHolder.mStationRdsView = (TextView) convertView
-                        .findViewById(R.id.lv_station_rds);
-                viewHolder.mImgLayout = (RelativeLayout) convertView
-                        .findViewById(R.id.list_item_right);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -329,27 +324,37 @@ public class FmFavoriteActivity extends Activity {
                             .getColumnIndex(FmStation.Station.PROGRAM_SERVICE));
                 }
 
-                if (rds == null || rds.equals("")) {
-                    viewHolder.mStationRdsView.setVisibility(View.GONE);
+                if (null == name) {
+                    name = "";
+                }
+
+                if (rds == null) {
+                    rds = "";
+                }
+
+                if (!name.equals("") && !rds.equals("")) {
+                    name += " | ";
+                }
+
+                if ("".equals(name) && rds.equals("")) {
+                    viewHolder.mStationNameView.setVisibility(View.GONE);
                 } else {
-                    viewHolder.mStationRdsView.setVisibility(View.VISIBLE);
+                    viewHolder.mStationNameView.setSelected(true);
+                    viewHolder.mStationNameView.setVisibility(View.VISIBLE);
                 }
 
                 viewHolder.mStationFreqView.setText(FmUtils.formatStation(stationFreq));
-                viewHolder.mStationNameView.setText(name);
-                viewHolder.mStationRdsView.setText(rds);
-                if (0 == isFavorite) {
-                    viewHolder.mStationTypeView.setImageResource(R.drawable.btn_fm_favorite_off);
-                    viewHolder.mStationTypeView.setColorFilter(Color.BLACK,
-                            PorterDuff.Mode.SRC_ATOP);
-                    viewHolder.mStationTypeView.setAlpha(0.54f);
-                } else {
-                    viewHolder.mStationTypeView.setImageResource(R.drawable.btn_fm_favorite_on);
-                    viewHolder.mStationTypeView.setColorFilter(null);
-                    viewHolder.mStationTypeView.setAlpha(1.0f);
-                }
-
-                viewHolder.mImgLayout.setOnClickListener(new View.OnClickListener() {
+                viewHolder.mStationNameView.setText(name + rds);
+                viewHolder.mStationTypeView.setImageResource(0 == isFavorite ?
+                        R.drawable.btn_fm_favorite_off_selector :
+                        R.drawable.btn_fm_favorite_on_selector);
+                int stationTypeViewBgColor = (0 == isFavorite) ?
+                    R.color.addstation_off_button_color :
+                    R.color.addstation_on_button_color;
+                stationTypeViewBgColor = Utils.setColorAlphaComponent(
+                            getResources().getColor(stationTypeViewBgColor), 10);
+                viewHolder.mStationTypeView.getBackground().setTint(stationTypeViewBgColor);
+                viewHolder.mStationTypeView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (0 == isFavorite) {
@@ -523,7 +528,6 @@ public class FmFavoriteActivity extends Activity {
         // action menu
         if (mMenuRefresh != null) {
             mMenuRefresh.setEnabled(enabled);
-            resetMenuTitleColor(enabled);
         }
     }
 
@@ -554,7 +558,7 @@ public class FmFavoriteActivity extends Activity {
             // After it is called, it will save status to SharedPreferences.
             if (FmUtils.isFirstEnterStationList(mContext) || (0 == mMyAdapter.getCount())) {
                 refreshMenuItem(false);
-                mLvFavorites.setEmptyView(mSearchTips);
+                mGridView.setEmptyView(mSearchTips);
                 mSearchProgress.setIndeterminate(true);
                 mMyAdapter.swipResult(null);
                 mService.startScanAsync();
@@ -562,7 +566,7 @@ public class FmFavoriteActivity extends Activity {
                 boolean isScan = mService.isScanning();
                 if (isScan) {
                     mMyAdapter.swipResult(null);
-                    mLvFavorites.setEmptyView(mSearchTips);
+                    mGridView.setEmptyView(mSearchTips);
                     mSearchProgress.setIndeterminate(true);
                 } else {
                     // TODO it's on UI thread, change to sub thread

@@ -20,16 +20,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.fmradio.FmRecorder;
@@ -44,6 +47,8 @@ import java.io.File;
 public class FmSaveDialog extends DialogFragment {
     private static final String TAG = "FmSaveDialog";
 
+    private TextView mTitle = null;
+    private TextView mCaption = null;
     // save recording file button
     private Button mButtonSave = null;
     // discard recording file button
@@ -105,15 +110,30 @@ public class FmSaveDialog extends DialogFragment {
             mRecordingSdcard = FmService.getRecordingSdcard();
         }
         setStyle(STYLE_NO_TITLE, 0);
-        View view =  getActivity().getLayoutInflater().inflate(R.layout.save_dialog, null);
-        mButtonSave = (Button) view.findViewById(R.id.save_dialog_button_save);
+        View view =  getActivity().getLayoutInflater().inflate(R.layout.alertdialog, null);
+
+        mTitle = (TextView) view.findViewById(R.id.alertdialog_title);
+        mTitle.setText(R.string.save_dialog_title);
+
+        mCaption = (TextView) view.findViewById(R.id.alertdialog_caption);
+        mCaption.setVisibility(View.VISIBLE);
+        mCaption.setText(R.string.save_dialog_caption);
+
+        mButtonSave = (Button) view.findViewById(R.id.alertdialog_button_ok);
+        mButtonSave.setText(R.string.btn_save_recording);
         mButtonSave.setOnClickListener(mButtonOnClickListener);
 
-        mButtonDiscard = (Button) view.findViewById(R.id.save_dialog_button_discard);
+        mButtonDiscard = (Button) view.findViewById(R.id.alertdialog_button_cancel);
+        mButtonDiscard.setText(R.string.btn_discard_recording);
         mButtonDiscard.setOnClickListener(mButtonOnClickListener);
 
         // Set the recording edit text
-        mRecordingNameEditText = (EditText) view.findViewById(R.id.save_dialog_edittext);
+        mRecordingNameEditText = (EditText) view.findViewById(R.id.alertdialog_edittext);
+        mRecordingNameEditText.setHint(R.string.edit_recording_name_hint);
+        mRecordingNameEditText.setFilters(new InputFilter[] {
+            new InputFilter.LengthFilter(80)
+        });
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()).setView(view);
         return builder.create();
     }
@@ -209,11 +229,12 @@ public class FmSaveDialog extends DialogFragment {
         @Override
         public void onClick(View v) {
 
+            Context ctx = v.getContext();
             File sdDir = new File(mRecordingSdcard, Environment.DIRECTORY_RECORDINGS);
-            File recordingFolderPath = new File(sdDir, FmRecorder.FM_RECORD_FOLDER);
+            File recordingFolderPath = new File(sdDir, FmRecorder.getFmRecordFolder(ctx));
 
             switch (v.getId()) {
-                case R.id.save_dialog_button_save:
+                case R.id.alertdialog_button_ok:
                 String msg = null;
                 // Check the recording name whether exist
                 mRecordingNameToSave = mRecordingNameEditText.getText().toString().trim();
@@ -238,7 +259,7 @@ public class FmSaveDialog extends DialogFragment {
                 }
                 break;
 
-                case R.id.save_dialog_button_discard:
+                case R.id.alertdialog_button_cancel:
                     dismissAllowingStateLoss();
                     // here need delete discarded recording file
                     File needToDelete = new File(recordingFolderPath, mTempRecordingName);

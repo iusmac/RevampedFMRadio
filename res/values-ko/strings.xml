@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">녹음이 저장되지 않았습니다.</string>
     <string name="toast_listen">듣기</string>
     <string name="toast_station_renamed">채널 이름이 변경되었습니다.</string>
+    <string name="audio_db_artist_name">내 FM 녹음</string>
+    <string name="audio_db_album_name">FM 녹음</string>
+    <string name="audio_db_playlist_name">FM 녹음</string>
+    <string name="audio_save_dir_name">FM 녹음</string>
 </resources>

@@ -62,4 +62,8 @@
     <string name="toast_record_not_saved">لم يتم حفظ التسجيل</string>
     <string name="toast_listen">استماع</string>
     <string name="toast_station_renamed">تمت إعادة تسمية المحطة</string>
+    <string name="audio_db_artist_name">تسجيلات FM الخاصة بي</string>
+    <string name="audio_db_album_name">تسجيلات FM</string>
+    <string name="audio_db_playlist_name">تسجيلات FM</string>
+    <string name="audio_save_dir_name">تسجيلات FM</string>
 </resources>

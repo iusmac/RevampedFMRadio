@@ -25,7 +25,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -104,8 +103,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
     private ImageView mNoHeadsetImgView = null;
 
     private View mNoHeadsetImgViewWrap = null;
-
-    private float mMiddleShadowSize;
 
     private LinearLayout mMainLayout = null;
 
@@ -436,7 +433,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
 
         @Override
         public void onAnimationStart(Animation animation) {
-            mNoHeadsetImgViewWrap.setElevation(mMiddleShadowSize);
         }
 
     }
@@ -641,13 +637,13 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         }
 
         // Should start FM service first.
-        if (null == startService(new Intent(FmMainActivity.this, FmService.class))) {
+        if (null == startService((new Intent()).setClass(this, FmService.class))) {
             Log.e(TAG, "onStart, cannot start FM service");
             return;
         }
 
         mIsServiceStarted = true;
-        mIsServiceBinded = bindService(new Intent(FmMainActivity.this, FmService.class),
+        mIsServiceBinded = bindService((new Intent()).setClass(this, FmService.class),
                 mServiceConnection, Context.BIND_AUTO_CREATE);
 
         if (!mIsServiceBinded) {
@@ -1014,8 +1010,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         mButtonPlay.setImageResource((isPowerUp
                 ? R.drawable.btn_fm_stop_selector
                 : R.drawable.btn_fm_start_selector));
-        Resources r = getResources();
-        mBtnPlayInnerContainer.setBackground(r.getDrawable(R.drawable.fb_red));
         mScroller.refreshPlayIndicator(mCurrentStation, isPowerUp);
     }
 
@@ -1135,6 +1129,9 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         mButtonPrevStation = (ImageButton) findViewById(R.id.button_prevstation);
         mButtonNextStation = (ImageButton) findViewById(R.id.button_nextstation);
 
+        mTextStationValue.setTextIsSelectable(true);
+        mTextStationName.setTextIsSelectable(true);
+
         // put favorite button here since it might be used very early in
         // changing recording mode
         mCurrentStation = FmStation.getCurrentStation(mContext);
@@ -1150,7 +1147,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         mNoEarPhoneTxt = (TextView) findViewById(R.id.no_eaphone_text);
         mNoHeadsetImgView = (ImageView) findViewById(R.id.no_headset_img);
         mNoHeadsetImgViewWrap = findViewById(R.id.no_middle);
-        mMiddleShadowSize = getResources().getDimension(R.dimen.fm_middle_shadow);
         // main ui layout params
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
@@ -1247,6 +1243,5 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         mNoHeadsetImgView.setVisibility(View.VISIBLE);
         mNoHeadsetImgViewWrap.setVisibility(View.VISIBLE);
         mNoHeadsetLayout.setVisibility(View.VISIBLE);
-        mNoHeadsetImgViewWrap.setElevation(mMiddleShadowSize);
     }
 }
