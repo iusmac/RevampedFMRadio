@@ -1203,6 +1203,17 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         return 0;
     }
 
+
+    /**
+     * Get record file size
+     */
+    public long getFileSize() {
+        if (mFmRecorder != null) {
+            return mFmRecorder.getFileSize();
+        }
+        return 0;
+    }
+
     /**
      * Set recording mode
      *

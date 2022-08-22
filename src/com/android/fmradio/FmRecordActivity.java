@@ -68,6 +68,7 @@ public class FmRecordActivity extends Activity implements
     private Context mContext;
     private TextView mMintues;
     private TextView mSeconds;
+    private TextView mFsize;
     private TextView mFrequency;
     private View mStationInfoLayout;
     private TextView mStationName;
@@ -95,6 +96,8 @@ public class FmRecordActivity extends Activity implements
 
         mMintues = (TextView) findViewById(R.id.minutes);
         mSeconds = (TextView) findViewById(R.id.seconds);
+
+        mFsize = (TextView) findViewById(R.id.file_size);
 
         mFrequency = (TextView) findViewById(R.id.frequency);
         mStationInfoLayout = findViewById(R.id.station_name_rt);
@@ -422,6 +425,7 @@ public class FmRecordActivity extends Activity implements
                         long recordTimeInSec = recordTimeInMillis / 1000L;
                         mMintues.setText(addPaddingForString(recordTimeInSec / TIME_BASE));
                         mSeconds.setText(addPaddingForString(recordTimeInSec % TIME_BASE));
+                        mFsize.setText(Utils.getHumanReadableSize(mService.getFileSize()));
                         checkStorageSpaceAndStop();
                     }
                     mHandler.sendEmptyMessageDelayed(FmListener.MSGID_REFRESH, 1000);

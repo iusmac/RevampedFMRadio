@@ -88,6 +88,7 @@
     <!-- Recording -->
     <color name="recording_minutes_color">@android:color/system_neutral2_200</color>
     <color name="recording_seconds_color">@android:color/system_neutral2_200</color>
+    <color name="recording_fsize_color">@android:color/system_neutral2_300</color>
     <color name="recording_fm_label_color">@android:color/system_neutral2_200</color>
     <color name="recording_frequency_color">@android:color/system_neutral2_100</color>
     <color name="recording_station_color">@android:color/system_neutral2_100</color>

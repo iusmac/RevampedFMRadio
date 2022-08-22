@@ -461,4 +461,8 @@ public class FmRecorder implements AudioRecorder.Callback {
         Resources res = ctx.getResources();
         return res.getString(R.string.audio_save_dir_name);
     }
+
+    public long getFileSize() {
+        return mRecordFile == null ? 0 : mRecordFile.length();
+    }
 }

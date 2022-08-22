@@ -22,16 +22,17 @@
     android:gravity="center_vertical"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/timer_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="16dip"
         android:layout_marginStart="16dip"
         android:layout_weight="100"
         android:gravity="center" >
 
         <LinearLayout
+            android:id="@+id/timer_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -80,7 +81,24 @@
                 android:textColor="@color/recording_seconds_color"
                 android:textSize="24sp" />
         </LinearLayout>
-    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/timer_content"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:singleLine="true"
+                android:text="0 B"
+                android:textColor="@color/recording_fsize_color"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/station_detail"
