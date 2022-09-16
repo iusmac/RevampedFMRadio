@@ -733,12 +733,6 @@ int FmRadioController ::ScanList
             set_fm_state(FM_ON);
             return FM_FAILURE;
         }
-        ret = FmIoctlsInterface::set_control(fd_driver,
-                         V4L2_CID_PRV_SRCH_CNT, FM_RX_SRCHLIST_MAX_STATIONS);
-        if (ret != FM_SUCCESS) {
-            set_fm_state(FM_ON);
-            return FM_FAILURE;
-        }
         ret = FmIoctlsInterface::start_search(fd_driver,
                                                      SEARCH_UP);
         if (ret != FM_SUCCESS) {
