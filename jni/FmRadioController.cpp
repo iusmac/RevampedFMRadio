@@ -790,8 +790,9 @@ int FmRadioController :: SetRdsGrpProcessing
        if(ret != FM_SUCCESS) {
           return ret;
        }
-       mask &= 0xC7;
-       mask |= ((grps & 0x07) << 3);
+       ALOGD("%s: mask group: %d\n", __func__, grps);
+       mask = ((grps & MASK_PI_LSB));
+       ALOGD("%s: new mask group: %ld\n", __func__, mask);
        ret = FmIoctlsInterface::set_control(fd_driver,
                     V4L2_CID_PRV_RDSGROUP_PROC, (int)mask);
     }else {
@@ -820,7 +821,9 @@ int FmRadioController :: EnableRDS
         ret = SetRdsGrpProcessing(FM_RX_RDS_GRP_RT_EBL |
                                   FM_RX_RDS_GRP_PS_EBL |
                                   FM_RX_RDS_GRP_AF_EBL |
-                                  FM_RX_RDS_GRP_PS_SIMPLE_EBL);
+                                  FM_RX_RDS_GRP_PS_SIMPLE_EBL |
+                                  FM_RX_RDS_GRP_ECC_EBL |
+                                  FM_RX_RDS_GRP_RT_PLUS_EBL);
         if (ret != FM_SUCCESS) {
             ALOGE("Set RDS grp processing\n");
             return ret;
@@ -847,7 +850,7 @@ int FmRadioController :: DisableRDS
     ALOGD("%s: cur_fm_state = %d\n", __func__, cur_fm_state);
     if (cur_fm_state == FM_ON) {
         ret = FmIoctlsInterface::set_control(fd_driver,
-                      V4L2_CID_PRV_RDSON, 2);
+                      V4L2_CID_PRV_RDSON, 0);
         if (ret != FM_SUCCESS) {
             ALOGE("Disable RDS failed\n");
             return ret;
