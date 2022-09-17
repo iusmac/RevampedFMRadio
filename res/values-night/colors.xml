@@ -20,21 +20,21 @@
     <color name="main_background_lighter">@android:color/system_neutral1_800</color>
 
     <!-- Generic -->
-    <color name="ripple_color">@android:color/system_neutral2_500</color>
+    <color name="ripple_color">@android:color/system_neutral2_300</color>
 
     <!-- Action bar (No title) (Popup) -->
     <color name="actionbar_untitled_popup_text_color">@android:color/system_neutral2_200</color>
-    <color name="actionbar_untitled_popup_text_disable_color">@android:color/system_neutral2_500</color>
+    <color name="actionbar_untitled_popup_text_disable_color">@android:color/system_neutral2_300</color>
 
     <!-- Action bar (With title) -->
     <color name="actionbar_title_color">@android:color/system_neutral2_200</color>
 
     <!-- Alert Dialog -->
     <color name="alertdialog_title_color">@android:color/system_neutral2_200</color>
-    <color name="alertdialog_caption_color">@android:color/system_neutral2_500</color>
+    <color name="alertdialog_caption_color">@android:color/system_neutral2_300</color>
     <color name="alertdialog_cancel_btn_color">@android:color/system_neutral2_200</color>
     <color name="alertdialog_ok_btn_color">@android:color/system_neutral2_200</color>
-    <color name="alertdialog_ok_btn_disable_color">@android:color/system_neutral2_500</color>
+    <color name="alertdialog_ok_btn_disable_color">@android:color/system_neutral2_300</color>
 
     <!-- Text input -->
     <color name="text_input_color">@android:color/system_neutral2_200</color>
@@ -42,7 +42,7 @@
 
     <!-- Text selection -->
     <color name="text_selection_color">@android:color/system_neutral2_400</color>
-    <color name="text_selection_highlight_color">@android:color/system_neutral2_600</color>
+    <color name="text_selection_highlight_color">@android:color/system_neutral2_400</color>
 
     <!-- Toolbar (Main) -->
     <color name="toolbar_fm_station_list_color">@android:color/system_neutral2_300</color>
@@ -92,7 +92,7 @@
     <color name="recording_fm_label_color">@android:color/system_neutral2_200</color>
     <color name="recording_frequency_color">@android:color/system_neutral2_100</color>
     <color name="recording_station_color">@android:color/system_neutral2_100</color>
-    <color name="recording_line_bg_color">@android:color/system_neutral2_600</color>
+    <color name="recording_line_bg_color">@android:color/system_neutral2_300</color>
     <color name="recording_dot_tint">#e60909</color>
     <color name="recording_stop_btn_color">@android:color/system_accent2_200</color>
 </resources>
