@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:paddingTop="12dp"
+        android:paddingTop="8dp"
         android:paddingRight="6dp"
         android:paddingLeft="0dp">
         <ImageView
@@ -81,6 +81,21 @@
             android:layout_below="@id/lv_station_freq"
             android:alpha="0.8"
             android:fontFamily="sans-serif"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:textColor="@color/favorite_station_name_color"
+            android:textSize="14dip" />
+
+        <TextView
+            android:id="@+id/lv_station_rt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lv_station_name"
+            android:alpha="0.8"
+            android:fontFamily="sans-serif"
+            android:visibility="gone"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"

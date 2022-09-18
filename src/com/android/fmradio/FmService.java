@@ -1576,7 +1576,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                                 values.put(Station.PROGRAM_SERVICE, ps);
                                 FmStation.insertStationToDb(mContext, values);
                             }
-                            setPs(ps);
+                            if (isActivityForeground()) {
+                                setPs(ps);
+                            }
                         }
                     }
 
@@ -1587,7 +1589,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                             if (!mRtTextString.equals(rds)) {
                                 updatePlayingNotification();
                             }
-                            setLRText(rds);
+                            if (isActivityForeground()) {
+                                setLRText(rds);
+                            }
                             ContentValues values = null;
                             if (FmStation.isStationExist(mContext, mCurrentStation)) {
                                 values = new ContentValues(1);

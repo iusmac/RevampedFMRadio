@@ -103,7 +103,7 @@
     <RelativeLayout
         android:id="@+id/station_detail"
         android:layout_width="match_parent"
-        android:layout_height="60dip"
+        android:layout_height="75dip"
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="@dimen/fm_recording_station_detail_margin_bottom"
         android:layout_marginEnd="16dip"
@@ -152,17 +152,16 @@
             <LinearLayout
                 android:id="@+id/station_name_rt"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/frequency_info"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:visibility="gone"
-                android:orientation="horizontal" >
+                android:orientation="vertical" >
 
                 <TextView
                     android:id="@+id/station_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.8"
+                    android:visibility="gone"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:singleLine="true"
@@ -173,9 +172,10 @@
                     android:id="@+id/radio_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dip"
-                    android:alpha="0.54"
-                    android:ellipsize="end"
+                    android:alpha="0.8"
+                    android:visibility="gone"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:fontFamily="sans-serif"
                     android:singleLine="true"
                     android:textColor="@color/recording_rds_color"

@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/favorite_circle_button"
             android:contentDescription="@string/more"
             android:src="@drawable/ic_menu_moreoverflow_mtrl_alpha">
@@ -102,6 +102,21 @@
             android:layout_below="@id/station_freq"
             android:alpha="0.8"
             android:fontFamily="sans-serif"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:textColor="@color/favorite_station_name_color"
+            android:textSize="14dip" />
+
+        <TextView
+            android:id="@+id/station_rt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/station_name"
+            android:alpha="0.8"
+            android:fontFamily="sans-serif"
+            android:visibility="gone"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"

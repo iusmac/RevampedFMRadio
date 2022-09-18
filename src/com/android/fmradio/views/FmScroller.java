@@ -61,6 +61,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Scroller;
 import android.widget.TextView;
@@ -808,11 +809,13 @@ public class FmScroller extends FrameLayout {
 
     class FavoriteAdapter extends BaseAdapter {
         private Cursor mCursor;
-
+        private int mCurrentPlayingPosition = -1;
         private LayoutInflater mInflater;
+        private Context mContext;
 
         public FavoriteAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
+            mContext = context;
         }
 
         public int getFrequency(int position) {
@@ -824,11 +827,83 @@ public class FmScroller extends FrameLayout {
         }
 
         public void swipResult(Cursor cursor) {
+            swipResult(cursor, true);
+        }
+
+        public void swipResult(Cursor cursor, boolean notify) {
             if (null != mCursor) {
                 mCursor.close();
             }
             mCursor = cursor;
-            notifyDataSetChanged();
+            if (notify) {
+                notifyDataSetChanged();
+            }
+        }
+
+        public void updateRDSViews(final TextView freqView, final TextView nameView,
+                final TextView rtView, final String name, final String rt) {
+
+            if (!rt.equals("")) {
+                if (rtView.getVisibility() == View.GONE) {
+                    rtView.setVisibility(View.VISIBLE);
+                    rtView.setSelected(true);
+                    // Move frequency to right of FM label
+                    final RelativeLayout.LayoutParams params = new
+                        RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.RIGHT_OF, R.id.fm_label);
+                    freqView.setLayoutParams(params);
+                    freqView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+
+                    final float paddingLeftDp = 3f;
+                    final float paddingLeftDpPx =
+                        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                                paddingLeftDp, mContext.getResources().getDisplayMetrics());
+                    freqView.setPadding((int) paddingLeftDpPx,
+                            freqView.getPaddingTop(),
+                            freqView.getPaddingRight(),
+                            freqView.getPaddingBottom());
+                    final float textSizeDp = 14f;
+                    freqView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeDp);
+                }
+
+                final String old_rt = rtView.getText().toString();
+                if (0 != rt.compareTo(old_rt)) {
+                    rtView.setText(rt);
+                }
+            } else {
+                rtView.setVisibility(View.GONE);
+                // Move frequency below FM label
+                final RelativeLayout.LayoutParams params = new
+                    RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.BELOW, R.id.fm_label);
+                freqView.setLayoutParams(params);
+                freqView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                freqView.setPadding(0, freqView.getPaddingTop(),
+                        freqView.getPaddingRight(),
+                        freqView.getPaddingBottom());
+                final float textSizeDp = 18f;
+                freqView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeDp);
+            }
+
+
+            if ("".equals(name) && rt.equals("")) {
+                nameView.setVisibility(View.GONE);
+            } else {
+                if (nameView.getVisibility() == View.GONE) {
+                    nameView.setVisibility(View.VISIBLE);
+                    nameView.setSelected(true);
+                }
+                final String old_name = nameView.getText().toString();
+                if (0 != name.compareTo(old_name)) {
+                    nameView.setText(name);
+                }
+            }
+        }
+
+        public int getCurrentPlayingPosition() {
+            return mCurrentPlayingPosition;
         }
 
         @Override
@@ -866,6 +941,7 @@ public class FmScroller extends FrameLayout {
                 viewHolder.mPlayIndicator = (FmVisualizerView) convertView
                         .findViewById(R.id.fm_play_indicator);
                 viewHolder.mStationName = (TextView) convertView.findViewById(R.id.station_name);
+                viewHolder.mStationRt = (TextView) convertView.findViewById(R.id.station_rt);
                 viewHolder.mMoreButton = (ImageView) convertView.findViewById(R.id.station_more);
                 viewHolder.mPopupMenuAnchor = convertView.findViewById(R.id.popupmenu_anchor);
                 convertView.setTag(viewHolder);
@@ -878,27 +954,30 @@ public class FmScroller extends FrameLayout {
                         .getColumnIndex(FmStation.Station.FREQUENCY));
                 String name = mCursor.getString(mCursor
                         .getColumnIndex(FmStation.Station.STATION_NAME));
-                String rds = mCursor.getString(mCursor
+                String rt = mCursor.getString(mCursor
                         .getColumnIndex(FmStation.Station.RADIO_TEXT));
                 final int isFavorite = mCursor.getInt(mCursor
                         .getColumnIndex(FmStation.Station.IS_FAVORITE));
+
+                if (mCurrentStation == stationFreq) {
+                    mCurrentPlayingPosition = position;
+                }
 
                 if (null == name || "".equals(name)) {
                     name = mCursor.getString(mCursor
                             .getColumnIndex(FmStation.Station.PROGRAM_SERVICE));
                 }
-                if (null == name || "".equals(name)) {
+                if (null == name) {
                     name = "";
+                }
+                if (null == rt) {
+                    rt = "";
                 }
 
                 viewHolder.mStationFreq.setText(FmUtils.formatStation(stationFreq));
-                if (null == name || "".equals(name)) {
-                    viewHolder.mStationName.setVisibility(View.GONE);
-                } else {
-                    viewHolder.mStationName.setSelected(true);
-                    viewHolder.mStationName.setVisibility(View.VISIBLE);
-                }
-                viewHolder.mStationName.setText(name);
+                updateRDSViews(viewHolder.mStationFreq,
+                        viewHolder.mStationName, viewHolder.mStationRt,
+                        name, rt);
 
                 int fmLabelColorId, stationFreqColorId, stationNameColorId,
                     moreButtonAccentColorId;
@@ -926,6 +1005,7 @@ public class FmScroller extends FrameLayout {
                 viewHolder.mFmLabel.setTextColor(r.getColor(fmLabelColorId));
                 viewHolder.mStationFreq.setTextColor(r.getColor(stationFreqColorId));
                 viewHolder.mStationName.setTextColor(r.getColor(stationNameColorId));
+                viewHolder.mStationRt.setTextColor(r.getColor(stationNameColorId));
                 viewHolder.mMoreButton.setColorFilter(r.getColor(moreButtonAccentColorId),
                         PorterDuff.Mode.SRC_ATOP);
                 int moreButtonBgColor = Utils
@@ -998,9 +1078,45 @@ public class FmScroller extends FrameLayout {
     /**
      * Notify refresh adapter when data change
      */
-    public void notifyAdatperChange() {
+    public void notifyAdapterChange() {
         Cursor c = getData();
         mAdapter.swipResult(c);
+    }
+
+    /**
+     * Selectively update RDS infos and passively refresh adapter without
+     * triggering full re-rendering
+     */
+    public void notifyAdatperCurrentItemRDSChanged() {
+        int pos = mAdapter.getCurrentPlayingPosition();
+        if (pos < 0) {
+            return;
+        }
+        View v = mGridView.getChildAt(pos);
+        Cursor c = getData();
+        if (c != null && c.moveToPosition(pos)) {
+            String name =
+                c.getString(c.getColumnIndex(FmStation.Station.STATION_NAME));
+            String rt =
+                c.getString(c.getColumnIndex(FmStation.Station.RADIO_TEXT));
+            if (null == name || "".equals(name)) {
+                name =
+                    c.getString(c.getColumnIndex(FmStation.Station.PROGRAM_SERVICE));
+            }
+            if (null == name) {
+                name = "";
+            }
+            if (null == rt) {
+                rt = "";
+            }
+
+            TextView freqView = (TextView) v.findViewById(R.id.station_freq);
+            TextView nameView = (TextView) v.findViewById(R.id.station_name);
+            TextView rtView = (TextView) v.findViewById(R.id.station_rt);
+            mAdapter.updateRDSViews(freqView, nameView, rtView, name, rt);
+
+            mAdapter.swipResult(c, false);
+        }
     }
 
     private void refreshStateHeight() {
@@ -1650,6 +1766,7 @@ public class FmScroller extends FrameLayout {
         TextView mFmLabel;
         TextView mStationFreq;
         TextView mStationName;
+        TextView mStationRt;
         View mPopupMenuAnchor;
     }
 }

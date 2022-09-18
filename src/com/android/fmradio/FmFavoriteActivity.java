@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
@@ -33,6 +34,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -242,6 +244,7 @@ public class FmFavoriteActivity extends Activity {
         ImageView mStationTypeView;
         TextView mStationFreqView;
         TextView mStationNameView;
+        TextView mStationRtView;
     }
 
     private Cursor getData() {
@@ -254,9 +257,11 @@ public class FmFavoriteActivity extends Activity {
         private Cursor mCursor;
 
         private LayoutInflater mInflater;
+        private Context mContext;
 
         public MyFavoriteAdapter(Context context) {
             mInflater = LayoutInflater.from(context);
+            mContext = context;
         }
 
         public void swipResult(Cursor cursor) {
@@ -265,6 +270,68 @@ public class FmFavoriteActivity extends Activity {
             }
             mCursor = cursor;
             notifyDataSetChanged();
+        }
+
+        public void updateRDSViews(final TextView freqView, final TextView nameView,
+                final TextView rtView, final String name, final String rt) {
+
+            if (!rt.equals("")) {
+                if (rtView.getVisibility() == View.GONE) {
+                    rtView.setVisibility(View.VISIBLE);
+                    rtView.setSelected(true);
+                    // Move frequency to right of FM label
+                    final RelativeLayout.LayoutParams params = new
+                        RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.RIGHT_OF, R.id.lv_fm_label);
+                    freqView.setLayoutParams(params);
+                    freqView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+
+                    final float paddingLeftDp = 3f;
+                    final float paddingLeftDpPx =
+                        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                                paddingLeftDp, mContext.getResources().getDisplayMetrics());
+                    freqView.setPadding((int) paddingLeftDpPx,
+                            freqView.getPaddingTop(),
+                            freqView.getPaddingRight(),
+                            freqView.getPaddingBottom());
+                    final float textSizeDp = 14f;
+                    freqView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeDp);
+                }
+
+                final String old_rt = rtView.getText().toString();
+                if (0 != rt.compareTo(old_rt)) {
+                    rtView.setText(rt);
+                }
+            } else {
+                rtView.setVisibility(View.GONE);
+                // Move frequency below FM label
+                final RelativeLayout.LayoutParams params = new
+                    RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.BELOW, R.id.lv_fm_label);
+                freqView.setLayoutParams(params);
+                freqView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                freqView.setPadding(0, freqView.getPaddingTop(),
+                        freqView.getPaddingRight(),
+                        freqView.getPaddingBottom());
+                final float textSizeDp = 18f;
+                freqView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeDp);
+            }
+
+
+            if ("".equals(name) && rt.equals("")) {
+                nameView.setVisibility(View.GONE);
+            } else {
+                if (nameView.getVisibility() == View.GONE) {
+                    nameView.setVisibility(View.VISIBLE);
+                    nameView.setSelected(true);
+                }
+                final String old_name = nameView.getText().toString();
+                if (0 != name.compareTo(old_name)) {
+                    nameView.setText(name);
+                }
+            }
         }
 
         @Override
@@ -303,6 +370,8 @@ public class FmFavoriteActivity extends Activity {
                         .findViewById(R.id.lv_station_freq);
                 viewHolder.mStationNameView = (TextView) convertView
                         .findViewById(R.id.lv_station_name);
+                viewHolder.mStationRtView = (TextView) convertView
+                        .findViewById(R.id.lv_station_rt);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -314,7 +383,7 @@ public class FmFavoriteActivity extends Activity {
                         .getColumnIndex(FmStation.Station.FREQUENCY));
                 String name = mCursor.getString(mCursor
                         .getColumnIndex(FmStation.Station.STATION_NAME));
-                String rds = mCursor.getString(mCursor
+                String rt = mCursor.getString(mCursor
                         .getColumnIndex(FmStation.Station.RADIO_TEXT));
                 final int isFavorite = mCursor.getInt(mCursor
                         .getColumnIndex(FmStation.Station.IS_FAVORITE));
@@ -323,28 +392,17 @@ public class FmFavoriteActivity extends Activity {
                     name = mCursor.getString(mCursor
                             .getColumnIndex(FmStation.Station.PROGRAM_SERVICE));
                 }
-
                 if (null == name) {
                     name = "";
                 }
-
-                if (rds == null) {
-                    rds = "";
-                }
-
-                if (!name.equals("") && !rds.equals("")) {
-                    name += " | ";
-                }
-
-                if ("".equals(name) && rds.equals("")) {
-                    viewHolder.mStationNameView.setVisibility(View.GONE);
-                } else {
-                    viewHolder.mStationNameView.setSelected(true);
-                    viewHolder.mStationNameView.setVisibility(View.VISIBLE);
+                if (null == rt) {
+                    rt = "";
                 }
 
                 viewHolder.mStationFreqView.setText(FmUtils.formatStation(stationFreq));
-                viewHolder.mStationNameView.setText(name + rds);
+                updateRDSViews(viewHolder.mStationFreqView,
+                        viewHolder.mStationNameView, viewHolder.mStationRtView,
+                        name, rt);
                 viewHolder.mStationTypeView.setImageResource(0 == isFavorite ?
                         R.drawable.btn_fm_favorite_off_selector :
                         R.drawable.btn_fm_favorite_on_selector);

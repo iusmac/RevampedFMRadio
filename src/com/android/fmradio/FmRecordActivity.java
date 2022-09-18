@@ -103,6 +103,8 @@ public class FmRecordActivity extends Activity implements
         mStationInfoLayout = findViewById(R.id.station_name_rt);
         mStationName = (TextView) findViewById(R.id.station_name);
         mRadioText = (TextView) findViewById(R.id.radio_text);
+        mRadioText.setTextIsSelectable(true);
+        mRadioText.setSelected(true);
 
         mStopRecordButton = (Button) findViewById(R.id.btn_stop_record);
         mStopRecordButton.setEnabled(false);
@@ -163,12 +165,11 @@ public class FmRecordActivity extends Activity implements
                     mWatchedId = id;
                 }
                 // If no station name and no radio text, hide the view
-                if ((!TextUtils.isEmpty(stationName))
-                        || (!TextUtils.isEmpty(radioText))) {
-                    mStationInfoLayout.setVisibility(View.VISIBLE);
-                } else {
-                    mStationInfoLayout.setVisibility(View.GONE);
-                }
+                mStationName.setVisibility(TextUtils.isEmpty(stationName) &&
+                        TextUtils.isEmpty(radioText) ? View.GONE : View.VISIBLE);
+                mRadioText.setVisibility(TextUtils.isEmpty(radioText) ?
+                        View.GONE : View.VISIBLE);
+
                 Log.d(TAG, "updateUi, frequency = " + mCurrentStation + ", stationName = "
                         + stationName + ", radioText = " + radioText);
             }

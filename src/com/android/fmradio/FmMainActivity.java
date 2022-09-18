@@ -304,13 +304,14 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                 case FmListener.LISTEN_PS_CHANGED:
                     String stationName = FmStation.getStationName(mContext, mCurrentStation);
                     mTextStationName.setText(stationName);
-                    mScroller.notifyAdatperChange();
+                    mScroller.notifyAdatperCurrentItemRDSChanged();
                     break;
 
                 case FmListener.LISTEN_RT_CHANGED:
                     bundle = msg.getData();
                     String rtString = bundle.getString(FmListener.KEY_RT_INFO);
                     mTextRds.setText(rtString);
+                    mScroller.notifyAdatperCurrentItemRDSChanged();
                     break;
 
                 case FmListener.LISTEN_SPEAKER_MODE_CHANGED:
@@ -536,7 +537,7 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
             String stationName = FmStation.getStationName(mContext, mCurrentStation);
             mTextStationName.setText(stationName);
         }
-        mScroller.notifyAdatperChange();
+        mScroller.notifyAdapterChange();
         String title = getString(R.string.toast_station_renamed);
         FmSnackBar.make(FmMainActivity.this, title, null, null,
                 FmSnackBar.DEFAULT_DURATION).show();
@@ -1129,8 +1130,8 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
         mButtonPrevStation = (ImageButton) findViewById(R.id.button_prevstation);
         mButtonNextStation = (ImageButton) findViewById(R.id.button_nextstation);
 
-        mTextStationValue.setTextIsSelectable(true);
-        mTextStationName.setTextIsSelectable(true);
+        mTextRds.setTextIsSelectable(true);
+        mTextRds.setSelected(true);
 
         // put favorite button here since it might be used very early in
         // changing recording mode
