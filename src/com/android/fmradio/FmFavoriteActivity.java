@@ -104,12 +104,17 @@ public class FmFavoriteActivity extends Activity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.station_list);
+        mContext = getApplicationContext();
+
+        final Cursor stationList = getData();
+
         // display action bar and navigation button
         ActionBar actionBar = getActionBar();
-        actionBar.setTitle(getString(R.string.station_title));
+        actionBar.setTitle(getString(R.string.station_title) +
+                (stationList.getCount() > 0 ?
+                 " (" + stationList.getCount() + ")" : ""));
         actionBar.setDisplayHomeAsUpEnabled(true);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        mContext = getApplicationContext();
 
         mMyAdapter = new MyFavoriteAdapter(mContext);
         mGridView = (GridView) findViewById(R.id.gridview);
@@ -117,7 +122,7 @@ public class FmFavoriteActivity extends Activity {
         mSearchProgress = (ProgressBar) findViewById(R.id.search_progress);
 
         mGridView.setAdapter(mMyAdapter); // set adapter
-        mMyAdapter.swipResult(getData());
+        mMyAdapter.swipResult(stationList);
         mGridView.setFocusable(false);
         mGridView.setFocusableInTouchMode(false);
 
