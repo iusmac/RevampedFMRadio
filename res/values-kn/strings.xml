@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2017-2020 The LineageOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -62,4 +63,8 @@
     <string name="toast_record_not_saved">ಮುದ್ರಣ ಉಳಿಸಲಾಗಿಲ್ಲ</string>
     <string name="toast_listen">ಆಲಿಸು</string>
     <string name="toast_station_renamed">ಕೇಂದ್ರ ಮರುನಾಮಕರಣವಾಗಿದೆ</string>
+    <string name="accessibility_play">ಪ್ಲೇ</string>
+    <string name="accessibility_pause">ವಿರಾಮ</string>
+    <string name="accessibility_next">ಮುಂದಿನ</string>
+    <string name="accessibility_prev">ಹಿಂದಿನ</string>
 </resources>

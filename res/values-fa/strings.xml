@@ -62,4 +62,7 @@
     <string name="toast_record_not_saved">قطعه ضبط شده ذخیره نشد</string>
     <string name="toast_listen">گوش دادن</string>
     <string name="toast_station_renamed">نام ایستگاه تغییر کرده است</string>
+    <string name="accessibility_play">پخش</string>
+    <string name="accessibility_pause">مکث</string>
+    <string name="accessibility_next">بعدی</string>
 </resources>

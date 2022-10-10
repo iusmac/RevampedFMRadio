@@ -72,6 +72,9 @@ public interface FmListener {
     // For change speaker/earphone mode
     String KEY_IS_SPEAKER_MODE = "key_is_speaker_mode";
 
+    // Headset events
+    String KEY_HEADSET_HOOK_EVENT = "key_headset_hook_event";
+
     /**
      * handle message: call back from service to activity
      */
@@ -109,6 +112,10 @@ public interface FmListener {
 
     // For refresh time
     int MSGID_REFRESH = 101;
+
+    // Headset events
+    int MSGID_HEADSET_HOOK_EVENT = 102;
+    int MSGID_HEADSET_HOOK_MULTI_CLICK_TIMEOUT = 103;
 
     /**
      * Call back method to activity from service

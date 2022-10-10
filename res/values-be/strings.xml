@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2014 The Android Open Source Project
+     Copyright (C) 2017-2020 The LineageOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -21,4 +22,8 @@
     <string name="audio_db_album_name">Радыёзапісы</string>
     <string name="audio_db_playlist_name">Радыёзапісы</string>
     <string name="audio_save_dir_name">Радыёзапісы</string>
+    <string name="accessibility_play">Прайграць</string>
+    <string name="accessibility_pause">Паўза</string>
+    <string name="accessibility_next">Наступны</string>
+    <string name="accessibility_prev">Папярэдні</string>
 </resources>
