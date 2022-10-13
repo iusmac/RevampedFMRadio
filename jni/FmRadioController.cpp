@@ -1058,6 +1058,22 @@ int FmRadioController :: Antenna_Switch(int antenna)
     return ret;
 }
 
+int FmRadioController :: Set_Power_Mode(bool isNormalMode)
+{
+    int ret = 0;
+
+    if (isNormalMode) {
+        ret = FmIoctlsInterface::set_control(fd_driver,
+                                     V4L2_CID_PRV_LP_MODE, 0);
+    } else {
+        ret = FmIoctlsInterface::set_control(fd_driver,
+                                     V4L2_CID_PRV_LP_MODE, 1);
+    }
+    ALOGI("%s, enabled %s power mode [ret=%d]\n", __func__,
+            (isNormalMode ? "normal" : "low"), ret);
+    return ret;
+}
+
 int FmRadioController :: get_fm_state
 (
 )

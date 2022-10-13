@@ -118,6 +118,7 @@ class FmRadioController
        int Stop_Scan_Seek(void);
        int Turn_On_Off_Rds(bool onoff);
        int Antenna_Switch(int antenna);
+       int Set_Power_Mode(bool isNormalMode);
        static void* handle_events(void *arg);
        bool process_radio_events(int event);
 };

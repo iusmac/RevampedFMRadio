@@ -341,6 +341,36 @@ out:
     return jret;
 }
 
+jboolean SetLowPowerMode(JNIEnv *env __unused, jobject thiz __unused)
+{
+    int ret = 0;
+
+    if (pFMRadio)
+        ret = pFMRadio->Set_Power_Mode(false);
+    else
+        ret = JNI_FALSE;
+    if (ret) {
+        ALOGE("%s, error, [ret=%d]\n", __func__, ret);
+    }
+    ALOGD("%s, [ret=%d]\n", __func__, ret);
+    return ret?JNI_FALSE:JNI_TRUE;
+}
+
+jboolean SetNormalPowerMode(JNIEnv *env __unused, jobject thiz __unused)
+{
+    int ret = 0;
+
+    if (pFMRadio)
+        ret = pFMRadio->Set_Power_Mode(true);
+    else
+        ret = JNI_FALSE;
+    if (ret) {
+        ALOGE("%s, error, [ret=%d]\n", __func__, ret);
+    }
+    ALOGD("%s, [ret=%d]\n", __func__, ret);
+    return ret?JNI_FALSE:JNI_TRUE;
+}
+
 static const char *classPathNameFM = "com/android/fmradio/FmNative";
 
 static JNINativeMethod gMethods[] = {
@@ -360,6 +390,8 @@ static JNINativeMethod gMethods[] = {
     {"setMute",       "(Z)I",  (void*)SetMute},
     {"isRdsSupport",  "()I",   (void*)IsRdsSupport},
     {"switchAntenna", "(I)I",  (void*)SetAntenna},
+    {"setLowPowerMode",     "()Z",  (void*)SetLowPowerMode},
+    {"setNormalPowerMode",  "()Z",  (void*)SetNormalPowerMode},
 };
 
 int register_android_hardware_fm(JNIEnv* env __unused)

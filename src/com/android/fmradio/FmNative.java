@@ -151,4 +151,18 @@ public class FmNative {
      * @return (0, success; 1 failed; 2 not support)
      */
     static native int switchAntenna(int antenna);
+
+    /**
+     * Set the driver to low power mode.
+     *
+     * @return (true, success; false, failed)
+     */
+    static native boolean setLowPowerMode();
+
+    /**
+     * Set the driver to normal power mode.
+     *
+     * @return (true, success; false, failed)
+     */
+    static native boolean setNormalPowerMode();
 }

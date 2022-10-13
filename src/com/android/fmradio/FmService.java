@@ -285,10 +285,12 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 exitFm();
                 // screen on, if FM play, open rds
             } else if (Intent.ACTION_SCREEN_ON.equals(action)) {
+                FmNative.setNormalPowerMode();
                 setRdsAsync(true);
                 // screen off, if FM play, close rds
             } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
                 setRdsAsync(false);
+                FmNative.setLowPowerMode();
                 // switch antenna when headset plug in or plug out
             } else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
                 // switch antenna should not impact audio focus status
