@@ -100,8 +100,8 @@
     <color name="snackbar_text_color">@android:color/system_neutral2_800</color>
 
     <!-- Notification -->
-    <color name="notification_icon_bg_color">@color/main_background_darker</color>
-    <color name="notification_icon_text_color">@android:color/system_neutral2_500</color>
+    <color name="notification_icon_bg_color">@android:color/system_accent1_100</color>
+    <color name="notification_icon_text_color">@android:color/system_accent1_900</color>
 
     <!-- Station list -->
     <color name="station_list_actionbar_reload_color">@color/actionbar_title_color</color>

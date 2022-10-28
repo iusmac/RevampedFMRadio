@@ -82,9 +82,6 @@
     <!-- Snackbar -->
     <color name="snackbar_text_color">@android:color/system_neutral2_100</color>
 
-    <!-- Notification -->
-    <color name="notification_icon_text_color">@android:color/system_neutral2_100</color>
-
     <!-- Recording -->
     <color name="recording_minutes_color">@android:color/system_neutral2_200</color>
     <color name="recording_seconds_color">@android:color/system_neutral2_200</color>
