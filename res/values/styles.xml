@@ -34,6 +34,8 @@
         <item name="android:colorControlActivated">@color/text_selection_color</item>
         <item name="android:textColorHighlight">@color/text_selection_highlight_color</item>
         <item name="android:colorControlHighlight">@color/ripple_color</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
     </style>
 
     <style name="AppThemeMain.WithTitle">
@@ -42,6 +44,8 @@
         <item name="android:statusBarColor">@color/actionbar_statusbar_bg_color</item>
         <item name="android:actionBarStyle">@style/Widget.ActionBar</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_ab_back_material</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
     </style>
 
     <style name="AppThemeMain.ActionBarPopupNoTitle" parent="@android:style/Widget.Material.Light">
