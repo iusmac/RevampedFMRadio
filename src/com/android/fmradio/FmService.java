@@ -33,6 +33,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.AudioAttributes;
 import android.media.AudioDevicePort;
 import android.media.AudioDevicePortConfig;
 import android.media.AudioFormat;
@@ -46,6 +47,7 @@ import android.media.AudioPortConfig;
 import android.media.AudioRecord;
 import android.media.AudioSystem;
 import android.media.AudioTrack;
+import android.media.MediaMetadata;
 import android.media.MediaRecorder;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
@@ -1917,6 +1919,11 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 stationName = getString(R.string.app_name);
             }
 
+            mSession.setMetadata(new MediaMetadata.Builder()
+                    .putString(MediaMetadata.METADATA_KEY_ARTIST, radioText)
+                    .putString(MediaMetadata.METADATA_KEY_TITLE, stationName)
+                    .build());
+
             // Apply the media style template
             notificationBuilder.setStyle(
                     new Notification.MediaStyle()
@@ -1936,6 +1943,10 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private void setUpMediaSession() {
         mSession = new MediaSession(this, TAG);
         mSession.setActive(true);
+        AudioAttributes attrs = new AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+        mSession.setPlaybackToLocal(attrs);
         mSession.setCallback(new MediaSession.Callback() {
             @Override
             public void onPause() {
