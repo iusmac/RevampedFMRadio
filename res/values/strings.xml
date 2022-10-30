@@ -130,4 +130,7 @@
     <string name="accessibility_pause">Pause</string>
     <string name="accessibility_next">Next</string>
     <string name="accessibility_prev">Previous</string>
+
+    <!-- Font family for notification artwork text -->
+    <string name="fm_notification_artwork_font_family" translatable="false">roboto</string>
 </resources>

@@ -20,17 +20,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View.MeasureSpec;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
+
+import com.android.fmradio.R;
 
 /**
  * This class provider interface to compute station and frequency, get project
@@ -264,6 +272,68 @@ public class FmUtils {
             editor.commit();
         }
         return isFirstEnter;
+    }
+
+    /**
+     * Create the notification artwork bitmap
+     * @param c The context
+     * @param text The frequency text
+     * @return The artwork bitmap
+     */
+    public static Bitmap createNotificationArtwork(Context c, String text) {
+        final Resources res = c.getResources();
+        final int size = res.getDimensionPixelSize(
+                R.dimen.fm_notification_artwork);
+
+        final Bitmap bitmap = Bitmap.createBitmap(size, size,
+                Bitmap.Config.ARGB_8888);
+        final Rect bounds = new Rect(0, 0, bitmap.getWidth(),
+                bitmap.getHeight());
+        final RectF boundsF = new RectF(bounds);
+
+        final Bitmap createdBitmap = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), bitmap.getConfig());
+        final Canvas createdCanvas = new Canvas(createdBitmap);
+
+        final Paint paint = new Paint();
+
+        // Draw background
+        paint.setColor(res.getColor(R.color.notification_icon_bg_color));
+        final float radiusDp = 28f;
+        final float radiusDpPx =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    radiusDp, c.getResources().getDisplayMetrics());
+        createdCanvas.drawRoundRect(boundsF, radiusDpPx, radiusDpPx, paint);
+
+        // Draw centered text
+        final int minDimension = Math.min(bounds.width(), bounds.height());
+        final float ratio = 0.35f;
+        paint.setTextSize(ratio * minDimension);
+        paint.setColor(R.color.notification_icon_text_color);
+        paint.setTypeface(Typeface.create(
+                res.getString(R.string.fm_notification_artwork_font_family),
+                Typeface.NORMAL));
+        paint.setAntiAlias(true);
+
+        // measure text width
+        boundsF.right = paint.measureText(text, 0, text.length());
+        // measure text height
+        boundsF.bottom = paint.descent() - paint.ascent();
+
+        boundsF.left += (bounds.width() - boundsF.right) / 2.0f;
+        boundsF.top += (bounds.height() - boundsF.bottom) / 2.0f;
+
+        createdCanvas.drawText(text, boundsF.left,
+                boundsF.top - paint.ascent(), paint);
+
+        // Note: source rectangle remains the entire bounds of the source
+        // bitmap
+        final Rect rect = new Rect();
+        rect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+        createdCanvas.drawBitmap(bitmap, rect, bounds, paint);
+
+        return createdBitmap;
     }
 
     /**
