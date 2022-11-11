@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
     libmedia \
     liblog
 
-LOCAL_MODULE := libfmjni
+LOCAL_MODULE := libmtkfmjni
 LOCAL_MODULE_TAGS := optional
 
 include $(BUILD_SHARED_LIBRARY)
