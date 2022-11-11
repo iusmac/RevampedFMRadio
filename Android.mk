@@ -15,7 +15,7 @@
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := FMRadio_static
+LOCAL_MODULE := RevampedFMRadio_static
 LOCAL_SRC_FILES := $(filter-out src/com/android/fmradio/%Activity.java src/com/android/fmradio/dialogs/% src/com/android/fmradio/views/%, $(call all-java-files-under, src))
 LOCAL_RESOURCE_DIR = $(LOCAL_PATH)/res
 include $(BUILD_STATIC_JAVA_LIBRARY)
@@ -27,7 +27,7 @@ LOCAL_CERTIFICATE := platform
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
-LOCAL_PACKAGE_NAME := FMRadio
+LOCAL_PACKAGE_NAME := RevampedFMRadio
 
 LOCAL_PRIVATE_PLATFORM_APIS := true
 
@@ -45,16 +45,16 @@ LOCAL_USE_AAPT2 := true
 
 LOCAL_AAPT_FLAGS := --auto-add-overlay
 
-LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.fmradio.xml
+LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.fmradio_revamped.xml
 
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := privapp_whitelist_com.android.fmradio.xml
+LOCAL_MODULE := privapp_whitelist_com.android.fmradio_revamped.xml
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/permissions
-LOCAL_SRC_FILES := $(LOCAL_MODULE)
+LOCAL_SRC_FILES := privapp_whitelist_com.android.fmradio.xml
 include $(BUILD_PREBUILT)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
