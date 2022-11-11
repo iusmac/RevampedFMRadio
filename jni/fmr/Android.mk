@@ -20,7 +20,8 @@ LOCAL_SRC_FILES := \
     fmr_core.cpp \
     fmr_err.cpp \
     libfm_jni.cpp \
-    common.cpp
+    common.cpp \
+    custom.cpp
 
 LOCAL_C_INCLUDES := \
     frameworks/base/include/media

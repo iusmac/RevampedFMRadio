@@ -52,29 +52,13 @@ struct fmr_ds *pfmr_data[FMR_MAX_IDX] = {0};
 
 int FMR_get_cfgs(int idx)
 {
-    int ret = -1;
+    int ret = 0;
+
+    CUST_get_cfg(&(pfmr_data[idx]->cfg_data));
+
     FMR_cust_hdler(idx) = NULL;
     FMR_get_cfg(idx) = NULL;
 
-    FMR_cust_hdler(idx) = dlopen(CUST_LIB_NAME, RTLD_NOW);
-    if (FMR_cust_hdler(idx) == NULL) {
-        LOGE("%s failed, %s\n", __FUNCTION__, dlerror());
-        //FMR_seterr(ERR_LD_LIB);
-    } else {
-        *(void **) (&FMR_get_cfg(idx)) = dlsym(FMR_cust_hdler(idx), "CUST_get_cfg");
-        if (FMR_get_cfg(idx) == NULL) {
-            LOGE("%s failed, %s\n", __FUNCTION__, dlerror());
-            //FMR_seterr(ERR_FIND_CUST_FNUC);
-        } else {
-            LOGI("Go to run cust function\n");
-            (*FMR_get_cfg(idx))(&(pfmr_data[idx]->cfg_data));
-            LOGI("OK\n");
-            ret = 0;
-        }
-        //dlclose(FMR_cust_hdler(idx));
-        FMR_cust_hdler(idx) = NULL;
-        FMR_get_cfg(idx) = NULL;
-    }
     LOGI("%s successfully. chip: 0x%x, lband: %d, hband: %d, seek_space: %d, max_scan_num: %d\n", __FUNCTION__, FMR_chip(idx), FMR_low_band(idx), FMR_high_band(idx), FMR_seek_space(idx), FMR_max_scan_num(idx));
 
     return ret;

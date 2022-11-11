@@ -34,6 +34,7 @@
 #include <dlfcn.h>
 
 #include "fm.h"
+#include "fmlib_cust.h"
 
 #undef FM_LIB_USE_XLOG
 
@@ -62,7 +63,6 @@
 #define LOGE(...) ALOGE(__VA_ARGS__)
 #endif
 
-#define CUST_LIB_NAME "libfmcust.so"
 #define FM_DEV_NAME "/dev/fm"
 
 #define FM_RDS_PS_LEN 8
@@ -230,6 +230,7 @@ int COM_ana_switch(int fd, int antenna);
 int COM_desense_check(int fd, int freq, int rssi);
 int COM_pre_search(int fd);
 int COM_restore_search(int fd);
+int CUST_get_cfg(struct CUST_cfg_ds *cfg);
 void FM_interface_init(struct fm_cbk_tbl *cbk_tbl);
 
 #define FMR_ASSERT(a) { \
