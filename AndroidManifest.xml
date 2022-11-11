@@ -19,7 +19,7 @@
     package="com.android.fmradio"
     android:sharedUserId="android.uid.system"
     android:versionCode="2"
-    android:versionName="2.0" >
+    android:versionName="2.0-qcom" >
 
     <uses-sdk
         android:minSdkVersion="31"
