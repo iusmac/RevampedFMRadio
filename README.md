@@ -81,9 +81,16 @@ AOSP FMRadio | RevampedFMRadio
 
 ## Installation
 1. Clone the branch that corresponds to your device SoC, for example:
-```Console
-git clone --depth=1 -b qcom https://github.com/iusmac/RevampedFMRadio.git
-```
+    - Use as an <em>in-tree</em> package within the device tree (<em>Recommended</em>):
+        ```Console
+        git clone --depth=1 -b qcom https://github.com/iusmac/RevampedFMRadio.git
+        ```
+    - Use as a project via [Local Manifests](https://gerrit.googlesource.com/git-repo/+/master/docs/manifest-format.md#Local-Manifests) (<em>Not recommended</em>):
+        ```xml
+        <remote name="iusmac" fetch="https://github.com/iusmac" revision="qcom" />
+        <project path="packages/apps/RevampedFMRadio" name="RevampedFMRadio" remote="iusmac" />
+        ```
+        **NOTE:** there's a high chance of getting something broken if you always fetch upstream changes. It's recommended to go with <em>in-tree</em> package within your device tree, and from time to time manually merge and check upstream changes.
 
 2. Add app to `device.mk`:
 ```Makefile
@@ -99,9 +106,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libqcomfmjni
 ```
-4. Make sure you have `vendor.qcom.bluetooth.soc` prop in `vendor.prop`.
+4. Make sure you have `vendor.qcom.bluetooth.soc` prop in your <em>vendor.prop</em> file.
    You may already have something similar, like `vendor.bluetooth.soc`, but it's legacy. Rename if proprietary blobs support new prop name or duplicate the value using new prop name to ensure RevampedFMRadio can properly comunicate to your device's Bluetooth SoC.
-5. Allow app to read vendor properties mentioned in step n.3:
+5. Allow app to read vendor properties mentioned in the previous step:
 ```Console
 # sepolicy/vendor/system_app.te
 get_prop(system_app, vendor_bluetooth_prop)
