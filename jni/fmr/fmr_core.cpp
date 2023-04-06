@@ -64,16 +64,10 @@ int FMR_get_cfgs(int idx)
     return ret;
 }
 
-int FMR_chk_cfg_data(int idx)
+int FMR_chk_cfg_data(int idx __unused)
 {
     //TODO Need check? how to check?
     return 0;
-}
-
-static void sig_alarm(int sig)
-{
-    LOGI("+++Receive sig %d\n", sig);
-    return;
 }
 
 int FMR_init()
@@ -263,7 +257,7 @@ fm_bool FMR_DensenseDetect(fm_s32 idx, fm_u16 ChannelNo, fm_s32 RSSI)
 
 fm_bool FMR_SevereDensense(fm_u16 ChannelNo, fm_s32 RSSI)
 {
-    fm_s32 i = 0, j = 0;
+    fm_s32 i = 0;
     struct fm_fake_channel_t *chan_info = fmr_data.cfg_data.fake_chan;
 
     ChannelNo /= 10;
@@ -470,8 +464,7 @@ int FMR_seek_Channel(int idx, int start_freq, int min_freq, int max_freq, int ba
 
 int FMR_seek(int idx, int start_freq, int dir, int *ret_freq)
 {
-    fm_s32 ret = 0, i, j;
-    fm_softmute_tune_t cur_freq;
+    fm_s32 ret = 0;
     fm_s32 band_channel_no = 0;
     fm_u8 seek_space = 10;
     fm_u16 min_freq, max_freq;
@@ -562,7 +555,7 @@ int FMR_Restore_Search(int idx)
     return 0;
 }
 
-int FMR_scan_Channels(int idx, uint16_t *scan_tbl, int *max_cnt, fm_s32 band_channel_no, fm_u16 Start_Freq, fm_u8 seek_space, fm_u8 NF_Space)
+int FMR_scan_Channels(int idx, uint16_t *scan_tbl, int *max_cnt, fm_s32 band_channel_no, fm_u16 Start_Freq, fm_u8 seek_space, fm_u8 NF_Space __unused)
 {
     fm_s32 ret = 0, Num = 0, i, j;
     fm_u32 ChannelNo = 0;
@@ -752,7 +745,7 @@ int FMR_scan(int idx, uint16_t *scan_tbl, int *max_cnt)
     return ret;
 }
 
-int FMR_stop_scan(int idx)
+int FMR_stop_scan(int idx __unused)
 {
     fmr_data.scan_stop = fm_true;
     return 0;
