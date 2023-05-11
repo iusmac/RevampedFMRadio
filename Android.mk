@@ -30,7 +30,9 @@ LOCAL_PRIVILEGED_MODULE := true
 
 LOCAL_JNI_SHARED_LIBRARIES := libmtkfmjni
 
-LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.fmradio.xml
+LOCAL_REQUIRED_MODULES := \
+    privapp_whitelist_com.android.fmradio.xml \
+    RevampedFmRecordingsProvider
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.cardview_cardview
