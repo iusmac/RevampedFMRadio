@@ -31,7 +31,6 @@
 
     <!-- Alert Dialog -->
     <color name="alertdialog_title_color">@android:color/system_neutral2_200</color>
-    <color name="alertdialog_caption_color">@android:color/system_neutral2_300</color>
     <color name="alertdialog_cancel_btn_color">@android:color/system_neutral2_200</color>
     <color name="alertdialog_ok_btn_color">@android:color/system_neutral2_200</color>
     <color name="alertdialog_ok_btn_disable_color">@android:color/system_neutral2_300</color>

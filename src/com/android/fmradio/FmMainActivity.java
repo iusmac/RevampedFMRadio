@@ -815,15 +815,15 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                 extras.putInt("playlist", playlistId);
                 try {
                     playMusicIntent.putExtras(extras);
-                    playMusicIntent.setClassName("com.google.android.music",
-                            "com.google.android.music.ui.TrackContainerActivity");
                     playMusicIntent.setType("vnd.android.cursor.dir/playlist");
                     startActivity(playMusicIntent);
                 } catch (IllegalArgumentException | ActivityNotFoundException e1) {
                     try {
                         playMusicIntent = new Intent(Intent.ACTION_VIEW);
-                        playMusicIntent.putExtras(extras);
-                        playMusicIntent.setType("vnd.android.cursor.dir/playlist");
+                        final Uri uri = Uri.parse("content://" +
+                                "com.android.externalstorage.documents/document/" +
+                                "primary%3A" + Uri.encode(FmRecorder.getFmRecordFolder(mContext)));
+                        playMusicIntent.setDataAndType(uri, "vnd.android.document/directory");
                         startActivity(playMusicIntent);
                     } catch (ActivityNotFoundException e2) {
                         // No activity respond
@@ -872,20 +872,12 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                         public void onActionTriggered() {
                             Intent playMusicIntent = new Intent(Intent.ACTION_VIEW);
                             try {
-                                playMusicIntent.setClassName("com.google.android.music",
-                                        "com.google.android.music.AudioPreview");
                                 playMusicIntent.setDataAndType(playUri, "audio/mpeg");
                                 startActivity(playMusicIntent);
-                            } catch (IllegalArgumentException | ActivityNotFoundException e1) {
-                                try {
-                                    playMusicIntent = new Intent(Intent.ACTION_VIEW);
-                                    playMusicIntent.setDataAndType(playUri, "audio/mpeg");
-                                    startActivity(playMusicIntent);
-                                } catch (ActivityNotFoundException e2) {
-                                    // No activity respond
-                                    Log.d(TAG,"onActivityResult, no activity "
-                                            + "respond play record file intent");
-                                }
+                            } catch (ActivityNotFoundException e2) {
+                                // No activity respond
+                                Log.d(TAG,"onActivityResult, no activity "
+                                        + "respond play record file intent");
                             }
                         }
                     };
