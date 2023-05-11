@@ -71,18 +71,6 @@
                 android:singleLine="true"
                 android:textColor="@color/alertdialog_input_color"
                 android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/alertdialog_caption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.54"
-                android:fontFamily="sans-serif"
-                android:paddingTop="6dip"
-                android:paddingBottom="6dip"
-                android:visibility="gone"
-                android:textColor="@color/alertdialog_caption_color"
-                android:textSize="16sp" />
         </LinearLayout>
 
         <LinearLayout android:id="@+id/buttonPanel"

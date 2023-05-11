@@ -118,8 +118,7 @@ public class FmRecorder implements AudioRecorder.Callback {
         }
 
         // get external storage directory
-        File sdDir = new File(recordingSdcard, Environment.DIRECTORY_RECORDINGS);
-        File recordingDir = new File(sdDir, getFmRecordFolder(context));
+        File recordingDir = new File(recordingSdcard, getFmRecordFolder(context));
         // exist a file named FM Recording, so can't create FM recording folder
         if (recordingDir.exists() && !recordingDir.isDirectory()) {
             Log.e(TAG, "startRecording, a file with name \"FM Recording\" already exists!!");
@@ -459,7 +458,8 @@ public class FmRecorder implements AudioRecorder.Callback {
 
     public static String getFmRecordFolder(Context ctx) {
         Resources res = ctx.getResources();
-        return res.getString(R.string.audio_save_dir_name);
+        return Environment.DIRECTORY_RECORDINGS + File.separator +
+            res.getString(R.string.audio_save_dir_name);
     }
 
     public long getFileSize() {

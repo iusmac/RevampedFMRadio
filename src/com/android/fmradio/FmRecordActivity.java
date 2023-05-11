@@ -33,7 +33,6 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -527,9 +526,9 @@ public class FmRecordActivity extends Activity implements
         intent.putExtra(FmMainActivity.EXTRA_RESULT_STRING, resultString);
         if (recordName != null) {
             intent.setData(Uri.parse("file://" + FmService.getRecordingSdcard()
-                    + File.separator + Environment.DIRECTORY_RECORDINGS
-                    + File.separator + FmRecorder.getFmRecordFolder(mContext) + File.separator
-                    + Uri.encode(recordName) + FmRecorder.RECORDING_FILE_EXTENSION));
+                    + File.separator + Uri.encode(FmRecorder.getFmRecordFolder(mContext))
+                    + File.separator + Uri.encode(recordName)
+                    + FmRecorder.RECORDING_FILE_EXTENSION));
         }
         setResult(RESULT_OK, intent);
     }

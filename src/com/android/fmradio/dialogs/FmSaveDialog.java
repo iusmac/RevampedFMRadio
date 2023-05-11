@@ -23,7 +23,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -48,7 +47,6 @@ public class FmSaveDialog extends DialogFragment {
     private static final String TAG = "FmSaveDialog";
 
     private TextView mTitle = null;
-    private TextView mCaption = null;
     // save recording file button
     private Button mButtonSave = null;
     // discard recording file button
@@ -114,10 +112,6 @@ public class FmSaveDialog extends DialogFragment {
 
         mTitle = (TextView) view.findViewById(R.id.alertdialog_title);
         mTitle.setText(R.string.save_dialog_title);
-
-        mCaption = (TextView) view.findViewById(R.id.alertdialog_caption);
-        mCaption.setVisibility(View.VISIBLE);
-        mCaption.setText(R.string.save_dialog_caption);
 
         mButtonSave = (Button) view.findViewById(R.id.alertdialog_button_ok);
         mButtonSave.setText(R.string.btn_save_recording);
@@ -230,8 +224,8 @@ public class FmSaveDialog extends DialogFragment {
         public void onClick(View v) {
 
             Context ctx = v.getContext();
-            File sdDir = new File(mRecordingSdcard, Environment.DIRECTORY_RECORDINGS);
-            File recordingFolderPath = new File(sdDir, FmRecorder.getFmRecordFolder(ctx));
+            File recordingFolderPath = new File(mRecordingSdcard,
+                    FmRecorder.getFmRecordFolder(ctx));
 
             switch (v.getId()) {
                 case R.id.alertdialog_button_ok:
