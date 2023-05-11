@@ -56,7 +56,7 @@ import com.android.fmradio.FmService.OnExitListener;
 import com.android.fmradio.FmStation.Station;
 import com.android.fmradio.Utils;
 
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 
 /**
  * This class interact with user, provider edit station information, such as add
