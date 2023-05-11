@@ -874,7 +874,11 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                         public void onActionTriggered() {
                             Intent playMusicIntent = new Intent(Intent.ACTION_VIEW);
                             try {
-                                playMusicIntent.setDataAndType(playUri, "audio/mpeg");
+                                playMusicIntent.setComponent(new ComponentName(
+                                        "com.android.fmradio.recordings",
+                                        "com.android.fmradio.recordings.PlayRecording"));
+                                playMusicIntent.putExtra("path", playUri.toString());
+                                playMusicIntent.putExtra("type", "audio/mpeg");
                                 startActivity(playMusicIntent);
                             } catch (ActivityNotFoundException e2) {
                                 // No activity respond

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FM recordings</string>
+    <string name="info_toast">FM recordings needs media permissions to play back recordings.</string>
+    <string name="denied_toast">FM recordings needs media permissions to play back recordings. Please grant media permissions in Settings.</string>
+</resources>
