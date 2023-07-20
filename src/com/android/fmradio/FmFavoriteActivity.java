@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -655,6 +656,9 @@ public class FmFavoriteActivity extends Activity {
      * @return true is open
      */
     private boolean isGpsOpen() {
-        return mLocationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        return checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                && mLocationManager.isProviderEnabled(
+                        android.location.LocationManager.GPS_PROVIDER);
     }
 }
