@@ -16,6 +16,6 @@
 -->
 <resources>
     <!-- Runtime Permission -->
-    <string name="missing_required_permission" translatable="false">Permissions denied. You can change them in Settings > Apps.</string>
+    <string name="missing_required_permission">Permissions denied. You can change them in Settings > Apps.</string>
 
 </resources>
