@@ -37,7 +37,6 @@
 /*implement fm scan by soft mute tune
  change to 0 will scan by orginal way*/
 #define FMR_SOFT_MUTE_TUEN_SCAN 1
-#define FMR_NOISE_FLOORT_DETECT 1
 #define RSSI_TH -296
 #define FM_SEVERE_RSSI_TH -107  // 67dBuV
 #define FM_NOISE_FLOOR_OFFSET 10

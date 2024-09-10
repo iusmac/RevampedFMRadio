@@ -152,6 +152,8 @@ int CUST_get_cfg(struct CUST_cfg_ds *cfg)
     cfg->rssi_th_l2 = (cfg->rssi_th_l2 > -72) ? -72 : cfg->rssi_th_l2;
     cfg->rssi_th_l2 = (cfg->rssi_th_l2 < -102) ? -102 : cfg->rssi_th_l2;
 
+    cfg->noise_floor_detect = property_get_bool(FM_PROP_PREFIX "noise_floor_detect", 0);
+
     fake_ch_info.size = property_get_int32(FM_PROP_PREFIX "fake_chans", 0);
     if (fake_ch_info.size > FMR_MAX_FAKE_CHANS) {
         LOGE("%s: fake_channels(%d) > FMR_MAX_FAKE_CHANS(%d)\n", __FUNCTION__, fake_ch_info.size,

@@ -272,7 +272,7 @@ fm_bool FMR_SevereDensense(fm_u16 ChannelNo, fm_s32 RSSI)
     }
     return fm_false;
 }
-#if (FMR_NOISE_FLOORT_DETECT==1)
+
 /*return TRUE:get noise floor freq*/
 fm_bool FMR_NoiseFloorDetect(fm_bool *rF, fm_s32 rssi, fm_s32 *F_rssi)
 {
@@ -291,7 +291,6 @@ fm_bool FMR_NoiseFloorDetect(fm_bool *rF, fm_s32 rssi, fm_s32 *F_rssi)
     }
     return fm_false;
 }
-#endif
 
 /*check the cur_freq->freq is valid or not
 return fm_true : need check cur_freq->valid
@@ -560,13 +559,11 @@ int FMR_scan_Channels(int idx, uint16_t *scan_tbl, int *max_cnt, fm_s32 band_cha
     static struct fm_cqi SortData[CQI_CH_NUM_MAX];
     fm_bool LastExist = fm_false;
     struct fm_cqi swap;
-#if (FMR_NOISE_FLOORT_DETECT==1)
     fm_s32 Pacc = 0, Nacc = 0;
     fm_s32 NF = 0;
     fm_bool F[3] = {fm_false, fm_false, fm_false};
     fm_s32 F_Rssi[3] = {0};
     fm_u8 NF_Idx = 0;
-#endif
 
     memset(SortData, 0, CQI_CH_NUM_MAX*sizeof(struct fm_cqi));
     LOGI("band_channel_no=[%d], seek_space=%d, start freq=%d\n", band_channel_no,seek_space,Start_Freq);
@@ -585,9 +582,9 @@ int FMR_scan_Channels(int idx, uint16_t *scan_tbl, int *max_cnt, fm_s32 band_cha
             continue;
         }
         if (cur_freq.valid == fm_true)/*get valid channel*/ {
-#if (FMR_NOISE_FLOORT_DETECT==1)
-            memset(F, fm_false, sizeof(F));
-#endif
+            if (fmr_data.cfg_data.noise_floor_detect)
+                memset(F, fm_false, sizeof(F));
+
             if (FMR_DensenseDetect(idx, cur_freq.freq, cur_freq.rssi) == fm_true) {
                 LOGI("desense channel detected:[%d] \n", cur_freq.freq);
                 LastExist = fm_false;
@@ -620,45 +617,45 @@ int FMR_scan_Channels(int idx, uint16_t *scan_tbl, int *max_cnt, fm_s32 band_cha
                 LOGI("Num++:[%d] \n", Num);
             }
         } else {
-#if (FMR_NOISE_FLOORT_DETECT==1)
-            if (FMR_DensenseDetect(idx, cur_freq.freq, cur_freq.rssi) == fm_false) {
-                if (FMR_NoiseFloorDetect(F, cur_freq.rssi, F_Rssi) == fm_true) {
-                    Pacc += F_Rssi[1];
-                    Nacc++;
-                    /*check next freq*/
-                    F[0] = F[1];
-                    F_Rssi[0] = F_Rssi[1];
-                    F[1] = F[2];
-                    F_Rssi[1] = F_Rssi[2];
-                    F[2] = fm_false;
-                    F_Rssi[2] = 0;
-                    LOGI("FM Noise FLoor:Pacc=[%d] Nacc=[%d] \n", Pacc,Nacc);
+            if (fmr_data.cfg_data.noise_floor_detect) {
+                if (FMR_DensenseDetect(idx, cur_freq.freq, cur_freq.rssi) == fm_false) {
+                    if (FMR_NoiseFloorDetect(F, cur_freq.rssi, F_Rssi) == fm_true) {
+                        Pacc += F_Rssi[1];
+                        Nacc++;
+                        /*check next freq*/
+                        F[0] = F[1];
+                        F_Rssi[0] = F_Rssi[1];
+                        F[1] = F[2];
+                        F_Rssi[1] = F_Rssi[2];
+                        F[2] = fm_false;
+                        F_Rssi[2] = 0;
+                        LOGI("FM Noise FLoor:Pacc=[%d] Nacc=[%d] \n", Pacc,Nacc);
+                    }
+                } else {
+                    memset(F, fm_false, sizeof(F));
                 }
-            } else {
-                memset(F, fm_false, sizeof(F));
             }
-#endif
             LastExist = fm_false;
         }
-#if (FMR_NOISE_FLOORT_DETECT==1)
-        if (((i%NF_Space) == 0) && (i != 0)) {
-            if (Nacc > 0) {
-                NF = Pacc/Nacc;
-            } else {
-                NF = RSSI_TH-FM_NOISE_FLOOR_OFFSET;
-            }
-            Pacc = 0;
-            Nacc = 0;
-            for (j=NF_Idx; j<Num; j++) {
-                if (SortData[j].rssi < (NF+FM_NOISE_FLOOR_OFFSET)) {
-                    LOGI("FM Noise FLoor Detected:freq=[%d] NF=[%d] \n", SortData[j].ch,NF);
-                    SortData[j].reserve = 0;
+        if (fmr_data.cfg_data.noise_floor_detect) {
+            if (((i%NF_Space) == 0) && (i != 0)) {
+                if (Nacc > 0) {
+                    NF = Pacc/Nacc;
+                } else {
+                    NF = RSSI_TH-FM_NOISE_FLOOR_OFFSET;
                 }
+                Pacc = 0;
+                Nacc = 0;
+                for (j=NF_Idx; j<Num; j++) {
+                    if (SortData[j].rssi < (NF+FM_NOISE_FLOOR_OFFSET)) {
+                        LOGI("FM Noise FLoor Detected:freq=[%d] NF=[%d] \n", SortData[j].ch,NF);
+                        SortData[j].reserve = 0;
+                    }
+                }
+                NF_Idx = j;
+                LOGI("FM Noise FLoor NF_Idx[%d] \n", NF_Idx);
             }
-            NF_Idx = j;
-            LOGI("FM Noise FLoor NF_Idx[%d] \n", NF_Idx);
         }
-#endif
     }
     LOGI("get channel no.[%d] \n", Num);
     if (Num == 0)/*get nothing*/ {

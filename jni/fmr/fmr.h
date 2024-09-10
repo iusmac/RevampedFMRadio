@@ -91,6 +91,7 @@ struct CUST_cfg_ds
     int32_t scan_sort;
     int32_t short_ana_sup;
     int32_t rssi_th_l2;
+    bool noise_floor_detect;
     struct fm_fake_channel_t *fake_chan;
 };
 
