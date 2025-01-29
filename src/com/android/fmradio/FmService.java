@@ -36,6 +36,7 @@ import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.AudioDevicePort;
 import android.media.AudioDevicePortConfig;
+import android.media.AudioFocusRequest;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
@@ -74,7 +75,7 @@ import java.util.Iterator;
 /**
  * Background service to control FM or do background tasks.
  */
-public class FmService extends Service implements FmRecorder.OnRecorderStateChangedListener {
+public class FmService extends Service implements FmRecorder.OnRecorderStateChangedListener, OnAudioFocusChangeListener {
     // Logging
     private static final String TAG = "FmService";
 
@@ -229,6 +230,8 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private boolean mIsMuted = false;
 
     private Object mRenderLock = new Object();
+
+    private AudioFocusRequest mGainFocusRequest;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -1942,9 +1945,37 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
             return true;
         }
 
-        int audioFocus = mAudioManager.requestAudioFocus(mAudioFocusChangeListener,
-                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        mIsAudioFocusHeld = (AudioManager.AUDIOFOCUS_REQUEST_GRANTED == audioFocus);
+        if (mGainFocusRequest == null) {
+            AudioAttributes playbackAttr = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+            mGainFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                .setAudioAttributes(playbackAttr)
+                .setAcceptsDelayedFocusGain(true)
+                .setWillPauseWhenDucked(true)
+                .setOnAudioFocusChangeListener(this)
+                .build();
+        }
+
+        if (mPausedByTransientLossOfFocus || !mIsAudioFocusHeld) {
+            for (int attempts = 3; attempts > 0; attempts--) {
+                final int granted = mAudioManager.requestAudioFocus(mGainFocusRequest);
+                if (granted == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    mIsAudioFocusHeld = true;
+                    break;
+                } else {
+                    // Re-attempt to gain focus (can occur after phone call)
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Log.d(TAG, "requestAudioFocus: InterruptedException");
+                        return false;
+                    }
+                }
+                Log.d(TAG, "Retrying to gain audio focus...");
+            }
+        }
         return mIsAudioFocusHeld;
     }
 
@@ -1952,58 +1983,51 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
      * Abandon audio focus
      */
     public void abandonAudioFocus() {
-        mAudioManager.abandonAudioFocus(mAudioFocusChangeListener);
+        mAudioManager.abandonAudioFocusRequest(mGainFocusRequest);
+        mGainFocusRequest = null;
         mIsAudioFocusHeld = false;
     }
 
     /**
      * Use to interact with other voice related app
      */
-    private final OnAudioFocusChangeListener mAudioFocusChangeListener =
-            new OnAudioFocusChangeListener() {
-                /**
-                 * Handle audio focus change ensure message FIFO
-                 *
-                 * @param focusChange audio focus change state
-                 */
-                @Override
-                public void onAudioFocusChange(int focusChange) {
-                    Log.d(TAG, "onAudioFocusChange " + focusChange);
-                    switch (focusChange) {
-                        case AudioManager.AUDIOFOCUS_LOSS:
-                            synchronized (this) {
-                                mAudioManager.setParameters("AudioFmPreStop=1");
-                                setMute(true);
-                                focusChanged(AudioManager.AUDIOFOCUS_LOSS);
-                            }
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                            synchronized (this) {
-                                mAudioManager.setParameters("AudioFmPreStop=1");
-                                setMute(true);
-                                focusChanged(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT);
-                            }
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_GAIN:
-                            synchronized (this) {
-                                updateAudioFocusAync(AudioManager.AUDIOFOCUS_GAIN);
-                            }
-                            break;
-
-                        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                            synchronized (this) {
-                                updateAudioFocusAync(
-                                        AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK);
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        Log.d(TAG, "onAudioFocusChange " + focusChange);
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS:
+                synchronized (this) {
+                    mAudioManager.setParameters("AudioFmPreStop=1");
+                    setMute(true);
+                    focusChanged(AudioManager.AUDIOFOCUS_LOSS);
                 }
-            };
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                synchronized (this) {
+                    mAudioManager.setParameters("AudioFmPreStop=1");
+                    setMute(true);
+                    focusChanged(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT);
+                }
+                break;
+
+            case AudioManager.AUDIOFOCUS_GAIN:
+                synchronized (this) {
+                    updateAudioFocusAync(AudioManager.AUDIOFOCUS_GAIN);
+                }
+                break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                synchronized (this) {
+                    updateAudioFocusAync(
+                            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
 
     /**
      * Audio focus changed, will send message to handler thread. synchronized to
