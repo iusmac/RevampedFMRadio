@@ -54,7 +54,6 @@
     <string name="record_notification_message">Recordio ar y gweill</string>
     <string name="stop_record">STOPIO RECORDIO</string>
     <string name="save_dialog_title">Cadw\'r recordiad?</string>
-    <string name="save_dialog_caption">I wrando ar recordiadau, agora ap chwarae cerddoriaeth.</string>
     <string name="favorites">Ffefrynnau</string>
     <string name="rename">Ailenwi</string>
     <string name="station_rename_hint">Rho enw orsaf</string>

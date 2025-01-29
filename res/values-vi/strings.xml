@@ -54,7 +54,6 @@
     <string name="record_notification_message">Đang ghi</string>
     <string name="stop_record">DỪNG GHI</string>
     <string name="save_dialog_title">Lưu bản ghi?</string>
-    <string name="save_dialog_caption">Để nghe bản ghi, hãy mở ứng dụng Play Âm nhạc.</string>
     <string name="favorites">Đài yêu thích</string>
     <string name="rename">Đổi tên</string>
     <string name="station_rename_hint">Nhập tên đài</string>

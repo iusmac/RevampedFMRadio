@@ -54,7 +54,6 @@
     <string name="record_notification_message">రికార్డింగ్ ప్రోగ్రెస్‌లో ఉంది</string>
     <string name="stop_record">రికార్డింగ్ ఆపివేయి</string>
     <string name="save_dialog_title">రికార్డింగ్‌ను సేవ్ చేయాలా?</string>
-    <string name="save_dialog_caption">రికార్డింగ్‌లను వినడానికి, Play సంగీతం అనువర్తనాన్ని తెరవండి.</string>
     <string name="favorites">ఇష్టమైనవి</string>
     <string name="rename">పేరు మార్చు</string>
     <string name="station_rename_hint">స్టేషన్ పేరుని నమోదు చేయండి</string>

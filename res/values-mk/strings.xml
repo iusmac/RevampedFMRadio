@@ -53,7 +53,6 @@
     <string name="record_notification_message">Снимање во тек</string>
     <string name="stop_record">ПРЕКИНИ СО СНИМАЊЕ</string>
     <string name="save_dialog_title">Зачувај ја снимката?</string>
-    <string name="save_dialog_caption">За да ги слушате снимките, отворете ја апликацијата Play Music.</string>
     <string name="favorites">Омилени</string>
     <string name="rename">Преименувај</string>
     <string name="station_rename_hint">Внесете име на станица</string>

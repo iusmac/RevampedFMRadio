@@ -24,7 +24,7 @@
     <string name="save">Aποθήκευση</string>
     <string name="toast_sdcard_missing">Η κάρτα SD λείπει!</string>
     <string name="toast_sdcard_insufficient_space">Ανεπαρκής χώρος στην κάρτα SD!</string>
-    <string name="toast_recorder_internal_error">Παρουσιάστηκε εσωτερικό σφάλμα στη συσκευή εγγραφής!</string>
+    <string name="toast_recorder_internal_error">Παρουσιάστηκε εσωτερικό σφάλμα κατά την εγγραφή!</string>
     <string name="btn_save_recording">Aποθήκευση</string>
     <string name="btn_discard_recording">Απόρριψη</string>
     <string name="edit_recording_name_hint">Πληκτρολογήστε εδώ το όνομα του αρχείου</string>
@@ -54,7 +54,6 @@
     <string name="record_notification_message">Εγγραφή σε εξέλιξη</string>
     <string name="stop_record">ΔΙΑΚΟΠΗ ΕΓΓΡΑΦΗΣ</string>
     <string name="save_dialog_title">Αποθήκευση εγγραφής;</string>
-    <string name="save_dialog_caption">Για να ακούσετε ηχογραφήσεις, ανοίξτε την εφαρμογή Μουσική Play.</string>
     <string name="favorites">Αγαπημένα</string>
     <string name="rename">Μετονομασία</string>
     <string name="station_rename_hint">Εισαγάγετε όνομα σταθμού</string>

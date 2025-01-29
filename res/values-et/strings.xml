@@ -54,7 +54,6 @@
     <string name="record_notification_message">Salvestamine on pooleli</string>
     <string name="stop_record">LÕPETA SALVESTAMINE</string>
     <string name="save_dialog_title">Kas salvestis talletada?</string>
-    <string name="save_dialog_caption">Salvestise kuulamiseks avage Play muusika rakendus.</string>
     <string name="favorites">Lemmikud</string>
     <string name="rename">Ümbernimetamine</string>
     <string name="station_rename_hint">Sisestage jaama nimi</string>

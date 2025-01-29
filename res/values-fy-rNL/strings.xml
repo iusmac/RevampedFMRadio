@@ -54,7 +54,6 @@
     <string name="record_notification_message">Opname dwaande</string>
     <string name="stop_record">OPNAME STOPJE</string>
     <string name="save_dialog_title">Opname bewarje?</string>
-    <string name="save_dialog_caption">As jo opnamen belústerje wolle, iepenje jo de Play Music-app.</string>
     <string name="favorites">Favoriten</string>
     <string name="rename">Namme wizigje</string>
     <string name="station_rename_hint">Stjoerdernamme opjaan</string>

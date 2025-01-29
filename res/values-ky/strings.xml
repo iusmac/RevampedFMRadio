@@ -53,7 +53,6 @@
     <string name="record_notification_message">Жаздыруу аткарылып жатат</string>
     <string name="stop_record">ЖАЗДЫРУУНУ ТОКТОТУУ</string>
     <string name="save_dialog_title">Жаздыруу сакталсынбы?</string>
-    <string name="save_dialog_caption">Жаздырууларды угуу үчүн, Play Музыка колдонмосун ачыңыз.</string>
     <string name="favorites">Сүйүктүүлөр</string>
     <string name="rename">Атын өзгөртүү</string>
     <string name="station_rename_hint">Станциянын аталышын киргизиңиз</string>

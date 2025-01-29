@@ -34,7 +34,7 @@
     <string name="talk_decrease">Diminuisci la frequenza</string>
     <string name="talk_increase">Aumenta la frequenza</string>
     <string name="talk_next_station">Stazione successiva</string>
-    <string name="talk_add_favorite">Aggiungi a stazioni preferite</string>
+    <string name="talk_add_favorite">Aggiungi ai preferiti</string>
     <string name="talk_start_recording">Avvia registrazione</string>
     <string name="more">"Altro"</string>
     <string name="recording_tips">Registrazione...</string>
@@ -54,7 +54,6 @@
     <string name="record_notification_message">Registrazione in corso</string>
     <string name="stop_record">ARRESTA REGISTRAZ.</string>
     <string name="save_dialog_title">Salvare la registrazione?</string>
-    <string name="save_dialog_caption">Per ascoltare le registrazioni, apri l\'app Play Musica.</string>
     <string name="favorites">Preferite</string>
     <string name="rename">Rinomina</string>
     <string name="station_rename_hint">Inserisci il nome della stazione</string>

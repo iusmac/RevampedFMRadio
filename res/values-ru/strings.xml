@@ -54,7 +54,6 @@
     <string name="record_notification_message">Идет запись</string>
     <string name="stop_record">ОСТАНОВИТЬ ЗАПИСЬ</string>
     <string name="save_dialog_title">Сохранить запись?</string>
-    <string name="save_dialog_caption">Чтобы прослушать записи, откройте приложение \"Play Музыка\"</string>
     <string name="favorites">Избранное</string>
     <string name="rename">Переименовать</string>
     <string name="station_rename_hint">Введите название станции</string>

@@ -54,7 +54,6 @@
     <string name="record_notification_message">रिकॉर्डिंग चल रही है</string>
     <string name="stop_record">रिकॉर्डिंग बंद करें</string>
     <string name="save_dialog_title">रिकॉर्डिंग सहेजें?</string>
-    <string name="save_dialog_caption">रिकॉर्डिंग सुनने के लिए, Play - संगीत ऐप खोलेें.</string>
     <string name="favorites">पसंदीदा</string>
     <string name="rename">नाम बदलें</string>
     <string name="station_rename_hint">स्टेशन का नाम डालें</string>

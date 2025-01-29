@@ -53,7 +53,6 @@
     <string name="record_notification_message">Upptaka í gangi</string>
     <string name="stop_record">STÖÐVA UPPTÖKU</string>
     <string name="save_dialog_title">Vista upptöku?</string>
-    <string name="save_dialog_caption">Opnaðu forritið Play Music til að hlusta á upptökur.</string>
     <string name="favorites">Uppáhald</string>
     <string name="rename">Endurnefna</string>
     <string name="station_rename_hint">Sláðu inn stöðvarheiti</string>

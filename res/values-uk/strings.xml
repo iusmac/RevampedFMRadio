@@ -54,7 +54,6 @@
     <string name="record_notification_message">Триває запис</string>
     <string name="stop_record">ЗУПИНИТИ ЗАПИС</string>
     <string name="save_dialog_title">Зберегти запис?</string>
-    <string name="save_dialog_caption">Щоб слухати записи, відкрийте додаток Google Play Музика.</string>
     <string name="favorites">Вибране</string>
     <string name="rename">Перейменувати</string>
     <string name="station_rename_hint">Введіть назву радіостанції</string>

@@ -54,7 +54,6 @@
     <string name="record_notification_message">റെക്കോർഡുചെയ്യൽ പുരോഗതിയിലാണ്</string>
     <string name="stop_record">റെക്കോർഡിംഗ് നിർത്തുക</string>
     <string name="save_dialog_title">റെക്കോർഡുചെയ്യൽ സംരക്ഷിക്കണോ?</string>
-    <string name="save_dialog_caption">റെക്കോർഡിംഗുകൾ കേൾക്കാൻ, Play സംഗീത അപ്ലിക്കേഷൻ തുറക്കുക.</string>
     <string name="favorites">പ്രിയപ്പെട്ടവ</string>
     <string name="rename">പേരുമാറ്റൽ</string>
     <string name="station_rename_hint">സ്‌റ്റേഷന്റെ പേര് നൽകുക</string>

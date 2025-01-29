@@ -53,7 +53,6 @@
     <string name="record_notification_message">रेकर्डिङ चलिरहेको छ</string>
     <string name="stop_record">रेकर्डिंङ रोक्नुहोस्</string>
     <string name="save_dialog_title">रेकर्डिङ सुरक्षित गर्ने हो?</string>
-    <string name="save_dialog_caption">रेकर्डिङहरू सुन्न, संगीत बजाउनुहोस् अनुप्रयोग खोल्नुहोस्।</string>
     <string name="favorites">मनपर्नेहरू</string>
     <string name="rename">पुन:नामाकरण गर्नुहोस्</string>
     <string name="station_rename_hint">स्टेशनको नाम प्रविष्ट गर्नुहोस्</string>

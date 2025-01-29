@@ -17,11 +17,21 @@
 -->
 <resources>
     <string name="app_name">Radio FM</string>
+    <string name="optmenu_speaker">Altavoz</string>
+    <string name="toast_recorder_internal_error">¡Prodúxose un error internu na grabadora!</string>
+    <string name="talk_prev_station">Emisora anterior</string>
+    <string name="talk_next_station">Emisora siguiente</string>
     <string name="more">"Más"</string>
+    <string name="recording_tips">Grabando…</string>
     <string name="fm_symbol">FM</string>
+    <string name="station_title">Emisores</string>
+    <string name="station_empty_text">Nun s\'atopó nenguna emisora</string>
     <string name="minutes_label">M</string>
     <string name="seconds_label">S</string>
     <string name="timer_default">00</string>
+    <string name="record_notification_message">Grabación en cursu</string>
+    <string name="stop_record">DEXAR DE GRABAR</string>
+    <string name="save_dialog_title">¿Quies guardar la grabación?</string>
     <string name="favorites">Favoritos</string>
     <string name="audio_db_artist_name">Les mios grabaciones FM</string>
     <string name="audio_db_album_name">Grabaciones FM</string>

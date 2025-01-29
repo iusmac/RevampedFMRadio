@@ -54,7 +54,6 @@
     <string name="record_notification_message">Tallennus käynnissä</string>
     <string name="stop_record">LOPETA TALLENNUS</string>
     <string name="save_dialog_title">Tallennetaanko äänitys?</string>
-    <string name="save_dialog_caption">Kuuntele tallenteita avaamalla Play Musiikki -sovellus.</string>
     <string name="favorites">Suosikit</string>
     <string name="rename">Nimeä uudelleen</string>
     <string name="station_rename_hint">Kirjoita kanavan nimi</string>

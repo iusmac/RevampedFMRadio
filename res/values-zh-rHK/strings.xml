@@ -54,7 +54,6 @@
     <string name="record_notification_message">正在錄音</string>
     <string name="stop_record">停止錄音</string>
     <string name="save_dialog_title">要儲存錄音嗎？</string>
-    <string name="save_dialog_caption">如要收聽錄音，請開啟「Play 音樂」應用程式。</string>
     <string name="favorites">我的最愛</string>
     <string name="rename">重新命名</string>
     <string name="station_rename_hint">請輸入電台名稱</string>

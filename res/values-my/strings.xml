@@ -53,7 +53,6 @@
     <string name="record_notification_message">အသံဖမ်းနေစဉ်</string>
     <string name="stop_record">အသံဖမ်းခြင်း ရပ်ရန်</string>
     <string name="save_dialog_title">အသံသွင်းထားခြင်းအား သိမ်းမည်လား?</string>
-    <string name="save_dialog_caption">အသံသွင်းထားသည်များ နားထောင်ရန်၊ Play Music app အား ဖွင့်ပါ။</string>
     <string name="favorites">အကြိုက်ဆုံး</string>
     <string name="rename">အမည်ပြောင်းရန်</string>
     <string name="station_rename_hint">အသံလွှင့်ရုံအမည် ရိုက်ထည့်ရန်</string>

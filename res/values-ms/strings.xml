@@ -53,7 +53,6 @@
     <string name="record_notification_message">Rakaman sedang berjalan</string>
     <string name="stop_record">HENTIKAN RAKAMAN</string>
     <string name="save_dialog_title">Simpan rakaman?</string>
-    <string name="save_dialog_caption">Untuk mendengar rakaman, buka apl Play Music.</string>
     <string name="favorites">Kegemaran</string>
     <string name="rename">Namakan semula</string>
     <string name="station_rename_hint">Masukkan nama stesen</string>

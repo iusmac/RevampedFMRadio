@@ -54,7 +54,6 @@
     <string name="record_notification_message">Optagelse i gang</string>
     <string name="stop_record">STOP OPTAGELSE</string>
     <string name="save_dialog_title">Vil du gemme optagelsen?</string>
-    <string name="save_dialog_caption">Hvis du vil lytte til optagelser skal åbne appen Play Musik.</string>
     <string name="favorites">Foretrukne</string>
     <string name="rename">Omdøb</string>
     <string name="station_rename_hint">Indtast stationens navn</string>

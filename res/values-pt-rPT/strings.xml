@@ -54,7 +54,6 @@
     <string name="record_notification_message">Gravação em curso</string>
     <string name="stop_record">PARAR GRAVAÇÃO</string>
     <string name="save_dialog_title">Pretende guardar a gravação?</string>
-    <string name="save_dialog_caption">Para ouvir gravações, abra a aplicação Play Music.</string>
     <string name="favorites">Favoritos</string>
     <string name="rename">Mudar o nome</string>
     <string name="station_rename_hint">Introduza o nome da estação</string>

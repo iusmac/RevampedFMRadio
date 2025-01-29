@@ -54,7 +54,6 @@
     <string name="record_notification_message">Besig met opname</string>
     <string name="stop_record">STOP OPNAME</string>
     <string name="save_dialog_title">Stoor opname?</string>
-    <string name="save_dialog_caption">Maak die Play Musiek-program oop om na opnames te luister.</string>
     <string name="favorites">Gunstelinge</string>
     <string name="rename">Hernoem</string>
     <string name="station_rename_hint">Voer stasienaam in</string>

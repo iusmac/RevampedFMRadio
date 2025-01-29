@@ -53,7 +53,6 @@
     <string name="record_notification_message">ການ​ບັນ​ທຶກ​ຄືບ​ໜ້າ​ຢູ່</string>
     <string name="stop_record">ຢຸດ​ການ​ບັນ​ທຶກ</string>
     <string name="save_dialog_title">ບັນ​ທຶກ​ເອົາ​ການ​ບັນ​ທຶກ​ບໍ?</string>
-    <string name="save_dialog_caption">ເພື່ອ​ຟັງ​ການ​ບັນ​ທຶກ, ເປີດ​ແອັບຯ Play Music.</string>
     <string name="favorites">​ລາຍ​ການ​ທີ່​ມັກ</string>
     <string name="rename">ປ່ຽນຊື່</string>
     <string name="station_rename_hint">ປ້ອນ​ຊື່​ສະ​ຖາ​ນີ​ເຂົ້າ​ໄປ</string>

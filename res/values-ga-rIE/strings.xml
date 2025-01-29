@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2014 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="app_name">Raidió FM</string>
+    <string name="toast_station_searched">Cuardaíodh amach stáisiúin atá ar fáil:</string>
+    <string name="toast_cannot_search">Ní féidir an stáisiún atá ar fáil a chuardach.</string>
+    <string name="optmenu_speaker">Cainteoir</string>
+    <string name="optmenu_earphone">Cluasán</string>
+    <string name="save">Sábháil</string>
+    <string name="toast_sdcard_missing">Tá do chárta SD in easnamh!</string>
+    <string name="toast_sdcard_insufficient_space">Easpa spás cárta SD!</string>
+    <string name="toast_recorder_internal_error">Tharla earráid inmheánach sa taifeadán!</string>
+    <string name="btn_save_recording">Sábháil</string>
+    <string name="btn_discard_recording">Caith amach</string>
+    <string name="edit_recording_name_hint">Clóscríobh ainm comhaid anseo</string>
+    <string name="already_exists">ann cheana</string>
+    <string name="not_available">Níl sé ar fáil faoi láthair</string>
+    <string name="talk_prev_station">Stáisiún roimhe seo</string>
+    <string name="talk_decrease">Laghdú ar mhinicíocht</string>
+    <string name="talk_increase">Méadú ar mhinicíocht</string>
+    <string name="talk_next_station">Stáisiún eile</string>
+    <string name="talk_add_favorite">Cuir le is fearr leat</string>
+    <string name="talk_start_recording">Tosaigh taifeadadh</string>
+    <string name="more">"Níos mó"</string>
+    <string name="recording_tips">Ag taifeadadh…</string>
+    <string name="fm_symbol">FM</string>
+    <string name="fm_turn_on">Seinn nó stop raidió FM</string>
+    <string name="fm_over_start_record">Tosaigh taifeadadh</string>
+    <string name="fm_over_record_list">Taifeadtaí sábháilte</string>
+    <string name="fm_station_list_menu_refresh">Athnuaigh</string>
+    <string name="fm_no_headset_text">Chun tús a chur le héisteacht, plugáil isteach cluasáin (a úsáidtear mar antenna).</string>
+    <string name="station_title">Stáisiúin Raidió</string>
+    <string name="station_searching_tips">Stáisiúin a fháil</string>
+    <string name="station_empty_text">Níor aimsíodh aon stáisiúin</string>
+    <string name="minutes_label">N</string>
+    <string name="seconds_label">S</string>
+    <string name="timer_default">00</string>
+    <string name="record_title">Taifeadadh</string>
+    <string name="record_notification_message">Taifeadadh ar siúl</string>
+    <string name="stop_record">STAD TAIFEAD</string>
+    <string name="save_dialog_title">Sábháil an taifeadadh?</string>
+    <string name="favorites">Ceanáin</string>
+    <string name="rename">Athainmnigh</string>
+    <string name="station_rename_hint">Cuir isteach ainm an stáisiúin</string>
+    <string name="remove_favorite">Bain is fearr leat</string>
+    <string name="toast_record_saved">Taifeadadh sábháilte</string>
+    <string name="toast_record_not_saved">Níor sábháladh an taifeadadh</string>
+    <string name="toast_listen">ÉIST</string>
+    <string name="toast_station_renamed">Tá an stáisiún athainmnithe</string>
+</resources>

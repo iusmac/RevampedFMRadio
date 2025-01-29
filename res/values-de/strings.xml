@@ -54,7 +54,6 @@
     <string name="record_notification_message">Aufnahme läuft</string>
     <string name="stop_record">Aufzeichnung beenden</string>
     <string name="save_dialog_title">Aufnahme speichern?</string>
-    <string name="save_dialog_caption">Um Aufnahmen anzuhören, öffne die Play Musik App.</string>
     <string name="favorites">Favoriten</string>
     <string name="rename">Umbenennen</string>
     <string name="station_rename_hint">Sendernamen eingeben</string>

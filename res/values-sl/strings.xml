@@ -54,7 +54,6 @@
     <string name="record_notification_message">Snemanje poteka</string>
     <string name="stop_record">KONČAJ SNEMANJE</string>
     <string name="save_dialog_title">Želite shraniti posnetek?</string>
-    <string name="save_dialog_caption">Če želite poslušati posnetke, odprite aplikacijo Glasba Play.</string>
     <string name="favorites">Priljubljene</string>
     <string name="rename">Preimenovanje</string>
     <string name="station_rename_hint">Vnesite ime postaje</string>

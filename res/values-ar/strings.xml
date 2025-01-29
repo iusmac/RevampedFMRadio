@@ -54,7 +54,6 @@
     <string name="record_notification_message">التسجيل قيد التقدم</string>
     <string name="stop_record">إيقاف التسجيل</string>
     <string name="save_dialog_title">هل تريد حفظ التسجيل؟</string>
-    <string name="save_dialog_caption">‏للاستماع إلى التسجيلات، افتح تطبيق موسيقى Play.</string>
     <string name="favorites">المفضلة</string>
     <string name="rename">إعادة تسمية</string>
     <string name="station_rename_hint">أدخل اسم المحطة</string>

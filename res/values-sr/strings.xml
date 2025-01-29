@@ -54,7 +54,6 @@
     <string name="record_notification_message">Снимање је у току</string>
     <string name="stop_record">ЗАУСТАВИ СНИМАЊЕ</string>
     <string name="save_dialog_title">Желите ли да сачувате снимак?</string>
-    <string name="save_dialog_caption">Да бисте слушали снимке, отворите апликацију Play музика.</string>
     <string name="favorites">Омиљене</string>
     <string name="rename">Преименуј</string>
     <string name="station_rename_hint">Унесите назив станице</string>

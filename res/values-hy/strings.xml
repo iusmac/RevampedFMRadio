@@ -53,7 +53,6 @@
     <string name="record_notification_message">Ձայնագրումն ընթացքում է</string>
     <string name="stop_record">ԴԱԴԱՐԵՑՆԵԼ ՁԱՅՆԱԳՐՈՒՄԸ</string>
     <string name="save_dialog_title">Պահե՞լ ձայնագրությունը:</string>
-    <string name="save_dialog_caption">Ձայնագրություններն ունկնդրելու համար, բացեք «Նվագարկել երաժշտություն» հավելվածը:</string>
     <string name="favorites">Ընտրանի</string>
     <string name="rename">Վերանվանել</string>
     <string name="station_rename_hint">Մուտքագրեք կայանի անունը</string>

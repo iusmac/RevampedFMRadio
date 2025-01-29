@@ -54,7 +54,6 @@
     <string name="record_notification_message">녹음 중입니다.</string>
     <string name="stop_record">녹음 중지</string>
     <string name="save_dialog_title">녹음을 저장할까요?</string>
-    <string name="save_dialog_caption">녹음 파일을 들으려면 Play 뮤직 앱을 여세요.</string>
     <string name="favorites">즐겨찾기</string>
     <string name="rename">이름 바꾸기</string>
     <string name="station_rename_hint">채널 이름 입력</string>
