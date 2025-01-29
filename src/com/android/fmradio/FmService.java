@@ -1313,8 +1313,14 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private synchronized void initAudioRecordSink() {
         mAudioRecord = new AudioRecord(MediaRecorder.AudioSource.RADIO_TUNER,
                 SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, RECORD_BUF_SIZE);
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, RECORD_BUF_SIZE, AudioTrack.MODE_STREAM);
+        mAudioTrack = new AudioTrack.Builder()
+            .setAudioFormat(new AudioFormat.Builder()
+                    .setEncoding(AUDIO_FORMAT)
+                    .setSampleRate(SAMPLE_RATE)
+                    .setChannelIndexMask(CHANNEL_CONFIG)
+                    .build())
+            .setBufferSizeInBytes(RECORD_BUF_SIZE)
+            .build();
     }
 
     private void registerFmBroadcastReceiver() {
