@@ -175,42 +175,38 @@ public class FmFavoriteActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            case R.id.fm_station_list_refresh:
-                if (null != mService) {
-                    refreshMenuItem(false);
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+        } else if (itemId == R.id.fm_station_list_refresh) {
+            if (null != mService) {
+                refreshMenuItem(false);
 
-                    mMyAdapter.swipResult(null);
-                    mGridView.setEmptyView(mSearchTips);
-                    mSearchProgress.setIndeterminate(true);
+                mMyAdapter.swipResult(null);
+                mGridView.setEmptyView(mSearchTips);
+                mSearchProgress.setIndeterminate(true);
 
-                    // If current location and last location exceed defined distance, delete the RDS database
-                    if (isGpsOpen()) {
-                        mCurLocation = mLocationManager
-                                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        if (mCurLocation != null) {
-                            double[] lastLocations = FmUtils.getLastSearchedLocation(mContext);
-                            float distance[] = new float[2];
-                            Location.distanceBetween(lastLocations[0], lastLocations[1],
-                                    mCurLocation.getLatitude(), mCurLocation.getLongitude(),
-                                    distance);
-                            float searchedDistance = distance[0];
-                            boolean exceed =
-                                    searchedDistance > FmUtils.LOCATION_DISTANCE_EXCEED;
-                            mService.setDistanceExceed(exceed);
-                            FmUtils.setLastSearchedLocation(mContext, mCurLocation.getLatitude(),
-                                    mCurLocation.getLongitude());
-                        }
+                // If current location and last location exceed defined distance, delete the RDS database
+                if (isGpsOpen()) {
+                    mCurLocation = mLocationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (mCurLocation != null) {
+                        double[] lastLocations = FmUtils.getLastSearchedLocation(mContext);
+                        float distance[] = new float[2];
+                        Location.distanceBetween(lastLocations[0], lastLocations[1],
+                                mCurLocation.getLatitude(), mCurLocation.getLongitude(),
+                                distance);
+                        float searchedDistance = distance[0];
+                        boolean exceed =
+                                searchedDistance > FmUtils.LOCATION_DISTANCE_EXCEED;
+                        mService.setDistanceExceed(exceed);
+                        FmUtils.setLastSearchedLocation(mContext, mCurLocation.getLatitude(),
+                                mCurLocation.getLongitude());
                     }
-
-                    mService.startScanAsync();
                 }
-                break;
-            default:
-                break;
+
+                mService.startScanAsync();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

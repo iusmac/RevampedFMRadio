@@ -227,8 +227,8 @@ public class FmSaveDialog extends DialogFragment {
             File recordingFolderPath = new File(mRecordingSdcard,
                     FmRecorder.getFmRecordFolder(ctx));
 
-            switch (v.getId()) {
-                case R.id.alertdialog_button_ok:
+            int viewId = v.getId();
+            if (viewId == R.id.alertdialog_button_ok) {
                 String msg = null;
                 // Check the recording name whether exist
                 mRecordingNameToSave = mRecordingNameEditText.getText().toString().trim();
@@ -251,19 +251,13 @@ public class FmSaveDialog extends DialogFragment {
                     mRecordingFileName = mRecordingNameToSave;
                     dismissAllowingStateLoss();
                 }
-                break;
-
-                case R.id.alertdialog_button_cancel:
-                    dismissAllowingStateLoss();
-                    // here need delete discarded recording file
-                    File needToDelete = new File(recordingFolderPath, mTempRecordingName);
-                    if (needToDelete.exists()) {
-                        needToDelete.delete();
-                    }
-                    break;
-
-                default:
-                    break;
+            } else if (viewId == R.id.alertdialog_button_cancel) {
+                dismissAllowingStateLoss();
+                // here need delete discarded recording file
+                File needToDelete = new File(recordingFolderPath, mTempRecordingName);
+                if (needToDelete.exists()) {
+                    needToDelete.delete();
+                }
             }
         }
     };

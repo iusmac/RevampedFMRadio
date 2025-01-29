@@ -180,38 +180,25 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
     private final View.OnClickListener mButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-
-                case R.id.button_add_to_favorite:
-                    updateFavoriteStation();
-                    break;
-
-                case R.id.button_decrease:
-                    tuneStation(FmUtils.computeDecreaseStation(mCurrentStation));
-                    break;
-
-                case R.id.button_increase:
-                    tuneStation(FmUtils.computeIncreaseStation(mCurrentStation));
-                    break;
-
-                case R.id.button_prevstation:
-                    seekStation(mCurrentStation, false); // false: previous station
-                    break;
-
-                case R.id.button_nextstation:
-                    seekStation(mCurrentStation, true); // true: previous station
-                    break;
-
-                case R.id.play_button:
-                    if (mService.getPowerStatus() == FmService.POWER_UP) {
-                        powerDownFm();
-                    } else {
-                        powerUpFm();
-                    }
-                    break;
-                default:
-                    Log.d(TAG, "mButtonClickListener.onClick, invalid view id");
-                    break;
+            final int viewId = v.getId();
+            if (viewId == R.id.button_add_to_favorite) {
+                updateFavoriteStation();
+            } else if (viewId == R.id.button_decrease) {
+                tuneStation(FmUtils.computeDecreaseStation(mCurrentStation));
+            } else if (viewId == R.id.button_increase) {
+                tuneStation(FmUtils.computeIncreaseStation(mCurrentStation));
+            } else if (viewId == R.id.button_prevstation) {
+                seekStation(mCurrentStation, false); // false: previous station
+            } else if (viewId == R.id.button_nextstation) {
+                seekStation(mCurrentStation, true); // true: previous station
+            } else if (viewId == R.id.play_button) {
+                if (mService.getPowerStatus() == FmService.POWER_UP) {
+                    powerDownFm();
+                } else {
+                    powerUpFm();
+                }
+            } else {
+                Log.d(TAG, "mButtonClickListener.onClick, invalid view id");
             }
         }
     };
@@ -784,65 +771,53 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-
-            case R.id.fm_station_list:
-                refreshImageButton(false);
-                refreshActionMenuItem(false);
-                refreshPopupMenuItem(false);
-                refreshPlayButton(false);
-                // Show favorite activity.
-                enterStationList();
-                break;
-
-            case R.id.earphone_menu:
-                setSpeakerPhoneOn(false);
-                mMenuItemHeadset.setIcon(R.drawable.btn_fm_headset_selector);
-                invalidateOptionsMenu();
-                break;
-
-            case R.id.speaker_menu:
-                setSpeakerPhoneOn(true);
-                mMenuItemHeadset.setIcon(R.drawable.btn_fm_speaker_selector);
-                invalidateOptionsMenu();
-                break;
-
-            case R.id.fm_start_record:
-                Intent recordIntent = new Intent(this, FmRecordActivity.class);
-                recordIntent.putExtra(FmStation.CURRENT_STATION, mCurrentStation);
-                startActivityForResult(recordIntent, REQUEST_CODE_RECORDING);
-                break;
-
-            case R.id.fm_record_list:
-                Intent playMusicIntent = new Intent(Intent.ACTION_VIEW);
-                int playlistId = FmRecorder.getPlaylistId(mContext);
-                Bundle extras = new Bundle();
-                extras.putInt("playlist", playlistId);
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+        } else if (itemId == R.id.fm_station_list) {
+            refreshImageButton(false);
+            refreshActionMenuItem(false);
+            refreshPopupMenuItem(false);
+            refreshPlayButton(false);
+            // Show favorite activity.
+            enterStationList();
+        } else if (itemId == R.id.earphone_menu) {
+            setSpeakerPhoneOn(false);
+            mMenuItemHeadset.setIcon(R.drawable.btn_fm_headset_selector);
+            invalidateOptionsMenu();
+        } else if (itemId == R.id.speaker_menu) {
+            setSpeakerPhoneOn(true);
+            mMenuItemHeadset.setIcon(R.drawable.btn_fm_speaker_selector);
+            invalidateOptionsMenu();
+        } else if (itemId == R.id.fm_start_record) {
+            Intent recordIntent = new Intent(this, FmRecordActivity.class);
+            recordIntent.putExtra(FmStation.CURRENT_STATION, mCurrentStation);
+            startActivityForResult(recordIntent, REQUEST_CODE_RECORDING);
+        } else if (itemId == R.id.fm_record_list) {
+            Intent playMusicIntent = new Intent(Intent.ACTION_VIEW);
+            int playlistId = FmRecorder.getPlaylistId(mContext);
+            Bundle extras = new Bundle();
+            extras.putInt("playlist", playlistId);
+            try {
+                playMusicIntent.putExtras(extras);
+                playMusicIntent.setType("vnd.android.cursor.dir/playlist");
+                startActivity(playMusicIntent);
+            } catch (IllegalArgumentException | ActivityNotFoundException e1) {
                 try {
-                    playMusicIntent.putExtras(extras);
-                    playMusicIntent.setType("vnd.android.cursor.dir/playlist");
+                    playMusicIntent = new Intent(Intent.ACTION_VIEW);
+                    final Uri uri = Uri.parse("content://" +
+                            "com.android.externalstorage.documents/document/" +
+                            "primary%3A" + Uri.encode(FmRecorder.getFmRecordFolder(mContext)));
+                    playMusicIntent.setDataAndType(uri, "vnd.android.document/directory");
                     startActivity(playMusicIntent);
-                } catch (IllegalArgumentException | ActivityNotFoundException e1) {
-                    try {
-                        playMusicIntent = new Intent(Intent.ACTION_VIEW);
-                        final Uri uri = Uri.parse("content://" +
-                                "com.android.externalstorage.documents/document/" +
-                                "primary%3A" + Uri.encode(FmRecorder.getFmRecordFolder(mContext)));
-                        playMusicIntent.setDataAndType(uri, "vnd.android.document/directory");
-                        startActivity(playMusicIntent);
-                    } catch (ActivityNotFoundException e2) {
-                        // No activity respond
-                        Log.d(TAG,
-                                "onOptionsItemSelected, No activity respond playlist view intent");
-                    }
+                } catch (ActivityNotFoundException e2) {
+                    // No activity respond
+                    Log.d(TAG,
+                            "onOptionsItemSelected, No activity respond playlist view intent");
                 }
-                break;
-            default:
-                Log.e(TAG, "onOptionsItemSelected, invalid options menu item.");
-                break;
+            }
+        } else {
+            Log.e(TAG, "onOptionsItemSelected, invalid options menu item.");
         }
         return super.onOptionsItemSelected(item);
     }
