@@ -53,7 +53,6 @@
     <string name="record_notification_message">Бичлэг хийгдэж байна</string>
     <string name="stop_record">БИЧЛЭГИЙГ ЗОГСООХ</string>
     <string name="save_dialog_title">Бичлэгийг хадгалах уу?</string>
-    <string name="save_dialog_caption">Бичлэгүүдийг сонсохыг хүсвэл Play Music апликейшнийг нээнэ үү.</string>
     <string name="favorites">Дуртай</string>
     <string name="rename">Нэр өөрчлөх</string>
     <string name="station_rename_hint">Станцын нэрийг оруулна уу</string>

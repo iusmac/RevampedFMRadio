@@ -54,7 +54,6 @@
     <string name="record_notification_message">Regjistrimi në proces</string>
     <string name="stop_record">NDALO INÇIZIMIN</string>
     <string name="save_dialog_title">Ruaj inçizimin?</string>
-    <string name="save_dialog_caption">Për të dëgjuar inçizimet hap app Play Music.</string>
     <string name="favorites">Të preferuarat</string>
     <string name="rename">Riemërto</string>
     <string name="station_rename_hint">Vendosni emrin e statcionit</string>

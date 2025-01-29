@@ -53,7 +53,6 @@
     <string name="record_notification_message">ریکارڈنگ ہو رہی ہے</string>
     <string name="stop_record">ریکارڈنگ روکیں</string>
     <string name="save_dialog_title">ریکارڈنگ محفوظ کریں؟</string>
-    <string name="save_dialog_caption">‏ریکارڈنگز سننے کیلئے، Play Music ایپ کھولیں۔</string>
     <string name="favorites">پسندیدہ</string>
     <string name="rename">نام بدلیں</string>
     <string name="station_rename_hint">اسٹیشن کا نام درج کریں</string>

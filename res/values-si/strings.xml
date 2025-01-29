@@ -53,7 +53,6 @@
     <string name="record_notification_message">පටිගත කිරීම වෙමින් පවතී</string>
     <string name="stop_record">පටිගත කිරීම නැවත්වමින්</string>
     <string name="save_dialog_title">පටිගත කිරීම සුරැකි න්නද?</string>
-    <string name="save_dialog_caption">පටිගත කිරීමට සවන්දීමට, සංගීත ධාවනය කරන යෙදුම විවෘත කරන්න.</string>
     <string name="favorites">ප්‍රියතම</string>
     <string name="rename">යළි නම් කරන්න</string>
     <string name="station_rename_hint">ස්ථානයේ නම ඇතුළු කරන්න</string>

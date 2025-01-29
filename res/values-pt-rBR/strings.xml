@@ -24,7 +24,7 @@
     <string name="save">Salvar</string>
     <string name="toast_sdcard_missing">Não há cartão SD</string>
     <string name="toast_sdcard_insufficient_space">Espaço insuficiente no cartão SD</string>
-    <string name="toast_recorder_internal_error">Ocorreu um erro interno no gravador</string>
+    <string name="toast_recorder_internal_error">Ocorreu um erro interno no gravador!</string>
     <string name="btn_save_recording">Salvar</string>
     <string name="btn_discard_recording">Descartar</string>
     <string name="edit_recording_name_hint">Digite o nome do arquivo</string>
@@ -54,7 +54,6 @@
     <string name="record_notification_message">Gravação em andamento</string>
     <string name="stop_record">PARAR GRAVAÇÃO</string>
     <string name="save_dialog_title">Deseja salvar a gravação?</string>
-    <string name="save_dialog_caption">Para ouvir as gravações, abra o aplicativo Play Music.</string>
     <string name="favorites">Favoritas</string>
     <string name="rename">Renomear</string>
     <string name="station_rename_hint">Digite o nome da estação</string>

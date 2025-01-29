@@ -54,7 +54,6 @@
     <string name="record_notification_message">הקלטה מתבצעת</string>
     <string name="stop_record">הפסק הקלטה</string>
     <string name="save_dialog_title">האם לשמור את ההקלטה?</string>
-    <string name="save_dialog_caption">‏כדי להאזין להקלטות, פתח את האפליקציה Play מוזיקה.</string>
     <string name="favorites">מועדפים</string>
     <string name="rename">שנה שם</string>
     <string name="station_rename_hint">הזן שם תחנה</string>

@@ -53,7 +53,6 @@
     <string name="record_notification_message">Inaendelea kurekodi</string>
     <string name="stop_record">ACHA KUREKODI</string>
     <string name="save_dialog_title">Ungependa kuhifadhi rekodi?</string>
-    <string name="save_dialog_caption">Ili usikilize rekodi, fungua programu ya Muziki wa Google Play.</string>
     <string name="favorites">Vipendwa</string>
     <string name="rename">Badili jina</string>
     <string name="station_rename_hint">Weka jina la stesheni</string>

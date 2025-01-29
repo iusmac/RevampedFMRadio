@@ -54,7 +54,6 @@
     <string name="record_notification_message">रेकॉर्डिंग प्रगतीपथावर आहे</string>
     <string name="stop_record">रेकॉर्डिंग थांबवा</string>
     <string name="save_dialog_title">रेकॉर्डिंग जतन करायचे?</string>
-    <string name="save_dialog_caption">रेकॉर्डिंग ऐकण्‍यासाठी, Play संगीत अ‍ॅप उघडा.</string>
     <string name="favorites">आवडी</string>
     <string name="rename">पुनर्नामित करा</string>
     <string name="station_rename_hint">स्‍टेशन नाव प्रविष्‍ट करा</string>

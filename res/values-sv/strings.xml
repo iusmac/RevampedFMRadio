@@ -54,7 +54,6 @@
     <string name="record_notification_message">Inspelning pågår</string>
     <string name="stop_record">SLUTA SPELA IN</string>
     <string name="save_dialog_title">Vill du spara inspelningen?</string>
-    <string name="save_dialog_caption">Öppna appen Play Musik om du vill lyssna på inspelningarna.</string>
     <string name="favorites">Favoriter</string>
     <string name="rename">Byt namn</string>
     <string name="station_rename_hint">Ange kanalens namn</string>

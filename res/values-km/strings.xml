@@ -53,7 +53,6 @@
     <string name="record_notification_message">ការថតនៅក្នុងដំណើរការ</string>
     <string name="stop_record">ឈប់ថត</string>
     <string name="save_dialog_title">រក្សាទុកការថត?</string>
-    <string name="save_dialog_caption">ដើម្បីស្តាប់ការថត បើកកម្មវិធី ចាក់តន្ត្រី។</string>
     <string name="favorites">ការចូលចិត្ត</string>
     <string name="rename">ប្ដូរ​ឈ្មោះ</string>
     <string name="station_rename_hint">បញ្ចូលឈ្មោះស្ថានីយ៍</string>

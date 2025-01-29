@@ -54,7 +54,6 @@
     <string name="record_notification_message">อยู่ระหว่างบันทึก</string>
     <string name="stop_record">หยุดการบันทึก</string>
     <string name="save_dialog_title">บันทึกรายการไหม</string>
-    <string name="save_dialog_caption">หากต้องการฟังรายการที่บันทึกไว้ ให้เปิดฟังด้วยแอป Play เพลง</string>
     <string name="favorites">รายการโปรด</string>
     <string name="rename">เปลี่ยนชื่อ</string>
     <string name="station_rename_hint">ป้อนชื่อสถานี</string>

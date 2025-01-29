@@ -53,7 +53,6 @@
     <string name="record_notification_message">ضبط در حال انجام است</string>
     <string name="stop_record">توقف ضبط</string>
     <string name="save_dialog_title">قطعه ضبط شده ذخیره شود؟</string>
-    <string name="save_dialog_caption">‏برای گوش دادن به قطعات ضبط شده، برنامه «پخش‌کننده آهنگ Play» را باز کنید.</string>
     <string name="favorites">موارد دلخواه</string>
     <string name="rename">تغییر نام</string>
     <string name="station_rename_hint">نام ایستگاه را وارد کنید</string>

@@ -54,7 +54,6 @@
     <string name="record_notification_message">Nagrywanie w toku</string>
     <string name="stop_record">ZATRZYMAJ NAGRYWANIE</string>
     <string name="save_dialog_title">Zapisać nagranie?</string>
-    <string name="save_dialog_caption">Aby posłuchać nagrań, otwórz aplikację Muzyka Play.</string>
     <string name="favorites">Ulubione</string>
     <string name="rename">Zmień nazwę</string>
     <string name="station_rename_hint">Wpisz nazwę stacji</string>

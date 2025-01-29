@@ -53,7 +53,6 @@
     <string name="record_notification_message">Kasalukuyang nagaganap ang pagre-record</string>
     <string name="stop_record">HUMINTO SA PAGRE-RECORD</string>
     <string name="save_dialog_title">I-save ang pagre-record?</string>
-    <string name="save_dialog_caption">Upang makinig sa mga pagre-record, buksan ang app na Play Music.</string>
     <string name="favorites">Mga Paborito</string>
     <string name="rename">Palitan ng pangalan</string>
     <string name="station_rename_hint">Ilagay ang pangalan ng istasyon</string>

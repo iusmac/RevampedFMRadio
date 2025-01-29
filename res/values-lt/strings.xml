@@ -54,7 +54,6 @@
     <string name="record_notification_message">Vyksta įrašymas</string>
     <string name="stop_record">SUSTABDYTI ĮRAŠYMĄ</string>
     <string name="save_dialog_title">Išsaugoti įrašą?</string>
-    <string name="save_dialog_caption">Jei norite klausyti įrašų, atidarykite „Google Play“ muzikos programą.</string>
     <string name="favorites">Mėgstamiausi</string>
     <string name="rename">Pervardyti</string>
     <string name="station_rename_hint">Įveskite stoties pavadinimą</string>

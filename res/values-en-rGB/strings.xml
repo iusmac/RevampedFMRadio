@@ -54,7 +54,6 @@
     <string name="record_notification_message">Recording in progress</string>
     <string name="stop_record">STOP RECORDING</string>
     <string name="save_dialog_title">Save recording?</string>
-    <string name="save_dialog_caption">To listen to recordings, open the Play Music app.</string>
     <string name="favorites">Favourites</string>
     <string name="rename">Rename</string>
     <string name="station_rename_hint">Enter station name</string>

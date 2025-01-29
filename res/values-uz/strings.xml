@@ -53,7 +53,6 @@
     <string name="record_notification_message">Yozib olish ketmoqda</string>
     <string name="stop_record">YOZISHNI TO‘XTATISH</string>
     <string name="save_dialog_title">Yozuv saqlab olinsinmi?</string>
-    <string name="save_dialog_caption">Saqlab olingan yozuvlarni eshitish uchun “Play Musiqa” ilovasini oching.</string>
     <string name="favorites">Sevimlilar</string>
     <string name="rename">Qayta nomlash</string>
     <string name="station_rename_hint">Radiokanal nomini kiriting</string>

@@ -54,7 +54,6 @@
     <string name="record_notification_message">Felvétel folyamatban</string>
     <string name="stop_record">FELVÉTEL LEÁLLÍTÁSA</string>
     <string name="save_dialog_title">Menti a felvételt?</string>
-    <string name="save_dialog_caption">A felvételek meghallgatásához nyissa meg a Play Zene alkalmazást.</string>
     <string name="favorites">Kedvencek</string>
     <string name="rename">Átnevezés</string>
     <string name="station_rename_hint">Adja meg az állomás nevét</string>

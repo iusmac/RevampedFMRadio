@@ -54,7 +54,6 @@
     <string name="record_notification_message">ჩაწერა მიმდინარეობს</string>
     <string name="stop_record">STOP ჩაწერა</string>
     <string name="save_dialog_title">განთავსებულია ჩაწერა?</string>
-    <string name="save_dialog_caption">უნდა მოუსმინოს ჩანაწერები, გახსნა Play მუსიკა app.</string>
     <string name="favorites">რჩეულები</string>
     <string name="rename">გადარქმევა</string>
     <string name="station_rename_hint">შეიყვანეთ არხის სახელი</string>

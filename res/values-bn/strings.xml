@@ -53,7 +53,6 @@
     <string name="record_notification_message">রেকর্ডিং চলছে</string>
     <string name="stop_record">রেকর্ড করা বন্ধ করুন</string>
     <string name="save_dialog_title">রেকর্ডিং সংরক্ষণ করবেন?</string>
-    <string name="save_dialog_caption">রেকর্ডিংগুলি শুনতে, Play Music অ্যাপ্লিকেশানটি খুলুন</string>
     <string name="favorites">পছন্দগুলি</string>
     <string name="rename">পুনরায় নামকরণ করুন</string>
     <string name="station_rename_hint">স্টেশনের নাম লিখুন</string>

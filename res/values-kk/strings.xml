@@ -53,7 +53,6 @@
     <string name="record_notification_message">Жазу орындалуда</string>
     <string name="stop_record">ЖАЗУДЫ ТОҚТАТУ</string>
     <string name="save_dialog_title">Жазбаны сақтау керек пе?</string>
-    <string name="save_dialog_caption">Жазбаларды тыңдау үшін Play Music қолданбасын ашыңыз.</string>
     <string name="favorites">Таңдаулылар</string>
     <string name="rename">Атын өзгерту</string>
     <string name="station_rename_hint">Станция атауын енгізіңіз</string>

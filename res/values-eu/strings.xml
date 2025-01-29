@@ -54,7 +54,6 @@
     <string name="record_notification_message">Grabatzen ari da</string>
     <string name="stop_record">GELDITU GRABAKETA</string>
     <string name="save_dialog_title">Grabaketa gorde nahi duzu?</string>
-    <string name="save_dialog_caption">Grabaketak entzuteko, ireki Play Music aplikazioa.</string>
     <string name="favorites">Gogokoak</string>
     <string name="rename">Aldatu izena</string>
     <string name="station_rename_hint">Idatzi irrati-katearen izena</string>

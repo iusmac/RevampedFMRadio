@@ -54,7 +54,6 @@
     <string name="record_notification_message">目前正在录音</string>
     <string name="stop_record">停止录音</string>
     <string name="save_dialog_title">要保存录音吗？</string>
-    <string name="save_dialog_caption">要收听录音，请打开 Play 音乐应用。</string>
     <string name="favorites">收藏</string>
     <string name="rename">重命名</string>
     <string name="station_rename_hint">输入电台名称</string>

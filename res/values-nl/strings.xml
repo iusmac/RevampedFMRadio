@@ -54,7 +54,6 @@
     <string name="record_notification_message">Opname bezig</string>
     <string name="stop_record">OPNAME STOPPEN</string>
     <string name="save_dialog_title">Opname opslaan?</string>
-    <string name="save_dialog_caption">Als je opnamen wilt beluisteren, open je de Play Music-app.</string>
     <string name="favorites">Favorieten</string>
     <string name="rename">Naam wijzigen</string>
     <string name="station_rename_hint">Zendernaam opgeven</string>

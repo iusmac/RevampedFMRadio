@@ -54,7 +54,6 @@
     <string name="record_notification_message">Probíhá nahrávání</string>
     <string name="stop_record">ZASTAVIT NAHRÁVÁNÍ</string>
     <string name="save_dialog_title">Chcete nahrávku uložit?</string>
-    <string name="save_dialog_caption">Chcete-li poslouchat nahrávky, spusťte aplikaci Hudba Play.</string>
     <string name="favorites">Oblíbené</string>
     <string name="rename">Přejmenovat</string>
     <string name="station_rename_hint">Zadejte název stanice</string>

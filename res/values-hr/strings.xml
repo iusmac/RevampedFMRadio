@@ -54,7 +54,6 @@
     <string name="record_notification_message">Snimanje u tijeku</string>
     <string name="stop_record">ZAUSTAVI SNIMANJE</string>
     <string name="save_dialog_title">Spremiti snimku?</string>
-    <string name="save_dialog_caption">Da biste slušali snimke, otvorite aplikaciju Play glazba.</string>
     <string name="favorites">Omiljene postaje</string>
     <string name="rename">Preimenuj</string>
     <string name="station_rename_hint">Unesite naziv postaje</string>

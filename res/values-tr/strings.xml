@@ -54,7 +54,6 @@
     <string name="record_notification_message">Kayıt devam ediyor</string>
     <string name="stop_record">KAYDI DURDUR</string>
     <string name="save_dialog_title">Kaydedilsin mi?</string>
-    <string name="save_dialog_caption">Kayıtları dinlemek için Play Müzik uygulamasını açın.</string>
     <string name="favorites">Favoriler</string>
     <string name="rename">Yeniden adlandır</string>
     <string name="station_rename_hint">İstasyonun adını girin</string>

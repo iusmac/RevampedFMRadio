@@ -54,7 +54,6 @@
     <string name="record_notification_message">ಮುದ್ರಣ ಪ್ರಗತಿಯಲ್ಲಿದೆ</string>
     <string name="stop_record">ಧ್ವನಿಮುದ್ರಣವನ್ನು ನಿಲ್ಲಿಸು</string>
     <string name="save_dialog_title">ರೆಕಾರ್ಡಿಂಗ್ ಉಳಿಸುವುದೇ?</string>
-    <string name="save_dialog_caption">ರೆಕಾರ್ಡಿಂಗ್‌ಗಳನ್ನು ಆಲಿಸಲು, Play Music ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಿರಿ.</string>
     <string name="favorites">ಮೆಚ್ಚಿನವುಗಳು</string>
     <string name="rename">ಮರುನಾಮ</string>
     <string name="station_rename_hint">ಕೇಂದ್ರದ ಹೆಸರು ನಮೂದಿಸಿ</string>

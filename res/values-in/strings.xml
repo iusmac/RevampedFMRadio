@@ -54,7 +54,6 @@
     <string name="record_notification_message">Sedang merekam</string>
     <string name="stop_record">BERHENTI MEREKAM</string>
     <string name="save_dialog_title">Simpan rekaman?</string>
-    <string name="save_dialog_caption">Untuk mendengarkan rekaman, buka aplikasi Play Musik.</string>
     <string name="favorites">Favorit</string>
     <string name="rename">Ganti nama</string>
     <string name="station_rename_hint">Masukkan nama stasiun radio</string>

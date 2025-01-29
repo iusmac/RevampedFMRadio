@@ -54,7 +54,6 @@
     <string name="record_notification_message">Enregistrement en cours…</string>
     <string name="stop_record">ARRÊTER ENREGISTR.</string>
     <string name="save_dialog_title">Sauvegarder l\'enregistrement ?</string>
-    <string name="save_dialog_caption">Pour écouter des enregistrements, ouvrez l\'application Play Musique.</string>
     <string name="favorites">Favoris</string>
     <string name="rename">Renommer</string>
     <string name="station_rename_hint">Saisissez le nom de la radio</string>

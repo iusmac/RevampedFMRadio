@@ -54,7 +54,6 @@
     <string name="record_notification_message">Enregistrament en curs</string>
     <string name="stop_record">ATURA ENREGISTRAMENT</string>
     <string name="save_dialog_title">Vols desar l\'enregistrament?</string>
-    <string name="save_dialog_caption">Per escoltar els enregistraments, obre l\'aplicació Play Music.</string>
     <string name="favorites">Preferits</string>
     <string name="rename">Canvia el nom</string>
     <string name="station_rename_hint">Introdueix el nom de l\'emissora.</string>

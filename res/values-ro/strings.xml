@@ -54,7 +54,6 @@
     <string name="record_notification_message">Înregistrare în curs</string>
     <string name="stop_record">OPRIȚI ÎNREGISTRAREA</string>
     <string name="save_dialog_title">Salvați înregistrarea?</string>
-    <string name="save_dialog_caption">Pentru a asculta înregistrări, deschideți aplicația Muzică Play.</string>
     <string name="favorites">Preferate</string>
     <string name="rename">Redenumiți</string>
     <string name="station_rename_hint">Introduceți numele postului</string>

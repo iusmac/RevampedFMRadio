@@ -54,7 +54,6 @@
     <string name="record_notification_message">Notiek ierakstīšana</string>
     <string name="stop_record">APTURĒT IERAKSTĪŠANU</string>
     <string name="save_dialog_title">Vai saglabāt ierakstu?</string>
-    <string name="save_dialog_caption">Lai klausītos ierakstus, atveriet lietotni Play mūzika.</string>
     <string name="favorites">Izlase</string>
     <string name="rename">Pārdēvēt</string>
     <string name="station_rename_hint">Ievadiet radiostacijas nosaukumu</string>

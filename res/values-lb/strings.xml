@@ -54,7 +54,6 @@
     <string name="record_notification_message">Opnam leeft</string>
     <string name="stop_record">OPNAM STOPPEN</string>
     <string name="save_dialog_title">Opnam späicheren?</string>
-    <string name="save_dialog_caption">Fir d\'Opnamen ze lauschteren, maach d\'App Play Music op.</string>
     <string name="favorites">Favoritten</string>
     <string name="rename">Ëmbenennen</string>
     <string name="station_rename_hint">Sendernumm aginn</string>

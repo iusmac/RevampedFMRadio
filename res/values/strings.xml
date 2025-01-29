@@ -70,7 +70,7 @@
     <string name="fm_turn_on">Play or stop FM radio</string>
     <!-- Title of a menu item to start recording FM sound [CHAR LIMIT=30] -->
     <string name="fm_over_start_record">Start recording</string>
-    <!-- Title of a menu item to see the saved recordings in play music  [CHAR LIMIT=30] -->
+    <!-- Title of a menu item to see the saved recordings in music app [CHAR LIMIT=30] -->
     <string name="fm_over_record_list">Saved recordings</string>
     <!-- Title of a menu item to refresh the station list  [CHAR LIMIT=30] -->
     <string name="fm_station_list_menu_refresh">Refresh</string>
@@ -96,8 +96,6 @@
     <string name="stop_record">STOP RECORDING</string>
     <!-- Title of save dialog shown when stop recording [CHAR LIMIT=40] -->
     <string name="save_dialog_title">Save recording?</string>
-    <!-- Tips of save dialog shown when stop recording [CHAR LIMIT=NONE] -->
-    <string name="save_dialog_caption">To listen to recordings, open the Play Music app.</string>
     <!-- Title of favorite area shown when we have favorite stations [CHAR LIMIT=50] -->
     <string name="favorites">Favorites</string>
     <!-- Title of a menu in favorite card more menu. It means rename a station [CHAR LIMIT=50] -->

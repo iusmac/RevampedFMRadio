@@ -54,7 +54,6 @@
     <string name="record_notification_message">録音中です</string>
     <string name="stop_record">録音を停止</string>
     <string name="save_dialog_title">録音を保存しますか？</string>
-    <string name="save_dialog_caption">録音を再生するには、Playミュージックアプリを開きます。</string>
     <string name="favorites">お気に入り</string>
     <string name="rename">名前を変更</string>
     <string name="station_rename_hint">放送局名を入力します</string>
