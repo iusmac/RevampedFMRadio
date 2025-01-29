@@ -1171,19 +1171,15 @@ public class FmScroller extends FrameLayout {
         mPopupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.remove_favorite:
-                        if (mEventListener != null) {
-                            mEventListener.onRemoveFavorite(frequency);
-                        }
-                        break;
-                    case R.id.rename:
-                        if (mEventListener != null) {
-                            mEventListener.onRename(frequency);
-                        }
-                        break;
-                    default:
-                        break;
+                int itemId = item.getItemId();
+                if (itemId == R.id.remove_favorite) {
+                    if (mEventListener != null) {
+                        mEventListener.onRemoveFavorite(frequency);
+                    }
+                } else if (itemId == R.id.rename) {
+                    if (mEventListener != null) {
+                        mEventListener.onRename(frequency);
+                    }
                 }
                 return false;
             }

@@ -422,7 +422,7 @@ public class FmRecordActivity extends Activity implements
             switch (msg.what) {
                 case FmListener.MSGID_REFRESH:
                     if (mService != null) {
-                        long recordTimeInMillis = mService.getRecordTime();
+                        recordTimeInMillis = mService.getRecordTime();
                         checkStorageSpaceAndStop();
                         recordTimeInMillis = mService.getRecordTime();
                         long recordTimeInSec = recordTimeInMillis / 1000L;

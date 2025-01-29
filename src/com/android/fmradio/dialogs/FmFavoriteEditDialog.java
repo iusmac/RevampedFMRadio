@@ -178,21 +178,14 @@ public class FmFavoriteEditDialog extends DialogFragment {
          */
         @Override
         public void onClick(View v) {
-
-            switch (v.getId()) {
-                case R.id.alertdialog_button_ok:
-                    String newName = mStationNameEditor.getText().toString().trim();
-                    final int stationFreq = getArguments().getInt(STATION_FREQ);
-                    mListener.editFavorite(stationFreq, newName);
-                    dismissAllowingStateLoss();
-                break;
-
-                case R.id.alertdialog_button_cancel:
-                    dismissAllowingStateLoss();
-                    break;
-
-                default:
-                    break;
+            int viewId = v.getId();
+            if (viewId == R.id.alertdialog_button_ok) {
+                String newName = mStationNameEditor.getText().toString().trim();
+                final int stationFreq = getArguments().getInt(STATION_FREQ);
+                mListener.editFavorite(stationFreq, newName);
+                dismissAllowingStateLoss();
+            } else if (viewId == R.id.alertdialog_button_cancel) {
+                dismissAllowingStateLoss();
             }
         }
     };
