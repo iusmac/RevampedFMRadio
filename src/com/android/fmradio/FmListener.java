@@ -117,6 +117,8 @@ public interface FmListener {
     int MSGID_HEADSET_HOOK_EVENT = 102;
     int MSGID_HEADSET_HOOK_MULTI_CLICK_TIMEOUT = 103;
 
+    int MSGID_SWITCH_LOW_POWER_MODE = 104;
+
     /**
      * Call back method to activity from service
      */
