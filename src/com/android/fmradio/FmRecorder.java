@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -44,7 +45,7 @@ import java.util.Locale;
  * This class provider interface to recording, stop recording, save recording
  * file, play recording file
  */
-public class FmRecorder implements AudioRecorder.Callback {
+public class FmRecorder implements MediaRecorder.OnErrorListener, MediaRecorder.OnInfoListener {
     private static final String TAG = "FmRecorder";
     // file prefix
     public static final String RECORDING_FILE_PREFIX = "FM";
@@ -83,15 +84,7 @@ public class FmRecorder implements AudioRecorder.Callback {
     // listener use for notify service the record state or error state
     private OnRecorderStateChangedListener mStateListener = null;
     // recorder use for record file
-    private AudioRecorder mRecorder = null;
-    // take this lock before manipulating mRecorder
-    private final Object mRecorderLock = new Object();
-    // format of input audio
-    private AudioFormat mInputFormat = null;
-
-    FmRecorder(AudioFormat in) {
-        mInputFormat = in;
-    }
+    private MediaRecorder mRecorder;
 
     /**
      * Start recording the voice of FM, also check the pre-conditions, if not
@@ -152,23 +145,41 @@ public class FmRecorder implements AudioRecorder.Callback {
             setError(ERROR_SDCARD_WRITE_FAILED);
             return;
         }
+
+        final long maxFileSize = FmUtils.getAvailableSpace(recordingSdcard) -
+            FmUtils.LOW_SPACE_THRESHOLD;
+
         // set record parameter and start recording
         try {
-            synchronized(mRecorderLock) {
-                if (mRecorder != null) {
-                    mRecorder.stopRecording();
-                }
-
-                mRecorder = new AudioRecorder(mInputFormat, mRecordFile);
-                mRecorder.setCallback(this);
-                mRecordStartTime = SystemClock.elapsedRealtime();
-                mIsRecordingFileSaved = false;
+            if (mRecorder != null && STATE_RECORDING == mInternalState) {
+                stopRecording();
             }
-        } catch (IllegalStateException e) {
-            Log.e(TAG, "startRecording, IllegalStateException while starting recording!", e);
+
+            mRecorder = new MediaRecorder();
+            mRecorder.setMaxFileSize(maxFileSize);
+            mRecorder.setMaxDuration(0);
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.RADIO_TUNER);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioSamplingRate(44100);
+            mRecorder.setAudioEncodingBitRate(128000);
+            mRecorder.setAudioChannels(2);
+            mRecorder.setOutputFile(mRecordFile.getAbsolutePath());
+            mRecorder.prepare();
+            Log.d(TAG, "startRecording, recorder.start()");
+            mRecorder.start();
+            mRecordStartTime = SystemClock.elapsedRealtime();
+            mIsRecordingFileSaved = false;
+        } catch (RuntimeException|IOException e) {
+            Log.e(TAG, "startRecording, error while starting recording!", e);
             setError(ERROR_RECORDER_INTERNAL);
+            mRecorder.reset();
+            mRecorder.release();
+            mRecorder = null;
             return;
         }
+        mRecorder.setOnErrorListener(this);
+        mRecorder.setOnInfoListener(this);
         setState(STATE_RECORDING);
     }
 
@@ -250,7 +261,7 @@ public class FmRecorder implements AudioRecorder.Callback {
      * Discard current recording file, release recorder and player
      */
     public void discardRecording() {
-        if ((STATE_RECORDING == mInternalState) && (null != mRecorder)) {
+        if ((STATE_RECORDING == mInternalState)) {
             stopRecorder();
         }
 
@@ -294,11 +305,63 @@ public class FmRecorder implements AudioRecorder.Callback {
         void onRecorderError(int error);
     }
 
+    /**
+     * Called when an error occurs while recording.
+     *
+     * @param mr the MediaRecorder that encountered the error
+     * @param what    the type of error that has occurred:
+     * <ul>
+     * <li>{@link #MEDIA_RECORDER_ERROR_UNKNOWN}
+     * <li>{@link #MEDIA_ERROR_SERVER_DIED}
+     * </ul>
+     * @param extra   an extra code, specific to the error type
+     */
     @Override
-    public void onError(int what) {
-        Log.e(TAG, "onError, what = " + what);
+    public void onError(MediaRecorder mr, int what, int extra) {
+        Log.e(TAG, "onError, what = " + what + ", extra = " + extra);
         stopRecorder();
-        setError(ERROR_RECORDER_INTERNAL);
+        int error = ERROR_RECORDER_INTERNAL;
+        if (what == MediaRecorder.MEDIA_RECORDER_ERROR_UNKNOWN) {
+            final String recordingSdcard = FmUtils.getDefaultStoragePath();
+            if (!FmUtils.hasEnoughSpace(recordingSdcard)) {
+                error = ERROR_SDCARD_INSUFFICIENT_SPACE;
+            }
+        }
+        setError(error);
+        if (STATE_RECORDING == mInternalState) {
+            setState(STATE_IDLE);
+        }
+    }
+
+    /**
+     * Called to indicate an info or a warning during recording.
+     *
+     * @param mr   the MediaRecorder the info pertains to
+     * @param what the type of info or warning that has occurred
+     * <ul>
+     * <li>{@link #MEDIA_RECORDER_INFO_UNKNOWN}
+     * <li>{@link #MEDIA_RECORDER_INFO_MAX_DURATION_REACHED}
+     * <li>{@link #MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED}
+     * </ul>
+     * @param extra   an extra code, specific to the info type
+     */
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) {
+        Log.e(TAG, "onInfo, what = " + what + ", extra = " + extra);
+        final int error;
+        switch (what) {
+            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
+                error = ERROR_RECORDER_INTERNAL;
+                break;
+
+            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED:
+                error = ERROR_SDCARD_INSUFFICIENT_SPACE;
+                break;
+
+            default: return;
+        }
+        stopRecorder();
+        setError(error);
         if (STATE_RECORDING == mInternalState) {
             setState(STATE_IDLE);
         }
@@ -440,18 +503,16 @@ public class FmRecorder implements AudioRecorder.Callback {
    }
 
     private void stopRecorder() {
-        synchronized (mRecorderLock) {
-            if (mRecorder != null) {
-                mRecorder.stopRecording();
+        if (mRecorder != null) {
+            try {
+                mRecorder.stop();
+            } catch(Exception e) {
+                e.printStackTrace();
+            } finally {
+                Log.d(TAG, "stopRecorder, reset and release of mRecorder");
+                mRecorder.reset();
+                mRecorder.release();
                 mRecorder = null;
-            }
-        }
-    }
-
-    public void encode(byte bytes[]) {
-        synchronized (mRecorderLock) {
-            if (mRecorder != null) {
-                mRecorder.encode(bytes);
             }
         }
     }

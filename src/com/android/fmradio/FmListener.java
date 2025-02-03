@@ -86,6 +86,7 @@ public interface FmListener {
     int MSGID_SET_RDS_FINISHED = 5;
     int MSGID_SET_CHANNEL_FINISHED = 6;
     int MSGID_SET_MUTE_FINISHED = 7;
+    int MSGID_VOLUME_CHANGED = 8;
     // Fm main
     int MSGID_POWERUP_FINISHED = 9;
     int MSGID_POWERDOWN_FINISHED = 10;
