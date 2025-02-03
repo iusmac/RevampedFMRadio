@@ -2510,7 +2510,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 case FmListener.MSGID_POWERUP_FINISHED:
                     bundle = msg.getData();
                     handlePowerUp(bundle);
-                    mIsSpeakerUsed = !isHeadSetIn();
+                    mIsSpeakerUsed = !isHeadSetIn() || isSpeakerPhoneOn();
                     break;
 
                 // power down
