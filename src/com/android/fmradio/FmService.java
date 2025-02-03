@@ -34,12 +34,15 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
+import android.media.AudioDeviceAttributes;
+import android.media.AudioDeviceInfo;
 import android.media.AudioDevicePort;
 import android.media.AudioDevicePortConfig;
 import android.media.AudioFocusRequest;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.AudioManager.OnPreferredDevicesForStrategyChangedListener;
 import android.media.AudioMixPort;
 import android.media.AudioPort;
 import android.media.AudioPortConfig;
@@ -48,12 +51,14 @@ import android.media.AudioSystem;
 import android.media.AudioTrack;
 import android.media.MediaMetadata;
 import android.media.MediaRecorder;
+import android.media.audiopolicy.AudioProductStrategy;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerExecutor;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
@@ -61,6 +66,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -71,11 +77,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Background service to control FM or do background tasks.
  */
-public class FmService extends Service implements FmRecorder.OnRecorderStateChangedListener, OnAudioFocusChangeListener {
+public class FmService extends Service implements FmRecorder.OnRecorderStateChangedListener,
+       OnAudioFocusChangeListener, OnPreferredDevicesForStrategyChangedListener  {
     // Logging
     private static final String TAG = "FmService";
 
@@ -232,6 +240,8 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private Object mRenderLock = new Object();
 
     private AudioFocusRequest mGainFocusRequest;
+    private boolean mIsFMDeviceLoopbackActive;
+    private final AudioProductStrategy mStrategyForMedia = FmUtils.getMediaAudioProductStrategy();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -321,6 +331,15 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 notifyActivityStateChanged(bundle);
 
                 switchAntennaAsync(mValueHeadSetPlug);
+                // adjust FM audio loopback volume to the given index
+            } else if (AudioManager.VOLUME_CHANGED_ACTION.equals(action)) {
+                final int streamType = intent.getIntExtra(AudioManager.EXTRA_VOLUME_STREAM_TYPE, -1);
+                if (streamType == AudioManager.STREAM_MUSIC) {
+                    final Message msg = mFmServiceHandler.obtainMessage(FmListener.MSGID_VOLUME_CHANGED);
+                    msg.setData(intent.getExtras());
+                    mFmServiceHandler.removeMessages(FmListener.MSGID_VOLUME_CHANGED);
+                    mFmServiceHandler.sendMessage(msg);
+                }
             }
         }
     }
@@ -376,6 +395,25 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         mForcedUseForMedia = isSpeaker ? AudioSystem.FORCE_SPEAKER : AudioSystem.FORCE_NONE;
         AudioSystem.setForceUse(FOR_PROPRIETARY, mForcedUseForMedia);
         mIsSpeakerUsed = isSpeaker;
+        if (mStrategyForMedia != null) {
+            // Ensure the preferred device strategy for media is not set, otherwise it will shadow
+            // the AudioSystem.setForceUse() call. The preferred device strategy is set from the
+            // output selector in the media notification (added in Android 11). The preferred device
+            // strategy is also used to resolve the stream volume for media, so resetting is needed
+            // in order to set the correct FM volume after re-routing the FM audio loopback device
+            mAudioManager.removePreferredDeviceForStrategy(mStrategyForMedia);
+        }
+        // Also, need to re-route the FM audio loopback device to a new audio device
+        if (mIsFMDeviceLoopbackActive) {
+            int audioDeviceType = mIsSpeakerUsed ? AudioSystem.DEVICE_OUT_SPEAKER :
+                AudioSystem.DEVICE_OUT_WIRED_HEADPHONE;
+            audioDeviceType |= AudioSystem.DEVICE_OUT_FM;
+            // HACK: Set the FM loopback device volume to 0 to squelch any output before re-routing
+            // to a new audio device, otherwise headphones may end up playing at full volume ;)
+            mAudioManager.setParameters("fm_volume=0;fm_routing=" + audioDeviceType);
+            final int currentVolumeIndex = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            setFMVolume(currentVolumeIndex);
+        }
     }
 
     /**
@@ -386,6 +424,29 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     public void setSpeakerPhoneOn(boolean isSpeaker) {
         Log.d(TAG, "setSpeakerPhoneOn " + isSpeaker);
         setForceUse(isSpeaker);
+    }
+
+    /**
+     * Called when preferred audio devices for the given strategy has changed.
+     * @param strategy the {@link AudioProductStrategy} whose preferred device changed
+     * @param devices a list of newly set preferred audio devices
+     */
+    @Override
+    public void onPreferredDevicesForStrategyChanged(final AudioProductStrategy strategy,
+            final List<AudioDeviceAttributes> devices) {
+
+        final boolean isMediaStrategy = strategy.getId() == mStrategyForMedia.getId();
+        Log.d(TAG, "onPreferredDevicesForStrategyChanged, isMediaStrategy = " + isMediaStrategy +
+                " devices = " + devices);
+        if (isMediaStrategy && !devices.isEmpty()) {
+            final boolean isSpeakerUsed = devices.stream()
+                .anyMatch((it) -> it.getType() == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER);
+            // Handle the new preferred audio route selected in the media notification, which may
+            // require to re-route the FM audio loopback
+            if (mIsSpeakerUsed != isSpeakerUsed) {
+                setForceUse(isSpeakerUsed);
+            }
+        }
     }
 
     /**
@@ -453,6 +514,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private Thread mRenderThread = null;
     private AudioRecord mAudioRecord = null;
     private AudioTrack mAudioTrack = null;
+    private boolean mUseAudioSession;
     private static final int SAMPLE_RATE = 44100;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_STEREO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
@@ -467,12 +529,6 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private void startAudioTrack() {
         if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_STOPPED) {
             mAudioTrack.play();
-        }
-    }
-
-    private void stopAudioTrack() {
-        if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
-            mAudioTrack.stop();
         }
     }
 
@@ -517,10 +573,6 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                         // while AudioRecord is reading.
                         if (isRender()) {
                             mAudioTrack.write(tmpBuf, 0, tmpBuf.length);
-                        }
-
-                        if (mFmRecorder != null) {
-                            mFmRecorder.encode(tmpBuf);
                         }
                     } else {
                         // Earphone mode will come here and wait.
@@ -1126,7 +1178,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         }
 
         if (mFmRecorder == null) {
-            mFmRecorder = new FmRecorder(mAudioRecord.getFormat());
+            mFmRecorder = new FmRecorder();
             mFmRecorder.registerRecorderStateListener(FmService.this);
         }
 
@@ -1290,6 +1342,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         mWakeLock.setReferenceCounted(false);
         sRecordingSdcard = FmUtils.getDefaultStoragePath();
 
+        mUseAudioSession = SystemProperties.getBoolean("ro.vendor.fm.use_audio_session", false);
+        Log.d(TAG, "onCreate, mUseAudioSession = " + mUseAudioSession);
+
         registerFmBroadcastReceiver();
         registerSdcardReceiver();
 
@@ -1297,14 +1352,21 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         handlerThread.start();
         mFmServiceHandler = new FmRadioServiceHandler(handlerThread.getLooper());
 
+        if (mStrategyForMedia != null) {
+            mAudioManager.addOnPreferredDevicesForStrategyChangedListener(
+                    new HandlerExecutor(mFmServiceHandler), this);
+        }
+
         openDevice();
         // set speaker to default status, avoid setting->clear data.
         setForceUse(mIsSpeakerUsed);
 
         setUpMediaSession();
 
-        initAudioRecordSink();
-        createRenderThread();
+        if (mUseAudioSession) {
+            initAudioRecordSink();
+            createRenderThread();
+        }
     }
 
     // This function may be called in different threads.
@@ -1331,6 +1393,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_HEADSET_PLUG);
+        if (!mUseAudioSession) {
+            filter.addAction(AudioManager.VOLUME_CHANGED_ACTION);
+        }
         mBroadcastReceiver = new FmServiceBroadcastReceiver();
         registerReceiver(mBroadcastReceiver, filter);
     }
@@ -1345,6 +1410,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     @Override
     public void onDestroy() {
         mAudioManager.setParameters("AudioFmPreStop=1");
+        mAudioManager.removeOnPreferredDevicesForStrategyChangedListener(this);
         setMute(true);
         // stop rds first, avoid blocking other native method
         if (isRdsSupported()) {
@@ -1359,8 +1425,10 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         }
         removeNotification();
         mSession.setActive(false);
-        stopRender();
-        exitRenderThread();
+        if (mUseAudioSession) {
+            stopRender();
+            exitRenderThread();
+        }
         super.onDestroy();
     }
 
@@ -1579,14 +1647,76 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                     + mIsAudioFocusHeld);
                 return;
             }
+        }
 
-            startAudioTrack();
-            if (!isRendering()) {
-                startRender();
+        if (mUseAudioSession) {
+            if (enable) {
+                startAudioTrack();
+                if (!isRendering()) {
+                    startRender();
+                }
+            } else {
+                stopRender();
             }
         } else {
-            stopRender();
+            setFMDeviceLoopback(enable);
         }
+    }
+
+    /**
+     * Enable FM audio loopback.
+     */
+    private void setFMDeviceLoopback(final boolean enable) {
+        int audioDeviceType = mIsSpeakerUsed ? AudioSystem.DEVICE_OUT_SPEAKER :
+            AudioSystem.DEVICE_OUT_WIRED_HEADPHONE;
+        if (enable) {
+            if (mIsFMDeviceLoopbackActive) {
+                Log.d(TAG, "setFMDeviceLoopback: already active, not enabling the audio");
+                return;
+            }
+
+            // Need the AUDIO_DEVICE_OUT_FM flag to start FM loopback. If absent, does the opposite
+            audioDeviceType |= AudioSystem.DEVICE_OUT_FM;
+
+            final String status = mAudioManager.getParameters("fm_status");
+            Log.d(TAG, "setFMDeviceLoopback: FM HW loopback status = " + status);
+            if (status.contains("1")) {
+                /* This case usually happens, when FM is force killed through settings app
+                 * and we don't get chance to disable Hardware LoopBack.
+                 * Hardware LoopBack will be running, disable it first and enable again
+                 * using routing set param to audio */
+                Log.d(TAG, "setFMDeviceLoopback: FM HW loopback active; resetting...");
+                mAudioManager.setParameters("fm_routing=" + audioDeviceType);
+            }
+            mIsFMDeviceLoopbackActive = true;
+
+            final int currentVolumeIndex = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            setFMVolume(currentVolumeIndex);
+        } else if (!mIsFMDeviceLoopbackActive) {
+            Log.w(TAG, "setFMDeviceLoopback: not active, not disabling the audio");
+            return;
+        } else {
+            mIsFMDeviceLoopbackActive = false;
+        }
+        final String keyValPairs = "handle_fm=" + audioDeviceType;
+        Log.d(TAG, "setFMDeviceLoopback: " + keyValPairs);
+        mAudioManager.setParameters(keyValPairs);
+    }
+
+    /**
+     * Adjust FM audio loopback volume to the given index.
+     */
+    private void setFMVolume(int currentVolumeIndex) {
+        final int audioDevice = mIsSpeakerUsed ? AudioSystem.DEVICE_OUT_SPEAKER :
+            AudioSystem.DEVICE_OUT_WIRED_HEADPHONE;
+        float decibels = mAudioManager.getStreamVolumeDb(AudioManager.STREAM_MUSIC,
+                currentVolumeIndex, audioDevice);
+        /* DbToAmpl */
+        float volume = (float) Math.exp(decibels * 0.115129f);
+        Log.d(TAG, "setFMVolume:" +
+                " currentVolumeIndex = " + currentVolumeIndex +
+                " volume = " + volume);
+        mAudioManager.setParameters("fm_volume=" + volume);
     }
 
     /**
@@ -1863,7 +1993,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         notifyActivityStateChanged(bundle);
 
         if (state == FmRecorder.STATE_IDLE) { // stopped recording?
-            if (isPlaying() && !isRendering()) {
+            if (mUseAudioSession && isPlaying() && !isRendering()) {
                 startRender();
             }
         }
@@ -2417,6 +2547,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                             notifyActivityStateChanged(bundle);
                         }
                     }
+                    if (mIsFMDeviceLoopbackActive) {
+                        setForceUse(mIsSpeakerUsed);
+                    }
                     break;
 
                 // tune to station
@@ -2560,6 +2693,17 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                     mHeadsetHookClickCounter = 0;
                     break;
                 }
+
+                case FmListener.MSGID_VOLUME_CHANGED:
+                    if (!isPlaying()) {
+                        Log.d(TAG, "FM is not playing audio. Skipping changing volume.");
+                        break;
+                    }
+                    bundle = msg.getData();
+                    final int currentVolumeIndex =
+                        bundle.getInt(AudioManager.EXTRA_VOLUME_STREAM_VALUE, -1);
+                    setFMVolume(currentVolumeIndex);
+                    break;
 
                 /********** recording **********/
                 case FmListener.MSGID_STARTRECORDING_FINISHED:

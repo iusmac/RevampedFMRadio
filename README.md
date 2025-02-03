@@ -79,6 +79,8 @@ AOSP FMRadio | RevampedFMRadio
     _The driver will be switched to low power mode to improve battery life once the device enters idle state (screen off), as we know for a fact that we will have fewer interruptions._
     </details>
 
+16. Support FM device loopback & audio routing for devices with newer audio HAL (CodeAurora version)
+
 ## Installation
 1. Clone the branch that corresponds to your device SoC, for example:
     - Use as an <em>in-tree</em> package within the device tree (<em>Recommended</em>):
@@ -99,16 +101,23 @@ PRODUCT_PACKAGES += \
 ```
 **Note**: _RevampedFMRadio_ package will override _FMRadio_ package if the ROM sources still ship it.
 
+3. Set the `ro.vendor.fm.use_audio_session` boolean prop in your
+   <em>vendor.prop</em> file to enable the legacy method of determining the FM
+   audio path if you get no FM audio output (although recording may work). This
+   may be needed if your device is quite old with Oreo mixer paths and kernel
+   drivers. If you had FM audio output in `v3.0`, this setting could help
+   restore it.
+
 <details><summary><h4>Qualcomm SoC-specific part</h4></summary>
 
-3. Add JNI library to `device.mk`:
+4. Add JNI library to `device.mk`:
 ```Makefile
 PRODUCT_PACKAGES += \
     libqcomfmjni
 ```
-4. Make sure you have `vendor.qcom.bluetooth.soc` prop in your <em>vendor.prop</em> file.
+5. Make sure you have `vendor.qcom.bluetooth.soc` prop in your <em>vendor.prop</em> file.
    You may already have something similar, like `vendor.bluetooth.soc`, but it's legacy. Rename if proprietary blobs support new prop name or duplicate the value using new prop name to ensure RevampedFMRadio can properly comunicate to your device's Bluetooth SoC.
-5. Allow app to read vendor properties mentioned in the previous step:
+6. Allow app to read vendor properties mentioned in the previous step:
 ```Console
 # sepolicy/vendor/system_app.te
 get_prop(system_app, vendor_bluetooth_prop)
@@ -116,7 +125,7 @@ get_prop(system_app, vendor_bluetooth_prop)
 </details>
 <details><summary><h4>MediaTek SoC-specific part</h4></summary></summary>
 
-3. Add JNI library to `device.mk`:
+4. Add JNI library to `device.mk`:
 ```Makefile
 PRODUCT_PACKAGES += \
     libmtkfmjni

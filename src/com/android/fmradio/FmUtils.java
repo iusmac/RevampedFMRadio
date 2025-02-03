@@ -25,6 +25,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.audiopolicy.AudioProductStrategy;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
@@ -73,6 +76,9 @@ public class FmUtils {
     private static final String FM_IS_FIRST_ENTER_STATION_LIST = "fm_is_first_enter_station_list";
     // StorageManager For FM record
     private static StorageManager sStorageManager = null;
+
+    private static final AudioAttributes ATTRIBUTES_MEDIA =
+        new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).build();
 
     /**
      * Whether the frequency is valid.
@@ -193,6 +199,26 @@ public class FmUtils {
     }
 
     /**
+     * Get the available space on the recording SD card.
+     *
+     * @param recordingSdcard The recording sdcard path
+     *
+     * @return the number of unallocated bytes, or -1 if SD card is unreachable.
+     */
+    public static long getAvailableSpace(String recordingSdcard) {
+        try {
+            StatFs fs = new StatFs(recordingSdcard);
+            long blocks = fs.getAvailableBlocks();
+            long blockSize = fs.getBlockSize();
+            long spaceLeft = blocks * blockSize;
+            return spaceLeft;
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "getAvailableSpace, sdcard may be unmounted:" + recordingSdcard);
+            return -1L;
+        }
+    }
+
+    /**
      * Check if has enough space for record
      *
      * @param recordingSdcard The recording sdcard path
@@ -200,17 +226,7 @@ public class FmUtils {
      * @return true if has enough space for record
      */
     public static boolean hasEnoughSpace(String recordingSdcard) {
-        boolean ret = false;
-        try {
-            StatFs fs = new StatFs(recordingSdcard);
-            long blocks = fs.getAvailableBlocks();
-            long blockSize = fs.getBlockSize();
-            long spaceLeft = blocks * blockSize;
-            ret = spaceLeft > LOW_SPACE_THRESHOLD ? true : false;
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "hasEnoughSpace, sdcard may be unmounted:" + recordingSdcard);
-        }
-        return ret;
+        return getAvailableSpace(recordingSdcard) > LOW_SPACE_THRESHOLD;
     }
 
     /**
@@ -391,5 +407,17 @@ public class FmUtils {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(FM_IS_SPEAKER_MODE, isSpeaker);
         editor.commit();
+    }
+
+    /**
+     * Get the media audio strategy for which to set the preferred device, or null if unavailable.
+     */
+    static AudioProductStrategy getMediaAudioProductStrategy() {
+        for (AudioProductStrategy strategy : AudioManager.getAudioProductStrategies()) {
+            if (strategy.supportsAudioAttributes(ATTRIBUTES_MEDIA)) {
+                return strategy;
+            }
+        }
+        return null;
     }
 }
