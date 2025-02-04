@@ -1425,6 +1425,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         }
         removeNotification();
         mSession.setActive(false);
+        mSession.release();
         if (mUseAudioSession) {
             stopRender();
             exitRenderThread();
