@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -142,8 +143,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
 
     private int mCurrentStation = FmUtils.DEFAULT_STATION;
 
-    private boolean mPoweredUpAtLeastOnce = false;
-
     // Instance variables
     private FmService mService = null;
 
@@ -217,15 +216,6 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
 
                 case FmListener.MSGID_POWERUP_FINISHED:
                     bundle = msg.getData();
-
-                    // In wireless mode on first power up we have to set proper
-                    // icon as it expects headphones by default
-                    if (!mPoweredUpAtLeastOnce) {
-                        boolean isHeadSetIn = mService.isHeadSetIn();
-                        setMenuItemAudioIcon(!isHeadSetIn);
-                        refreshMenuItemAudio(isHeadSetIn);
-                        mPoweredUpAtLeastOnce = true;
-                    }
 
                     boolean isPowerup = (mService.getPowerStatus() == FmService.POWER_UP);
                     int station = bundle.getInt(FmListener.KEY_TUNE_TO_STATION);
@@ -990,10 +980,19 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
             // if power down by other app, should disable station list, over
             // menu
             mMenuItemStationlList.setEnabled(enabled);
-            // If BT headset is in use, need to disable speaker/earphone switching menu.
+            // If BT headset is in use or preferred device for media strategy is neither speaker nor
+            // headset (e.g., USB audio headset), need to disable speaker/earphone switching menu.
+            final int preferredDevice = mService.getPreferredDeviceForMediaStrategy();
             mMenuItemHeadset.setEnabled(enabled &&
                     mService.isHeadSetIn() &&
-                    !mService.isBluetoothHeadsetInUse());
+                    (!mService.isBluetoothHeadsetInUse() &&
+                     (preferredDevice == AudioDeviceInfo.TYPE_UNKNOWN ||
+                      (preferredDevice == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER ||
+                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
+                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADSET) ||
+                      // If neither speaker or headset, ensure the preferred device (e.g., USB
+                      // audio headset) is disconnected
+                      !mService.isAudioDeviceAvailable(preferredDevice))));
         }
     }
 
