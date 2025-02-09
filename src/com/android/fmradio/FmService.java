@@ -1807,8 +1807,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
      * Show notification
      */
     private void showPlayingNotification() {
-        if (isActivityForeground() || mIsScanning
-                || (getRecorderState() == FmRecorder.STATE_RECORDING)) {
+        if (mIsScanning) {
             return;
         }
         synchronized (mNotificationLock) {
@@ -1840,6 +1839,33 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 }
             }
 
+            long playBackStateActions = PlaybackState.ACTION_PLAY |
+                    PlaybackState.ACTION_PLAY_PAUSE |
+                    PlaybackState.ACTION_PAUSE |
+                    PlaybackState.ACTION_SKIP_TO_NEXT |
+                    PlaybackState.ACTION_SKIP_TO_PREVIOUS |
+                    PlaybackState.ACTION_STOP;
+
+            mSession.setPlaybackState(new PlaybackState.Builder()
+                    .setActions(playBackStateActions)
+                    .setState((isPlaying() ?
+                            PlaybackState.STATE_PLAYING :
+                            PlaybackState.STATE_PAUSED), 0, 1.0f).build());
+
+            // Show FM Radio if empty
+            if (TextUtils.isEmpty(stationName)) {
+                stationName = getString(R.string.app_name);
+            }
+
+            mSession.setMetadata(new MediaMetadata.Builder()
+                    .putString(MediaMetadata.METADATA_KEY_ARTIST, radioText)
+                    .putString(MediaMetadata.METADATA_KEY_TITLE, stationName)
+                    .build());
+
+            if (isActivityForeground() || (getRecorderState() == FmRecorder.STATE_RECORDING)) {
+                return;
+            }
+
             Intent aIntent = new Intent(Intent.ACTION_MAIN);
             aIntent.addCategory(Intent.CATEGORY_LAUNCHER);
             aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1868,19 +1894,6 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
             int playButtonTitleResId = isPlaying
                     ? R.string.accessibility_pause :
                     R.string.accessibility_play;
-
-            long playBackStateActions = PlaybackState.ACTION_PLAY |
-                    PlaybackState.ACTION_PLAY_PAUSE |
-                    PlaybackState.ACTION_PAUSE |
-                    PlaybackState.ACTION_SKIP_TO_NEXT |
-                    PlaybackState.ACTION_SKIP_TO_PREVIOUS |
-                    PlaybackState.ACTION_STOP;
-
-            mSession.setPlaybackState(new PlaybackState.Builder()
-                    .setActions(playBackStateActions)
-                    .setState((isPlaying ?
-                            PlaybackState.STATE_PLAYING :
-                            PlaybackState.STATE_PAUSED), 0, 1.0f).build());
 
             Notification.Builder notificationBuilder;
             notificationBuilder = new Notification.Builder(mContext, NOTIFICATION_CHANNEL);
@@ -1914,16 +1927,6 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
             notificationBuilder.setColor(mContext.getResources()
                     .getColor(R.color.notification_icon_bg_color));
             notificationBuilder.setLargeIcon(mCachedArtwork);
-
-            // Show FM Radio if empty
-            if (TextUtils.isEmpty(stationName)) {
-                stationName = getString(R.string.app_name);
-            }
-
-            mSession.setMetadata(new MediaMetadata.Builder()
-                    .putString(MediaMetadata.METADATA_KEY_ARTIST, radioText)
-                    .putString(MediaMetadata.METADATA_KEY_TITLE, stationName)
-                    .build());
 
             // Apply the media style template
             notificationBuilder.setStyle(
