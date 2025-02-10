@@ -1482,7 +1482,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         }
         Log.d(TAG, "onCreate, mIsSpeakerUsed = " + mIsSpeakerUsed);
 
-        mUseAudioSession = SystemProperties.getBoolean("ro.vendor.fm.use_audio_session", false);
+        mUseAudioSession = SystemProperties.getBoolean("ro.vendor.fm.use_audio_session", true);
         Log.d(TAG, "onCreate, mUseAudioSession = " + mUseAudioSession);
 
         registerFmBroadcastReceiver();
