@@ -300,6 +300,8 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
                 case FmListener.LISTEN_SPEAKER_MODE_CHANGED:
                     bundle = msg.getData();
                     boolean isSpeakerMode = bundle.getBoolean(FmListener.KEY_IS_SPEAKER_MODE);
+                    setMenuItemAudioIcon(isSpeakerMode);
+                    refreshMenuItemAudio(!isSpeakerMode);
                     break;
 
                 case FmListener.LISTEN_RECORDSTATE_CHANGED:
@@ -980,19 +982,7 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
             // if power down by other app, should disable station list, over
             // menu
             mMenuItemStationlList.setEnabled(enabled);
-            // If BT headset is in use or preferred device for media strategy is neither speaker nor
-            // headset (e.g., USB audio headset), need to disable speaker/earphone switching menu.
-            final int preferredDevice = mService.getPreferredDeviceForMediaStrategy();
-            mMenuItemHeadset.setEnabled(enabled &&
-                    mService.isHeadSetIn() &&
-                    (!mService.isBluetoothHeadsetInUse() &&
-                     (preferredDevice == AudioDeviceInfo.TYPE_UNKNOWN ||
-                      (preferredDevice == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER ||
-                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
-                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADSET) ||
-                      // If neither speaker or headset, ensure the preferred device (e.g., USB
-                      // audio headset) is disconnected
-                      !mService.isAudioDeviceAvailable(preferredDevice))));
+            refreshMenuItemAudio(enabled);
         }
     }
 
@@ -1109,7 +1099,19 @@ public class FmMainActivity extends Activity implements FmFavoriteEditDialog.Edi
 
     private void refreshMenuItemAudio(final boolean enabled) {
         if (null != mMenuItemHeadset) {
-            mMenuItemHeadset.setEnabled(enabled);
+            // If BT headset is in use or preferred device for media strategy is neither speaker nor
+            // headset (e.g., USB audio headset), need to disable speaker/earphone switching menu.
+            final int preferredDevice = mService.getPreferredDeviceForMediaStrategy();
+            mMenuItemHeadset.setEnabled(enabled &&
+                    mService.isHeadSetIn() &&
+                    (!mService.isBluetoothHeadsetInUse() &&
+                     (preferredDevice == AudioDeviceInfo.TYPE_UNKNOWN ||
+                      (preferredDevice == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER ||
+                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
+                      preferredDevice == AudioDeviceInfo.TYPE_WIRED_HEADSET) ||
+                      // If neither speaker or headset, ensure the preferred device (e.g., USB
+                      // audio headset) is disconnected
+                      !mService.isAudioDeviceAvailable(preferredDevice))));
         }
     }
 

@@ -22,7 +22,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
@@ -352,6 +354,14 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                     mFmServiceHandler.removeMessages(FmListener.MSGID_VOLUME_CHANGED);
                     mFmServiceHandler.sendMessage(msg);
                 }
+                // control FM power up when BT headset connected, force use audio session (if
+                // needed) and notify UI
+            } else if (BluetoothA2dp.ACTION_ACTIVE_DEVICE_CHANGED.equals(action)) {
+                final Message msg = mFmServiceHandler.obtainMessage(
+                        FmListener.MSGID_BLUETOOTH_ACTIVE_DEVICE_CHANGED);
+                msg.setData(intent.getExtras());
+                mFmServiceHandler.removeMessages(FmListener.MSGID_BLUETOOTH_ACTIVE_DEVICE_CHANGED);
+                mFmServiceHandler.sendMessage(msg);
             }
         }
     }
@@ -457,11 +467,62 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         if (isMediaStrategy && !devices.isEmpty()) {
             final boolean isSpeakerUsed = devices.stream()
                 .anyMatch((it) -> it.getType() == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER);
+
+            // Note that, we'll use the audio session unconditionally when neither speaker nor
+            // headset is used (it could be BT headset or USB headset). This is because devices
+            // relying on the Audio HAL to route the FM device loopback, most of time lack the A2DP
+            // offload capability from the vendor needed to process the FM output. Using audio
+            // session allows us to delegate FM audio processing to Android that will send audio to
+            // any device
+            if (!mUseAudioSession) {
+                final boolean isHeadsetUsed = devices.stream()
+                    .anyMatch((it) -> it.getType() == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+                            || it.getType() == AudioDeviceInfo.TYPE_WIRED_HEADSET);
+                if (!isSpeakerUsed && !isHeadsetUsed) {
+                    // Switch to audio session to play FM audio when neither speaker nor headset is
+                    // used (e.g., BT headset or USB audio headset)
+                    forceAudioSession(true);
+                } else if (mForceUseAudioSession) {
+                    // Disable audio session and switch to FM device loopback to play FM audio when
+                    // speaker or headset is used
+                    forceAudioSession(false);
+                }
+            }
+
             // Handle the new preferred audio route selected in the media notification, which may
             // require to re-route the FM audio loopback
-            if (mIsSpeakerUsed != isSpeakerUsed) {
-                setForceUse(isSpeakerUsed);
+            setForceUse(isSpeakerUsed);
+
+            // Notify UI
+            final Bundle bundle = new Bundle(2);
+            bundle.putInt(FmListener.CALLBACK_FLAG, FmListener.LISTEN_SPEAKER_MODE_CHANGED);
+            bundle.putBoolean(FmListener.KEY_IS_SPEAKER_MODE, isSpeakerUsed);
+            notifyActivityStateChanged(bundle);
+        }
+    }
+
+    /**
+     * Force switch to/from FM device loopback to/from audio session to play FM audio.
+     *
+     * @param forceAudioSession true - force audio session over FM device loopback;
+     *                          false - force FM device loopback over audio session.
+     */
+    private void forceAudioSession(final boolean forceAudioSession) {
+        Log.d(TAG, "forceAudioSession " + forceAudioSession);
+
+        if (isPlaying() && mIsAudioFocusHeld) {
+            if (mForceUseAudioSession != forceAudioSession) {
+                if (mIsFMDeviceLoopbackActive || !forceAudioSession) {
+                    // Disable audio session or FM device loopback when already playing
+                    enableFmAudio(false);
+                }
+                mForceUseAudioSession = forceAudioSession;
+                enableFmAudio(true);
             }
+        } else {
+            // FM is not playing audio, cannot force now. Persist the flag that will be used on
+            // FM power up
+            mForceUseAudioSession = forceAudioSession;
         }
     }
 
@@ -546,6 +607,9 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     }
 
     private synchronized void exitRenderThread() {
+        if (mRenderThread == null) {
+            return;
+        }
         mRenderThread.interrupt();
         try {
             mRenderThread.join();
@@ -559,6 +623,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
     private AudioRecord mAudioRecord = null;
     private AudioTrack mAudioTrack = null;
     private boolean mUseAudioSession;
+    private boolean mForceUseAudioSession;
     private static final int SAMPLE_RATE = 44100;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_CONFIGURATION_STEREO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
@@ -1441,7 +1506,8 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 // headphones/headset (if present) when not using audio session. This is needed to
                 // sync the routing audio policy, as the user could have selected any device as the
                 // preferred output device, but we can't seamlessly route to that device when using
-                // FM device loopback
+                // FM device loopback. The user can still select that device in the output selector,
+                // which will force start an audio session
                 mUseAudioSession || isSpeakerPreferredDevice || isHeadSetPreferredDevice);
 
         setUpMediaSession();
@@ -1479,6 +1545,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         if (!mUseAudioSession) {
             filter.addAction(AudioManager.VOLUME_CHANGED_ACTION);
         }
+        filter.addAction(BluetoothA2dp.ACTION_ACTIVE_DEVICE_CHANGED);
         mBroadcastReceiver = new FmServiceBroadcastReceiver();
         registerReceiver(mBroadcastReceiver, filter);
     }
@@ -1509,7 +1576,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         removeNotification();
         mSession.setActive(false);
         mSession.release();
-        if (mUseAudioSession) {
+        if (mUseAudioSession || mForceUseAudioSession) {
             stopRender();
             exitRenderThread();
         }
@@ -1733,12 +1800,16 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
             }
         }
 
-        if (mUseAudioSession) {
+        if (mUseAudioSession || mForceUseAudioSession) {
             if (enable) {
-                startAudioTrack();
+                if (mIsFMDeviceLoopbackActive) {
+                    // Disable FM device loopback when active before switching to audio session
+                    setFMDeviceLoopback(false);
+                }
                 if (!isRendering()) {
                     startRender();
                 }
+                startAudioTrack();
             } else {
                 stopRender();
             }
@@ -2080,7 +2151,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         notifyActivityStateChanged(bundle);
 
         if (state == FmRecorder.STATE_IDLE) { // stopped recording?
-            if (mUseAudioSession && isPlaying() && !isRendering()) {
+            if ((mUseAudioSession || mForceUseAudioSession) && isPlaying() && !isRendering()) {
                 startRender();
             }
         }
@@ -2634,8 +2705,17 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                             notifyActivityStateChanged(bundle);
                         }
                     }
-                    if (mIsFMDeviceLoopbackActive) {
-                        setForceUse(mIsSpeakerUsed);
+                    if (mForceUseAudioSession && !mIsSpeakerUsed) {
+                        // Stop audio session and switch to FM device loopback when headset inserted
+                        forceAudioSession(false);
+                        setForceUse(mIsSpeakerUsed, false);
+                    } else if (!mUseAudioSession && mIsSpeakerUsed && isBluetoothHeadsetInUse()) {
+                        // Force use audio session when should use speaker (headphones/headset
+                        // unplugged) and BT headset is present
+                        forceAudioSession(true);
+                        setForceUse(!mIsSpeakerUsed, false);
+                    } else if (mIsFMDeviceLoopbackActive) {
+                        setForceUse(mIsSpeakerUsed, false);
                     }
                     break;
 
@@ -2782,7 +2862,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                 }
 
                 case FmListener.MSGID_VOLUME_CHANGED:
-                    if (!isPlaying()) {
+                    if (!mIsFMDeviceLoopbackActive || !isPlaying()) {
                         Log.d(TAG, "FM is not playing audio. Skipping changing volume.");
                         break;
                     }
@@ -2790,6 +2870,40 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
                     final int currentVolumeIndex =
                         bundle.getInt(AudioManager.EXTRA_VOLUME_STREAM_VALUE, -1);
                     setFMVolume(currentVolumeIndex);
+                    break;
+
+                case FmListener.MSGID_BLUETOOTH_ACTIVE_DEVICE_CHANGED:
+                    bundle = msg.getData();
+                    final boolean connected =
+                        bundle.getParcelable(BluetoothDevice.EXTRA_DEVICE,
+                                BluetoothDevice.class) != null;
+
+                    // Power up automatically when BT headset connected
+                    if (connected && isActivityForeground() && mIsRecordingPermissible) {
+                        mFmServiceHandler.removeMessages(FmListener.MSGID_POWERUP_FINISHED);
+                        mFmServiceHandler.removeMessages(FmListener.MSGID_POWERDOWN_FINISHED);
+                        bundle = new Bundle(1);
+                        bundle.putFloat(FM_FREQUENCY, FmUtils.computeFrequency(mCurrentStation));
+                        handlePowerUp(bundle);
+                    }
+
+                    // Note that, we'll use the audio session unconditionally when BT headset
+                    // connected. This is because devices relying on the Audio HAL to route the FM
+                    // device loopback, most of the time lack the A2DP offload capability from the
+                    // vendor needed to process the FM output. Using audio session allows us to
+                    // delegate FM audio processing to Android that will send audio to the BT device
+                    if (!mUseAudioSession && mForceUseAudioSession != connected) {
+                        forceAudioSession(connected);
+                    }
+
+                    final boolean forceSpeaker = !connected && !isHeadSetIn();
+                    setForceUse(forceSpeaker);
+
+                    // Notify UI
+                    bundle = new Bundle(2);
+                    bundle.putInt(FmListener.CALLBACK_FLAG, FmListener.LISTEN_SPEAKER_MODE_CHANGED);
+                    bundle.putBoolean(FmListener.KEY_IS_SPEAKER_MODE, forceSpeaker);
+                    notifyActivityStateChanged(bundle);
                     break;
 
                 /********** recording **********/

@@ -118,6 +118,8 @@ public interface FmListener {
     int MSGID_HEADSET_HOOK_EVENT = 102;
     int MSGID_HEADSET_HOOK_MULTI_CLICK_TIMEOUT = 103;
 
+    int MSGID_BLUETOOTH_ACTIVE_DEVICE_CHANGED = 105;
+
     /**
      * Call back method to activity from service
      */
