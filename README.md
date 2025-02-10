@@ -101,14 +101,14 @@ PRODUCT_PACKAGES += \
 ```
 **Note**: _RevampedFMRadio_ package will override _FMRadio_ package if the ROM sources still ship it.
 
+<details><summary><h4>Qualcomm SoC-specific part</h4></summary>
+
 3. Set the `ro.vendor.fm.use_audio_session` boolean prop in your
    <em>vendor.prop</em> file to enable the legacy method of determining the FM
    audio path if you get no FM audio output (although recording may work). This
    may be needed if your device is quite old with Oreo mixer paths and kernel
    drivers. If you had FM audio output in `v3.0`, this setting could help
    restore it.
-
-<details><summary><h4>Qualcomm SoC-specific part</h4></summary>
 
 4. Add JNI library to `device.mk`:
 ```Makefile
@@ -125,7 +125,7 @@ get_prop(system_app, vendor_bluetooth_prop)
 </details>
 <details><summary><h4>MediaTek SoC-specific part</h4></summary></summary>
 
-4. Add JNI library to `device.mk`:
+3. Add JNI library to `device.mk`:
 ```Makefile
 PRODUCT_PACKAGES += \
     libmtkfmjni
