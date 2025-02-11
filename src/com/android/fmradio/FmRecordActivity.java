@@ -558,8 +558,11 @@ public class FmRecordActivity extends Activity implements
         if (TextUtils.isEmpty(mStationName.getText())) {
             saveName = FmRecorder.RECORDING_FILE_PREFIX +  "_" + recordingName;
         } else {
-            saveName = FmRecorder.RECORDING_FILE_PREFIX + "_" + mStationName.getText() + "_"
-                    + recordingName;
+            // Sanitize the station name displayed in the input field
+            final String stationName = mStationName.getText().toString()
+                .replaceAll("[/\\\\:*?\"<>|\t]", "")
+                .trim();
+            saveName = FmRecorder.RECORDING_FILE_PREFIX + "_" + stationName + "_" + recordingName;
         }
         FmSaveDialog newFragment = new FmSaveDialog(sdcard, recordingName, saveName);
         newFragment.show(mFragmentManager, TAG_SAVE_RECORDINGD);
