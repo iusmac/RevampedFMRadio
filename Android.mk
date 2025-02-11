@@ -31,7 +31,7 @@ LOCAL_PRIVILEGED_MODULE := true
 LOCAL_JNI_SHARED_LIBRARIES := libqcomfmjni
 
 LOCAL_REQUIRED_MODULES := \
-    privapp_whitelist_com.android.fmradio.xml \
+    privapp_whitelist_com.android.fmradio_revamped.xml \
     RevampedFmRecordingsProvider
 
 LOCAL_STATIC_ANDROID_LIBRARIES := \
