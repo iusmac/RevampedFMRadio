@@ -1563,7 +1563,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         }
         filter.addAction(BluetoothA2dp.ACTION_ACTIVE_DEVICE_CHANGED);
         mBroadcastReceiver = new FmServiceBroadcastReceiver();
-        registerReceiver(mBroadcastReceiver, filter);
+        registerReceiver(mBroadcastReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     private void unregisterFmBroadcastReceiver() {
@@ -2126,7 +2126,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_EJECT);
-        registerReceiver(mSdcardListener, filter);
+        registerReceiver(mSdcardListener, filter, Context.RECEIVER_NOT_EXPORTED);
     }
 
     private void unregisterSdcardListener() {
