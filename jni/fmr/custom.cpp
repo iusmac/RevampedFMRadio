@@ -128,8 +128,8 @@ int CUST_get_cfg(struct CUST_cfg_ds *cfg)
 
     cfg->band = FM_RAIDO_BAND;  // 1, UE; 2, JAPAN; 3, JAPANW
 
-    cfg->low_band = FM_FREQ_MIN * 10;
-    cfg->high_band = FM_FREQ_MAX * 10;
+    cfg->low_band = FM_FREQ_MIN;
+    cfg->high_band = FM_FREQ_MAX;
 
     if (property_get_int32("persist.vendor.connsys.fm_50khz_support", 0) == 1) {
         cfg->seek_space = 5;    // FM radio seek space, 5:50KHZ; 1:100KHZ; 2:200KHZ
