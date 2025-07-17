@@ -47,19 +47,16 @@ struct fmr_ds *pfmr_data[FMR_MAX_IDX] = {0};
 #define FMR_seek_space(idx) ((pfmr_data[idx])->cfg_data.seek_space)
 #define FMR_max_scan_num(idx) ((pfmr_data[idx])->cfg_data.max_scan_num)
 #define FMR_cbk_tbl(idx) ((pfmr_data[idx])->tbl)
-#define FMR_cust_hdler(idx) ((pfmr_data[idx])->custom_handler)
-#define FMR_get_cfg(idx) ((pfmr_data[idx])->get_cfg)
 
 int FMR_get_cfgs(int idx)
 {
     int ret = 0;
 
-    CUST_get_cfg(&(pfmr_data[idx]->cfg_data));
+    ret = CUST_get_cfg(&(pfmr_data[idx]->cfg_data));
 
-    FMR_cust_hdler(idx) = NULL;
-    FMR_get_cfg(idx) = NULL;
-
-    LOGI("%s successfully. chip: 0x%x, lband: %d, hband: %d, seek_space: %d, max_scan_num: %d\n", __FUNCTION__, FMR_chip(idx), FMR_low_band(idx), FMR_high_band(idx), FMR_seek_space(idx), FMR_max_scan_num(idx));
+    if (ret == 0) {
+        LOGI("%s successfully. chip: 0x%x, lband: %d, hband: %d, seek_space: %d, max_scan_num: %d\n", __FUNCTION__, FMR_chip(idx), FMR_low_band(idx), FMR_high_band(idx), FMR_seek_space(idx), FMR_max_scan_num(idx));
+    }
 
     return ret;
 }

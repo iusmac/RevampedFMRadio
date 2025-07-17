@@ -18,6 +18,7 @@
 
 #include <stdbool.h>
 #include <cutils/properties.h>
+#include <sstream>
 
 #include "fmr.h"
 #include "fmlib_cust.h"
@@ -29,56 +30,56 @@
 
 #define MT6620_FM_FAKE_CHANNEL \
 { \
-    {10400, -40, -1}, \
-    {9100, -40, -1},  \
-    {9600, -40, -1},  \
-    {9220, -80, -1},  \
-    {0, 0, 0} \
+    {10400, -40}, \
+    {9100, -40},  \
+    {9600, -40},  \
+    {9220, -80},  \
+    {0, 0} \
 }
 
 #define MT6628_FM_FAKE_CHANNEL \
 { \
-    {0, 0, 0} \
+    {0, 0} \
 }
 
 #define MT6627_FM_FAKE_CHANNEL \
 { \
-    {9600, -107, -1},  \
-    {10400, -107, -1}, \
-    {10750, -224, -1}, \
-    {0, 0, 0} \
+    {9600, -107},  \
+    {10400, -107}, \
+    {10750, -224}, \
+    {0, 0} \
 }
 #define MT6580_FM_FAKE_CHANNEL \
 { \
-    {9600, -107, -1},  \
-    {9570, -258, -1},  \
-    {9580, -258, -1},  \
-    {9590, -258, -1},  \
-    {10400, -107, -1}, \
-    {0, 0, 0} \
+    {9600, -107},  \
+    {9570, -258},  \
+    {9580, -258},  \
+    {9590, -258},  \
+    {10400, -107}, \
+    {0, 0} \
 }
 
 #define MT6630_FM_FAKE_CHANNEL \
 { \
-    {9600,-107,-1},  \
-    {10400,-107,-1}, \
-    {0, 0, 0} \
+    {9600,-107},  \
+    {10400,-107}, \
+    {0, 0} \
 }
 
 #define MT6631_FM_FAKE_CHANNEL \
 { \
-    {9210, -205, -1},  \
-    {9600, -152, -1},  \
-    {10400, -152, -1}, \
-    {10750, -205, -1}, \
-    {0, 0, 0} \
+    {9210, -205},  \
+    {9600, -152},  \
+    {10400, -152}, \
+    {10750, -205}, \
+    {0, 0} \
 }
 
 #define MT6632_FM_FAKE_CHANNEL \
 { \
-    {9600, -107, -1},  \
-    {10400, -107, -1}, \
-    {0, 0, 0} \
+    {9600, -107},  \
+    {10400, -107}, \
+    {0, 0} \
 }
 
 static struct fm_fake_channel mt6620_fake_ch[] = MT6620_FM_FAKE_CHANNEL;
@@ -93,69 +94,100 @@ static struct fm_fake_channel_t fake_ch_info = {0, 0};
 
 int CUST_get_cfg(struct CUST_cfg_ds *cfg)
 {
+    char prop[PROPERTY_KEY_MAX] = {0};
     char val[PROPERTY_VALUE_MAX] = {0};
     struct fm_fake_channel *fake_ch = NULL;
+    std::istringstream is;
 
     cfg->chip = FM_CHIP_UNSUPPORTED;
     if (property_get("persist.vendor.connsys.fm_chipid", val, NULL)) {
         if (strcmp(val, "soc") == 0) {
             cfg->chip = FM_CHIP_MT6580;
-            fake_ch = mt6580_fake_ch;
         } else if (strcmp(val, "mt6620") == 0) {
             cfg->chip = FM_CHIP_MT6620;
-            fake_ch = mt6620_fake_ch;
         } else if (strcmp(val, "mt6627") == 0) {
             cfg->chip = FM_CHIP_MT6627;
-            fake_ch = mt6627_fake_ch;
         } else if (strcmp(val, "mt6628") == 0) {
             cfg->chip = FM_CHIP_MT6628;
-            fake_ch = mt6628_fake_ch;
         } else if (strcmp(val, "mt6630") == 0) {
             cfg->chip = FM_CHIP_MT6630;
-            fake_ch = mt6630_fake_ch;
         } else if (strcmp(val, "mt6631") == 0) {
             cfg->chip = FM_CHIP_MT6631;
-            fake_ch = mt6631_fake_ch;
         } else if (strcmp(val, "mt6632") == 0) {
             cfg->chip = FM_CHIP_MT6632;
-            fake_ch = mt6632_fake_ch;
         } else if (strcmp(val, "mt6635") == 0) {
             cfg->chip = FM_CHIP_MT6635;
-            fake_ch = mt6631_fake_ch;
         }
+        LOGI("%s: CONSYS CHIP ID=%s\n", __FUNCTION__, val);
     }
-    LOGI("CONSYS CHIP ID=%s\n", val);
+    if (cfg->chip == FM_CHIP_UNSUPPORTED) {
+        cfg->chip = (int16_t) property_get_int32(FM_PROP_PREFIX "chip", FM_CHIP_UNSUPPORTED);
+        LOGI("%s: FM CHIP ID=0x%x\n", __FUNCTION__, cfg->chip);
+    }
 
-    cfg->band = FM_RAIDO_BAND;  // 1, UE; 2, JAPAN; 3, JAPANW
+    cfg->band = property_get_int32(FM_PROP_PREFIX "band", FM_RAIDO_BAND);  // 1, UE; 2, JAPAN; 3, JAPANW
 
-    cfg->low_band = FM_FREQ_MIN;
-    cfg->high_band = FM_FREQ_MAX;
+    cfg->low_band = property_get_int32(FM_PROP_PREFIX "low_band", FM_FREQ_MIN);
+    cfg->high_band = property_get_int32(FM_PROP_PREFIX "high_band", FM_FREQ_MAX);
 
     if (property_get_int32("persist.vendor.connsys.fm_50khz_support", 0) == 1) {
         cfg->seek_space = 5;    // FM radio seek space, 5:50KHZ; 1:100KHZ; 2:200KHZ
     } else {
         cfg->seek_space = 1;
     }
+    cfg->seek_space = property_get_int32(FM_PROP_PREFIX "seek_space", cfg->seek_space);
 
-    cfg->max_scan_num = FM_MAX_CHL_SIZE;
-    cfg->seek_lev = FM_SEEKTH_LEVEL_DEFAULT;
-    cfg->scan_sort = FM_SCAN_SORT_SELECT;
+    cfg->max_scan_num = property_get_int32(FM_PROP_PREFIX "max_scan_num", FM_MAX_CHL_SIZE);
+    cfg->seek_lev = property_get_int32(FM_PROP_PREFIX "seek_lev", FM_SEEKTH_LEVEL_DEFAULT);
+    cfg->scan_sort = property_get_int32(FM_PROP_PREFIX "scan_sort", FM_SCAN_SORT_SELECT);
 
-    if (property_get_int32("persist.vendor.connsys.fm_short_antenna_support", 0) == 1) {
-        cfg->short_ana_sup = fm_false;
-    } else {
+    if (property_get_int32("persist.vendor.connsys.fm_short_antenna_support", 0) == 1 ||
+        property_get_int32(FM_PROP_PREFIX "short_ana_sup", 0) == 1) {
         cfg->short_ana_sup = fm_true;
+    } else {
+        cfg->short_ana_sup = fm_false;
     }
 
-    cfg->rssi_th_l2 = FM_CHIP_DESE_RSSI_TH;
+    cfg->rssi_th_l2 = property_get_int32(FM_PROP_PREFIX "rssi_th_l2", FM_CHIP_DESE_RSSI_TH);
     cfg->rssi_th_l2 = (cfg->rssi_th_l2 > -72) ? -72 : cfg->rssi_th_l2;
     cfg->rssi_th_l2 = (cfg->rssi_th_l2 < -102) ? -102 : cfg->rssi_th_l2;
 
-    if (fake_ch) {
-        fake_ch_info.chan = fake_ch;
-        fake_ch_info.size = 0;
-        while (fake_ch[fake_ch_info.size].freq > 0) {
-            fake_ch_info.size++;
+    fake_ch_info.size = property_get_int32(FM_PROP_PREFIX "fake_chans", 0);
+    if (fake_ch_info.size > FMR_MAX_FAKE_CHANS) {
+        LOGE("%s: fake_channels(%d) > FMR_MAX_FAKE_CHANS(%d)\n", __FUNCTION__, fake_ch_info.size,
+                FMR_MAX_FAKE_CHANS);
+        return -1;
+    }
+    if (fake_ch_info.size > 0) {
+        fake_ch_info.chan = (struct fm_fake_channel *)malloc(fake_ch_info.size *
+                sizeof(struct fm_fake_channel));
+        if (fake_ch_info.chan != NULL) {
+            for (int i = 0; i < fake_ch_info.size; i++) {
+                std::snprintf(prop, sizeof(prop), "%sfake_chan_%d", FM_PROP_PREFIX, i);
+                if (property_get(prop, val, NULL)) {
+                    fake_ch = &fake_ch_info.chan[i];
+                    is = std::istringstream(val);
+                    is >> fake_ch->freq >> fake_ch->rssi_th;
+                }
+            }
+        }
+    } else {
+        switch (cfg->chip) {
+            case FM_CHIP_MT6580: fake_ch = mt6580_fake_ch; break;
+            case FM_CHIP_MT6620: fake_ch = mt6620_fake_ch; break;
+            case FM_CHIP_MT6627: fake_ch = mt6627_fake_ch; break;
+            case FM_CHIP_MT6628: fake_ch = mt6628_fake_ch; break;
+            case FM_CHIP_MT6630: fake_ch = mt6630_fake_ch; break;
+            case FM_CHIP_MT6631: fake_ch = mt6631_fake_ch; break;
+            case FM_CHIP_MT6632: fake_ch = mt6632_fake_ch; break;
+            case FM_CHIP_MT6635: fake_ch = mt6631_fake_ch; break;
+        }
+        if (fake_ch) {
+            fake_ch_info.chan = fake_ch;
+            fake_ch_info.size = 0;
+            while (fake_ch[fake_ch_info.size].freq > 0) {
+                fake_ch_info.size++;
+            }
         }
     }
 

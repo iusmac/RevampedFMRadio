@@ -71,7 +71,6 @@ struct fm_fake_channel
 {
     int freq;
     int rssi_th;
-    int reserve;
 };
 
 struct fm_fake_channel_t
@@ -122,7 +121,6 @@ struct fm_cbk_tbl {
     int (*restore_search)(int fd);
 };
 
-typedef int (*CUST_func_type)(struct CUST_cfg_ds *);
 typedef void (*init_func_type)(struct fm_cbk_tbl *);
 
 struct fmr_ds {
@@ -131,10 +129,8 @@ struct fmr_ds {
     uint16_t cur_freq;
     uint16_t backup_freq;
     void *priv;
-    void *custom_handler;
     struct CUST_cfg_ds cfg_data;
     struct fm_cbk_tbl tbl;
-    CUST_func_type get_cfg;
     void *init_handler;
     init_func_type init_func;
     RDSData_Struct rds;

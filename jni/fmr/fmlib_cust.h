@@ -42,4 +42,7 @@
 #define FM_SEVERE_RSSI_TH -107  // 67dBuV
 #define FM_NOISE_FLOOR_OFFSET 10
 
+#define FM_PROP_PREFIX "ro.fm."
+#define FMR_MAX_FAKE_CHANS 6
+
 #endif  // __FMLIB_CUST_H__
