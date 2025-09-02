@@ -130,6 +130,10 @@ get_prop(system_app, vendor_bluetooth_prop)
 PRODUCT_PACKAGES += \
     libmtkfmjni
 ```
+
+4. You might need to remove the `libfmcust/libfmjni.so` prebuilt library from device-tree.
+    > 💡 Our version of the `libfmjni` prebuilt library already includes hardcoded configurations for known SoCs from `libfmcust`.
+    > For newer SoCs, you may also need a property-based config. See example [Ia0e1f26820f4578d331abcc45e4c0a6db7d0a0da](https://review.lineageos.org/q/Ia0e1f26820f4578d331abcc45e4c0a6db7d0a0da)
 </details>
 
 ## Contributing
