@@ -788,6 +788,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
         if (!requestAudioFocus()) {
             // activity used for update powerdown menu
             mPowerStatus = POWER_DOWN;
+            mWakeLock.release();
             return false;
         }
 
@@ -801,6 +802,7 @@ public class FmService extends Service implements FmRecorder.OnRecorderStateChan
 
         if (!FmNative.powerUp(frequency)) {
             mPowerStatus = POWER_DOWN;
+            mWakeLock.release();
             return false;
         }
         mPowerStatus = POWER_UP;
