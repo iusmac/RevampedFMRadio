@@ -122,6 +122,16 @@ AOSP FMRadio | RevampedFMRadio
     # sepolicy/vendor/system_app.te
     get_prop(system_app, vendor_bluetooth_prop)
     ```
+
+7. Disable FM firmware support in JNI library, if device doesn't require it:
+    ```Console
+    # BoardConfig.mk (or device.mk or common.mk)
+    TARGET_QCOM_NO_FM_FIRMWARE := true
+    ```
+    **Note**: you may still need to add the above legacy flag if your Device Tree has already migrated to the newer flag (keep it for upward/forward-compatibility):
+    ```Console
+    $(call soong_config_set_bool,libfmjni,no_fm_firmware,true)
+    ```
 </details>
 <details><summary><h4>MediaTek SoC-specific part</h4></summary></summary>
 
