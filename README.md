@@ -95,10 +95,10 @@ AOSP FMRadio | RevampedFMRadio
         **NOTE:** there's a high chance of getting something broken if you always fetch upstream changes. It's recommended to go with <em>in-tree</em> package within your device tree, and from time to time manually merge and check upstream changes.
 
 2. Add app to `device.mk`:
-```Makefile
-PRODUCT_PACKAGES += \
-    RevampedFMRadio
-```
+    ```Makefile
+    PRODUCT_PACKAGES += \
+        RevampedFMRadio
+    ```
 **Note**: _RevampedFMRadio_ package will override _FMRadio_ package if the ROM sources still ship it.
 
 <details><summary><h4>Qualcomm SoC-specific part</h4></summary>
@@ -111,25 +111,25 @@ PRODUCT_PACKAGES += \
    restore it.
 
 4. Add JNI library to `device.mk`:
-```Makefile
-PRODUCT_PACKAGES += \
-    libqcomfmjni
-```
+    ```Makefile
+    PRODUCT_PACKAGES += \
+        libqcomfmjni
+    ```
 5. Make sure you have `vendor.qcom.bluetooth.soc` prop in your <em>vendor.prop</em> file.
    You may already have something similar, like `vendor.bluetooth.soc`, but it's legacy. Rename if proprietary blobs support new prop name or duplicate the value using new prop name to ensure RevampedFMRadio can properly comunicate to your device's Bluetooth SoC.
 6. Allow app to read vendor properties mentioned in the previous step:
-```Console
-# sepolicy/vendor/system_app.te
-get_prop(system_app, vendor_bluetooth_prop)
-```
+    ```Console
+    # sepolicy/vendor/system_app.te
+    get_prop(system_app, vendor_bluetooth_prop)
+    ```
 </details>
 <details><summary><h4>MediaTek SoC-specific part</h4></summary></summary>
 
 3. Add JNI library to `device.mk`:
-```Makefile
-PRODUCT_PACKAGES += \
-    libmtkfmjni
-```
+    ```Makefile
+    PRODUCT_PACKAGES += \
+        libmtkfmjni
+    ```
 
 4. You might need to remove the `libfmcust/libfmjni.so` prebuilt library from device-tree.
     > 💡 Our version of the `libfmjni` prebuilt library already includes hardcoded configurations for known SoCs from `libfmcust`.
