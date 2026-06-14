@@ -1,0 +1,27 @@
+cc_library_shared {
+    name: "libqcomfmjni",
+    srcs: [
+        "FmIoctlsInterface.cpp",
+        "ConfigFmThs.cpp",
+        "FmPerformanceParams.cpp",
+        "ConfFileParser.cpp",
+        "FmRadioController.cpp",
+        "LibfmJni.cpp",
+    ],
+    cflags: [
+        "-Wno-unused-parameter",
+    ],
+    include_dirs: [
+        "frameworks/base/core/jni/include",
+    ],
+    header_libs: [
+        "jni_headers",
+    ],
+    shared_libs: [
+        "libcutils",
+        "libdl",
+        "liblog",
+        "libmedia",
+        "libnativehelper",
+    ],
+}
