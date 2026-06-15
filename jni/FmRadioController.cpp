@@ -41,6 +41,175 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FmIoctlsInterface.h"
 #include "ConfigFmThs.h"
 #include <linux/videodev2.h>
+#include <dlfcn.h>
+#include <unistd.h>
+
+static FmRadioController* s_controller = nullptr;
+static fm_hal_callbacks_t s_hal_callbacks;
+
+static void hal_enabled_cb(void) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_enabled();
+}
+
+static void hal_tune_cb(int Freq) {
+    ALOGD("%s: Freq=%d", __func__, Freq);
+    if (s_controller) s_controller->handle_hal_tuned(Freq);
+}
+
+static void hal_seek_cmpl_cb(int Freq) {
+    ALOGD("%s: Freq=%d", __func__, Freq);
+    if (s_controller) s_controller->handle_hal_seek_cmpl(Freq);
+}
+
+static void hal_scan_next_cb(void) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_scan_next();
+}
+
+static void hal_srch_list_cb(uint16_t *scan_tbl) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_srch_list(scan_tbl);
+}
+
+static void hal_stereo_status_cb(bool status) {
+    ALOGD("%s: status=%d", __func__, status);
+    if (s_controller) s_controller->handle_hal_stereo_status(status);
+}
+
+static void hal_rds_avail_status_cb(bool status) {
+    ALOGD("%s: status=%d", __func__, status);
+    if (s_controller) s_controller->handle_hal_rds_avail_status(status);
+}
+
+static void hal_af_list_update_cb(uint16_t *af_list) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_af_list_update(af_list);
+}
+
+static void hal_rt_update_cb(char *rt) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_rt_update(rt);
+}
+
+static void hal_ps_update_cb(char *ps) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_ps_update(ps);
+}
+
+static void hal_disabled_cb(void) {
+    ALOGD("%s", __func__);
+    if (s_controller) s_controller->handle_hal_disabled();
+}
+
+static void hal_thread_evt_cb(unsigned int event) {
+    ALOGD("%s: event=%u", __func__, event);
+}
+
+// Dummy callbacks to prevent null pointer crashes in the vendor FM HAL
+static void hal_oda_update_cb(void) { ALOGD("%s", __func__); }
+static void hal_rt_plus_update_cb(char *rt_plus __unused) { ALOGD("%s", __func__); }
+static void hal_ert_update_cb(char *ert __unused) { ALOGD("%s", __func__); }
+static void hal_rds_grp_cntrs_rsp_cb(char *rds_params __unused) { ALOGD("%s", __func__); }
+static void hal_rds_grp_cntrs_ext_rsp_cb(char *rds_params __unused) { ALOGD("%s", __func__); }
+static void hal_fm_peek_rsp_cb(char *peek_rsp __unused) { ALOGD("%s", __func__); }
+static void hal_fm_ssbi_peek_rsp_cb(char *ssbi_peek_rsp __unused) { ALOGD("%s", __func__); }
+static void hal_fm_agc_gain_rsp_cb(char *agc_gain_rsp __unused) { ALOGD("%s", __func__); }
+static void hal_fm_ch_det_th_rsp_cb(char *ch_det_rsp __unused) { ALOGD("%s", __func__); }
+static void hal_ext_country_code_cb(char *ecc __unused) { ALOGD("%s", __func__); }
+static void hal_fm_get_sig_thres_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_get_ch_det_thr_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_def_data_read_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_get_blend_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_set_ch_det_thr_cb(int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_def_data_write_cb(int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_set_blend_cb(int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_get_station_param_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_fm_get_station_debug_param_cb(int val __unused, int status __unused) { ALOGD("%s", __func__); }
+static void hal_enable_slimbus_cb(int status __unused) { ALOGD("%s", __func__); }
+static void hal_enable_softmute_cb(int status __unused) { ALOGD("%s", __func__); }
+
+void FmRadioController::handle_hal_enabled() {
+    ALOGI("HAL enabled callback received");
+    pthread_mutex_lock(&mutex_turn_on_cond);
+    set_fm_state(FM_ON);
+    pthread_cond_broadcast(&turn_on_cond);
+    pthread_mutex_unlock(&mutex_turn_on_cond);
+}
+
+void FmRadioController::handle_hal_tuned(int freq) {
+    ALOGI("HAL tuned callback received: %d", freq);
+    cur_tuned_freq = freq;
+    process_radio_events(TUNE_EVENT);
+}
+
+void FmRadioController::handle_hal_seek_cmpl(int freq) {
+    ALOGI("HAL seek complete callback received: %d", freq);
+    cur_tuned_freq = freq;
+    process_radio_events(TUNE_EVENT);
+}
+
+void FmRadioController::handle_hal_scan_next() {
+    ALOGI("HAL scan next callback received");
+    process_radio_events(SCAN_NEXT_EVENT);
+}
+
+void FmRadioController::handle_hal_srch_list(uint16_t *scan_tbl) {
+    ALOGI("HAL search list callback received");
+    pthread_mutex_lock(&FmIoctlsInterface::rds_lock);
+    memcpy(FmIoctlsInterface::g_station_list, scan_tbl, STD_BUF_SIZE);
+    pthread_mutex_unlock(&FmIoctlsInterface::rds_lock);
+
+    pthread_mutex_lock(&mutex_scan_compl_cond);
+    set_fm_state(FM_ON);
+    pthread_cond_broadcast(&scan_compl_cond);
+    pthread_mutex_unlock(&mutex_scan_compl_cond);
+}
+
+void FmRadioController::handle_hal_stereo_status(bool status) {
+    ALOGI("HAL stereo status callback received: %d", status);
+    process_radio_events(status ? STEREO_EVENT : MONO_EVENT);
+}
+
+void FmRadioController::handle_hal_rds_avail_status(bool status) {
+    ALOGI("HAL RDS availability status callback received: %d", status);
+    process_radio_events(status ? RDS_AVAL_EVENT : RDS_NOT_AVAL_EVENT);
+}
+
+void FmRadioController::handle_hal_af_list_update(uint16_t *af_list) {
+    ALOGI("HAL AF list update callback received");
+    process_radio_events(AF_LIST_EVENT);
+}
+
+void FmRadioController::handle_hal_rt_update(char *rt) {
+    ALOGD("HAL RT update callback received");
+    pthread_mutex_lock(&FmIoctlsInterface::rds_lock);
+    int len = (int)(rt[0] & 0xFF) + 5;
+    if (len > 256) len = 256;
+    memcpy(FmIoctlsInterface::g_rt_buffer, rt, len);
+    FmIoctlsInterface::g_rt_len = len;
+    pthread_mutex_unlock(&FmIoctlsInterface::rds_lock);
+
+    process_radio_events(RT_EVENT);
+}
+
+void FmRadioController::handle_hal_ps_update(char *ps) {
+    ALOGD("HAL PS update callback received");
+    pthread_mutex_lock(&FmIoctlsInterface::rds_lock);
+    int numPs = (int)(ps[0] & 0xFF);
+    int len = (numPs * 8) + 5;
+    if (len > 256) len = 256;
+    memcpy(FmIoctlsInterface::g_ps_buffer, ps, len);
+    FmIoctlsInterface::g_ps_len = len;
+    pthread_mutex_unlock(&FmIoctlsInterface::rds_lock);
+
+    process_radio_events(PS_EVENT);
+}
+
+void FmRadioController::handle_hal_disabled() {
+    ALOGI("HAL disabled callback received");
+    process_radio_events(DISABLED_EVENT);
+}
 
 //Reset all variables to default value
 static FmIoctlsInterface * FmIoct;
@@ -50,6 +219,7 @@ FmRadioController :: FmRadioController
 {
     cur_fm_state = FM_OFF;
     prev_freq = -1;
+    cur_tuned_freq = -1;
     seek_scan_canceled = false;
     af_enabled = 0;
     rds_enabled = 0;
@@ -83,15 +253,24 @@ FmRadioController :: ~FmRadioController
         FmIoctlsInterface::set_control(fd_driver,
                         V4L2_CID_PRV_STATE, FM_DEV_NONE);
     }
-    if(event_listener_thread != 0) {
-        event_listener_canceled = true;
-        pthread_join(event_listener_thread, NULL);
+    if (FmIoctlsInterface::is_hal_mode) {
+        s_controller = nullptr;
+    } else {
+        if(event_listener_thread != 0) {
+            event_listener_canceled = true;
+            pthread_join(event_listener_thread, NULL);
+        }
     }
 }
 
 int FmRadioController ::open_dev()
 {
     int ret = FM_SUCCESS;
+
+    if (FmIoctlsInterface::is_hal_mode) {
+        fd_driver = 999;
+        return ret;
+    }
 
     fd_driver = open(FM_DEVICE_PATH, O_RDONLY);
 
@@ -109,7 +288,9 @@ int FmRadioController ::close_dev()
     int ret = 0;
 
     if (fd_driver > 0) {
-        close(fd_driver);
+        if (!FmIoctlsInterface::is_hal_mode) {
+            close(fd_driver);
+        }
         fd_driver = -1;
     }
     ALOGD("%s, [fd=%d] [ret=%d]\n", __func__, fd_driver, ret);
@@ -144,6 +325,9 @@ long FmRadioController :: GetChannel
 
     if((cur_fm_state != FM_OFF) &&
        (cur_fm_state != FM_ON_IN_PROGRESS)) {
+       if (FmIoctlsInterface::is_hal_mode) {
+           return cur_tuned_freq;
+       }
        ret = FmIoctlsInterface::get_cur_freq(fd_driver, freq);
        if(ret == FM_SUCCESS) {
           ALOGI("FM get freq is successfull, freq is: %ld\n", freq);
@@ -164,12 +348,144 @@ int FmRadioController ::Pwr_Up(int freq)
     char value[PROPERTY_VALUE_MAX] = {'\0'};
 
     ALOGI("%s,[freq=%d]\n", __func__, freq);
+
     property_get("vendor.qcom.bluetooth.soc", value, NULL);
     ALOGD("BT soc is '%s'\n", value);
+
+    // Try to load HAL first only for cherokee
+    if (strcmp(value, "cherokee") == 0) {
+        void* handle = dlopen("fm_helium.so", RTLD_NOW);
+        if (handle) {
+            fm_interface_t* vendor_intf = (fm_interface_t*)dlsym(handle, "FM_HELIUM_LIB_INTERFACE");
+            if (vendor_intf) {
+                ALOGI("FM HAL library loaded successfully");
+                FmIoctlsInterface::is_hal_mode = true;
+                FmIoctlsInterface::vendor_interface = vendor_intf;
+            } else {
+                ALOGE("Failed to find FM_HELIUM_LIB_INTERFACE in fm_helium.so");
+                dlclose(handle);
+                FmIoctlsInterface::is_hal_mode = false;
+                FmIoctlsInterface::vendor_interface = nullptr;
+            }
+        } else {
+            ALOGI("fm_helium.so not found, using legacy V4L2 mode");
+            FmIoctlsInterface::is_hal_mode = false;
+            FmIoctlsInterface::vendor_interface = nullptr;
+        }
+    } else {
+        FmIoctlsInterface::is_hal_mode = false;
+        FmIoctlsInterface::vendor_interface = nullptr;
+    }
     if (fd_driver < 0) {
         ret = open_dev();
         if (ret != FM_SUCCESS) {
             ALOGE("Dev open failed\n");
+            return FM_FAILURE;
+        }
+    }
+
+    if (FmIoctlsInterface::is_hal_mode) {
+        if (cur_fm_state == FM_OFF) {
+            s_controller = this;
+            s_hal_callbacks.size = sizeof(fm_hal_callbacks_t);
+            s_hal_callbacks.enabled_cb = hal_enabled_cb;
+            s_hal_callbacks.tune_cb = hal_tune_cb;
+            s_hal_callbacks.seek_cmpl_cb = hal_seek_cmpl_cb;
+            s_hal_callbacks.scan_next_cb = hal_scan_next_cb;
+            s_hal_callbacks.srch_list_cb = hal_srch_list_cb;
+            s_hal_callbacks.stereo_status_cb = hal_stereo_status_cb;
+            s_hal_callbacks.rds_avail_status_cb = hal_rds_avail_status_cb;
+            s_hal_callbacks.af_list_update_cb = hal_af_list_update_cb;
+            s_hal_callbacks.rt_update_cb = hal_rt_update_cb;
+            s_hal_callbacks.ps_update_cb = hal_ps_update_cb;
+            s_hal_callbacks.oda_update_cb = hal_oda_update_cb;
+            s_hal_callbacks.rt_plus_update_cb = hal_rt_plus_update_cb;
+            s_hal_callbacks.ert_update_cb = hal_ert_update_cb;
+            s_hal_callbacks.disabled_cb = hal_disabled_cb;
+            s_hal_callbacks.rds_grp_cntrs_rsp_cb = hal_rds_grp_cntrs_rsp_cb;
+            s_hal_callbacks.rds_grp_cntrs_ext_rsp_cb = hal_rds_grp_cntrs_ext_rsp_cb;
+            s_hal_callbacks.fm_peek_rsp_cb = hal_fm_peek_rsp_cb;
+            s_hal_callbacks.fm_ssbi_peek_rsp_cb = hal_fm_ssbi_peek_rsp_cb;
+            s_hal_callbacks.fm_agc_gain_rsp_cb = hal_fm_agc_gain_rsp_cb;
+            s_hal_callbacks.fm_ch_det_th_rsp_cb = hal_fm_ch_det_th_rsp_cb;
+            s_hal_callbacks.ext_country_code_cb = hal_ext_country_code_cb;
+            s_hal_callbacks.thread_evt_cb = hal_thread_evt_cb;
+            s_hal_callbacks.fm_get_sig_thres_cb = hal_fm_get_sig_thres_cb;
+            s_hal_callbacks.fm_get_ch_det_thr_cb = hal_fm_get_ch_det_thr_cb;
+            s_hal_callbacks.fm_def_data_read_cb = hal_fm_def_data_read_cb;
+            s_hal_callbacks.fm_get_blend_cb = hal_fm_get_blend_cb;
+            s_hal_callbacks.fm_set_ch_det_thr_cb = hal_fm_set_ch_det_thr_cb;
+            s_hal_callbacks.fm_def_data_write_cb = hal_fm_def_data_write_cb;
+            s_hal_callbacks.fm_set_blend_cb = hal_fm_set_blend_cb;
+            s_hal_callbacks.fm_get_station_param_cb = hal_fm_get_station_param_cb;
+            s_hal_callbacks.fm_get_station_debug_param_cb = hal_fm_get_station_debug_param_cb;
+            s_hal_callbacks.enable_slimbus_cb = hal_enable_slimbus_cb;
+            s_hal_callbacks.enable_softmute_cb = hal_enable_softmute_cb;
+
+            fm_interface_t* vendor_intf = (fm_interface_t*)FmIoctlsInterface::vendor_interface;
+            int status = vendor_intf->hal_init(&s_hal_callbacks);
+            if (status) {
+                ALOGE("hal_init failed: %d", status);
+                close_dev();
+                set_fm_state(FM_OFF);
+                s_controller = nullptr;
+                return FM_FAILURE;
+            }
+
+            pthread_mutex_lock(&mutex_turn_on_cond);
+            ts = set_time_out(READY_EVENT_TIMEOUT);
+            ret = FmIoctlsInterface::set_control(fd_driver, V4L2_CID_PRV_STATE, FM_RX);
+            if (ret == FM_SUCCESS) {
+                ALOGI("Waiting for timedout or FM on (HAL)\n");
+                pthread_cond_timedwait(&turn_on_cond, &mutex_turn_on_cond, &ts);
+                pthread_mutex_unlock(&mutex_turn_on_cond);
+                if (cur_fm_state == FM_ON) {
+                    ret = SetBand(BAND_87500_108000);
+                    if (ret != FM_SUCCESS) {
+                        ALOGE("set band failed\n");
+                        ret = FM_FAILURE;
+                        goto exit;
+                    }
+                    ret = SetChannelSpacing(CHAN_SPACE_100);
+                    if (ret != FM_SUCCESS) {
+                        ALOGE("set channel spacing failed\n");
+                        ret = FM_FAILURE;
+                        goto exit;
+                    }
+                    ret = SetDeConstant(DE_EMP50);
+                    if (ret != FM_SUCCESS) {
+                        ALOGE("set Emphasis failed\n");
+                        ret = FM_FAILURE;
+                        goto exit;
+                    }
+                    thsObj.SetRxSearchAfThs(FM_PERFORMANCE_PARAMS, fd_driver);
+                    SetStereo();
+                    ret = TuneChannel(freq);
+                    if (ret != FM_SUCCESS) {
+                        ALOGI("FM set freq command failed\n");
+                        ret = FM_FAILURE;
+                        goto exit;
+                    }
+
+                    if (property_get_bool(FM_INTERNAL_ANTENNA_PROP, false)) {
+                        ret = FmIoctlsInterface::set_control(fd_driver, V4L2_CID_PRV_ANTENNA, 1);
+                        ALOGD("Internal antenna set, status : %d\n", ret);
+                    }
+
+                    return FM_SUCCESS;
+                } else {
+                    ret = FM_FAILURE;
+                    goto exit;
+                }
+            } else {
+                ALOGE("Set FM on control failed (HAL)\n");
+                pthread_mutex_unlock(&mutex_turn_on_cond);
+                ret = FM_FAILURE;
+                goto close_fd;
+            }
+        } else if (cur_fm_state != FM_ON_IN_PROGRESS) {
+            return FM_SUCCESS;
+        } else {
             return FM_FAILURE;
         }
     }
@@ -207,13 +523,13 @@ int FmRadioController ::Pwr_Up(int freq)
                             ret = FM_FAILURE;
                             goto exit;
                         }
-                        ret = SetChannelSpacing(CHAN_SPACE_100);
+                        ret = SetChannelSpacing(CHAN_SPACE_200);
                         if (ret != FM_SUCCESS) {
                             ALOGE("set channel spacing failed\n");
                             ret = FM_FAILURE;
                             goto exit;
                         }
-                        ret = SetDeConstant(DE_EMP50);
+                        ret = SetDeConstant(DE_EMP75);
                         if (ret != FM_SUCCESS) {
                             ALOGE("set Emphasis failed\n");
                             ret = FM_FAILURE;
@@ -265,16 +581,19 @@ exit:
     FmIoctlsInterface::set_control(fd_driver,
                                      V4L2_CID_PRV_STATE, FM_DEV_NONE);
 close_fd:
-    event_listener_canceled = true;
-    pthread_join(event_listener_thread, NULL);
-    if (strcmp(value, "rome") != 0) {
-        ret = FmIoctlsInterface::close_fm_patch_dl();
-        if (ret != FM_SUCCESS) {
-            ALOGE("FM patch downloader close failed: %d\n", ret);
+    if (FmIoctlsInterface::is_hal_mode) {
+        s_controller = nullptr;
+    } else {
+        event_listener_canceled = true;
+        pthread_join(event_listener_thread, NULL);
+        if (strcmp(value, "rome") != 0) {
+            ret = FmIoctlsInterface::close_fm_patch_dl();
+            if (ret != FM_SUCCESS) {
+                ALOGE("FM patch downloader close failed: %d\n", ret);
+            }
         }
     }
-    close(fd_driver);
-    fd_driver = -1;
+    close_dev();
     set_fm_state(FM_OFF);
 
     ALOGD("%s, [ret=%d]\n", __func__, ret);
@@ -285,6 +604,19 @@ int FmRadioController ::Pwr_Down()
 {
     int ret = 0;
     char value[PROPERTY_VALUE_MAX] = {'\0'};
+
+    if (FmIoctlsInterface::is_hal_mode) {
+        if (cur_fm_state != FM_OFF) {
+            Stop_Scan_Seek();
+            set_fm_state(FM_OFF_IN_PROGRESS);
+            FmIoctlsInterface::set_control(fd_driver, V4L2_CID_PRV_STATE, FM_DEV_NONE);
+        }
+        s_controller = nullptr;
+        close_dev();
+        set_fm_state(FM_OFF);
+        ALOGD("%s, [ret=%d] (HAL)\n", __func__, ret);
+        return ret;
+    }
 
     property_get("vendor.qcom.bluetooth.soc", value, NULL);
 
