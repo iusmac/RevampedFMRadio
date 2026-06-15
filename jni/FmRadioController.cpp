@@ -144,9 +144,13 @@ void FmRadioController::handle_hal_tuned(int freq) {
 }
 
 void FmRadioController::handle_hal_seek_cmpl(int freq) {
-    ALOGI("HAL seek complete callback received: %d", freq);
-    cur_tuned_freq = freq;
-    process_radio_events(TUNE_EVENT);
+    ALOGI("HAL seek complete callback received: %d (current: %ld)", freq, cur_tuned_freq);
+    if (freq != cur_tuned_freq) {
+        cur_tuned_freq = freq;
+        process_radio_events(TUNE_EVENT);
+    } else {
+        ALOGI("Ignoring stale/same frequency %ld in seek complete, waiting for tune status...", (long)freq);
+    }
 }
 
 void FmRadioController::handle_hal_scan_next() {
@@ -688,6 +692,8 @@ int FmRadioController :: Seek(int dir)
 
     ALOGI("FM seek started\n");
     set_fm_state(SEEK_IN_PROGRESS);
+    FmIoctlsInterface::set_control(fd_driver,
+                           V4L2_CID_PRV_SRCHALGOTYPE, 1);
     ret = FmIoctlsInterface::set_control(fd_driver,
                                   V4L2_CID_PRV_SRCHMODE, SEEK_MODE);
     if (ret != FM_SUCCESS) {
@@ -1065,6 +1071,8 @@ int FmRadioController ::ScanList
             set_fm_state(FM_ON);
             return FM_FAILURE;
         }
+        FmIoctlsInterface::set_control(fd_driver,
+                           V4L2_CID_PRV_SRCH_CNT, 20);
         ret = FmIoctlsInterface::start_search(fd_driver,
                                                      SEARCH_UP);
         if (ret != FM_SUCCESS) {
