@@ -39,12 +39,27 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/videodev2.h>
 #include <math.h>
 #include <utils/Log.h>
+#include <unistd.h>
+
+// Static variables initialization
+bool FmIoctlsInterface::is_hal_mode = false;
+void* FmIoctlsInterface::vendor_interface = nullptr;
+char FmIoctlsInterface::g_ps_buffer[256] = {0};
+int FmIoctlsInterface::g_ps_len = 0;
+char FmIoctlsInterface::g_rt_buffer[256] = {0};
+int FmIoctlsInterface::g_rt_len = 0;
+char FmIoctlsInterface::g_station_list[256] = {0};
+pthread_mutex_t FmIoctlsInterface::rds_lock = PTHREAD_MUTEX_INITIALIZER;
 
 int FmIoctlsInterface :: start_fm_patch_dl
 (
     UINT fd __unused
 )
 {
+    if (is_hal_mode) {
+        return FM_SUCCESS;
+    }
+
     int ret;
 #ifndef QCOM_NO_FM_FIRMWARE
     int init_success = 0;
@@ -109,6 +124,10 @@ int  FmIoctlsInterface :: close_fm_patch_dl
     void
 )
 {
+    if (is_hal_mode) {
+        return FM_SUCCESS;
+    }
+
     int ret;
 
 #ifndef QCOM_NO_FM_FIRMWARE
@@ -132,6 +151,17 @@ int  FmIoctlsInterface :: get_cur_freq
     UINT fd, long &freq
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int val = 0;
+        int ret = ((fm_interface_t*)vendor_interface)->get_fm_ctrl(V4L2_CID_PRV_IRIS_FREQ, &val);
+        if (ret == 0) {
+            freq = val;
+            return FM_SUCCESS;
+        }
+        return FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_frequency channel;
 
@@ -151,6 +181,12 @@ int  FmIoctlsInterface :: set_freq
     UINT fd, ULINT freq
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(V4L2_CID_PRV_IRIS_FREQ, freq);
+        return (ret == 0) ? FM_SUCCESS : FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_frequency channel;
 
@@ -170,6 +206,12 @@ int  FmIoctlsInterface :: set_control
     UINT fd, UINT id, int val
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(id, val);
+        return (ret == 0) ? FM_SUCCESS : FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_control control;
 
@@ -189,6 +231,10 @@ int  FmIoctlsInterface :: set_calibration
     UINT fd __unused
 )
 {
+    if (is_hal_mode) {
+        return FM_SUCCESS;
+    }
+
 #ifndef QCOM_NO_FM_FIRMWARE
     int ret;
     FILE *cal_fp;
@@ -228,6 +274,17 @@ int  FmIoctlsInterface :: get_control
     UINT fd, UINT id, long &val
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int temp = 0;
+        int ret = ((fm_interface_t*)vendor_interface)->get_fm_ctrl(id, &temp);
+        if (ret == 0) {
+            val = temp;
+            return FM_SUCCESS;
+        }
+        return FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_control control;
 
@@ -246,6 +303,12 @@ int  FmIoctlsInterface :: start_search
     UINT fd, UINT dir
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(V4L2_CID_PRV_IRIS_SEEK, dir);
+        return (ret == 0) ? FM_SUCCESS : FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_hw_freq_seek hw_seek;
 
@@ -265,6 +328,15 @@ int  FmIoctlsInterface :: set_band
     UINT fd, ULINT low, ULINT high
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(V4L2_CID_PRV_IRIS_UPPER_BAND, high);
+        if (ret == 0) {
+            ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(V4L2_CID_PRV_IRIS_LOWER_BAND, low);
+        }
+        return (ret == 0) ? FM_SUCCESS : FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_tuner tuner;
 
@@ -287,6 +359,17 @@ int FmIoctlsInterface :: get_rmssi
     UINT fd, long &rmssi
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int temp = 0;
+        int ret = ((fm_interface_t*)vendor_interface)->get_fm_ctrl(V4L2_CID_PRV_IRIS_RMSSI, &temp);
+        if (ret == 0) {
+            rmssi = temp;
+            return FM_SUCCESS;
+        }
+        return FM_FAILURE;
+    }
+
     struct v4l2_tuner tuner;
     int ret;
 
@@ -307,6 +390,17 @@ int  FmIoctlsInterface :: get_upperband_limit
     UINT fd, ULINT &freq
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int temp = 0;
+        int ret = ((fm_interface_t*)vendor_interface)->get_fm_ctrl(V4L2_CID_PRV_IRIS_UPPER_BAND, &temp);
+        if (ret == 0) {
+            freq = temp;
+            return FM_SUCCESS;
+        }
+        return FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_tuner tuner;
 
@@ -326,6 +420,17 @@ int  FmIoctlsInterface :: get_lowerband_limit
     UINT fd, ULINT &freq
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int temp = 0;
+        int ret = ((fm_interface_t*)vendor_interface)->get_fm_ctrl(V4L2_CID_PRV_IRIS_LOWER_BAND, &temp);
+        if (ret == 0) {
+            freq = temp;
+            return FM_SUCCESS;
+        }
+        return FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_tuner tuner;
 
@@ -345,6 +450,12 @@ int  FmIoctlsInterface :: set_audio_mode
     UINT fd, enum AUDIO_MODE mode
 )
 {
+    if (is_hal_mode) {
+        if (!vendor_interface) return FM_FAILURE;
+        int ret = ((fm_interface_t*)vendor_interface)->set_fm_ctrl(V4L2_CID_PRV_IRIS_AUDIO_MODE, mode);
+        return (ret == 0) ? FM_SUCCESS : FM_FAILURE;
+    }
+
     int ret;
     struct v4l2_tuner tuner;
 
@@ -368,6 +479,26 @@ int  FmIoctlsInterface :: get_buffer
      UINT fd, char *buff, UINT len, UINT index
 )
 {
+    if (is_hal_mode) {
+        if ((len < STD_BUF_SIZE) || (buff == NULL)) {
+            return FM_FAILURE;
+        }
+        int bytes_copied = 0;
+        pthread_mutex_lock(&rds_lock);
+        if (index == PS_IND) {
+            memcpy(buff, g_ps_buffer, g_ps_len);
+            bytes_copied = g_ps_len;
+        } else if (index == RT_IND) {
+            memcpy(buff, g_rt_buffer, g_rt_len);
+            bytes_copied = g_rt_len;
+        } else if (index == STATION_LIST_IND) {
+            memcpy(buff, g_station_list, STD_BUF_SIZE);
+            bytes_copied = STD_BUF_SIZE;
+        }
+        pthread_mutex_unlock(&rds_lock);
+        return bytes_copied;
+    }
+
     int ret;
     struct v4l2_buffer v4l2_buf;
 
@@ -394,6 +525,10 @@ int FmIoctlsInterface :: set_ext_control
     struct v4l2_ext_controls *v4l2_ctls
 )
 {
+    if (is_hal_mode) {
+        return FM_SUCCESS;
+    }
+
     int ret;
 
     ret = ioctl(fd, VIDIOC_S_EXT_CTRLS, v4l2_ctls);
