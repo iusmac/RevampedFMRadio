@@ -141,3 +141,4 @@ Contributions are welcome! Fixes and improvements for different SoCs are highly 
 
 ## Credits
 - [iusmac (Max)](https://github.com/iusmac)
+- [Flopster101](https://github.com/Flopster101)
