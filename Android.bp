@@ -1,0 +1,27 @@
+android_app {
+    name: "RevampedFMRadio",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    certificate: "platform",
+    platform_apis: true,
+    privileged: true,
+    jni_libs: ["libqcomfmjni"],
+    required: [
+        "privapp_whitelist_com.android.fmradio_revamped.xml",
+        "RevampedFmRecordingsProvider",
+    ],
+    static_libs: [
+        "androidx.cardview_cardview",
+    ],
+    optimize: {
+        enabled: false,
+    },
+    aaptflags: ["--auto-add-overlay"],
+}
+
+prebuilt_etc {
+    name: "privapp_whitelist_com.android.fmradio_revamped.xml",
+    sub_dir: "permissions",
+    src: "privapp_whitelist_com.android.fmradio.xml",
+    filename_from_src: true,
+}

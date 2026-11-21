@@ -253,7 +253,7 @@ void ConfigFmThs :: set_srch_ths
               found = (NAME_MAP *)bsearch(*keys, SEACH_PARAMS_MAP,
                            MAX_SRCH_PARAMS, sizeof(NAME_MAP), compare_name);
               if(found != NULL) {
-                 key_value = get_value(keyfile, GRPS_MAP[2].name, found->name);
+                 key_value = get_value(keyfile, GRPS_MAP[3].name, found->name);
                  ALOGE("found srch ths: %s: %s\n", found->name, key_value);
                  if((key_value != NULL) && strcmp(key_value, "")) {
                     value = atoi(key_value);
@@ -442,7 +442,7 @@ void ConfigFmThs :: set_hybrd_list
               found = (NAME_MAP *)bsearch(*keys, HYBRD_SRCH_MAP,
                            MAX_HYBRID_SRCH_PARAMS, sizeof(NAME_MAP), compare_name);
               if(found != NULL) {
-                 key_value = get_value(keyfile, GRPS_MAP[1].name, found->name);
+                 key_value = get_value(keyfile, GRPS_MAP[2].name, found->name);
                  if((key_value != NULL) && strcmp(key_value, "")) {
                      switch(found->num) {
                      case FREQ_LIST:

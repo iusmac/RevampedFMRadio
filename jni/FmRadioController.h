@@ -95,6 +95,19 @@ class FmRadioController
         long GetCurrentRSSI(void);
         bool GetSoftMute(void);
     public:
+       long cur_tuned_freq;
+       void handle_hal_enabled();
+       void handle_hal_tuned(int freq);
+       void handle_hal_seek_cmpl(int freq);
+       void handle_hal_scan_next();
+       void handle_hal_srch_list(uint16_t *scan_tbl);
+       void handle_hal_stereo_status(bool status);
+       void handle_hal_rds_avail_status(bool status);
+       void handle_hal_af_list_update(uint16_t *af_list);
+       void handle_hal_rt_update(char *rt);
+       void handle_hal_ps_update(char *ps);
+       void handle_hal_disabled();
+
        FmRadioController();
        ~FmRadioController();
        int open_dev(void);
