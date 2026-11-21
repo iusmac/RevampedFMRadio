@@ -80,6 +80,8 @@ AOSP FMRadio | RevampedFMRadio
     </details>
 
 16. Support FM device loopback & audio routing for devices with newer audio HAL (CodeAurora version)
+17. Compatibility with BT SoC devices without `/dev/radio0` support:
+    - cherokee (through fm_helium HAL) ([PR#22](https://github.com/iusmac/RevampedFMRadio/pull/22) / Thanks to [Flopster101](https://github.com/Flopster101))
 
 ## Installation
 1. Clone the branch that corresponds to your device SoC, for example:
@@ -117,10 +119,17 @@ AOSP FMRadio | RevampedFMRadio
     ```
 5. Make sure you have `vendor.qcom.bluetooth.soc` prop in your <em>vendor.prop</em> file.
    You may already have something similar, like `vendor.bluetooth.soc`, but it's legacy. Rename if proprietary blobs support new prop name or duplicate the value using new prop name to ensure RevampedFMRadio can properly comunicate to your device's Bluetooth SoC.
-6. Allow app to read vendor properties mentioned in the previous step:
+6. Allow app to read/write vendor properties mentioned in the previous step:
     ```Console
     # sepolicy/vendor/system_app.te
     get_prop(system_app, vendor_bluetooth_prop)
+    set_prop(system_app, vendor_fm_prop)
+    ```
+
+    Also, when `vendor.qcom.bluetooth.soc` prop is `cherokee`, app needs to connect to fm_helium HAL:
+    ```Console
+    # sepolicy/vendor/system_app.te
+    hal_client_domain(system_app, vendor_hal_fm)
     ```
 
 7. Disable FM firmware support in JNI library, if device doesn't require it:
