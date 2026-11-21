@@ -15,5 +15,5 @@
      limitations under the License.
 -->
 <resources>
-    <string name="missing_required_permission">Permissões rejeitadas. Você pode mudá-las em Configurações &gt; Apps.</string>
+    <string name="missing_required_permission">Permissões negadas. Você pode mudá-las em Configurações &gt; Apps.</string>
 </resources>

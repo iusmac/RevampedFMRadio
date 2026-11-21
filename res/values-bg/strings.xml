@@ -22,7 +22,7 @@
     <string name="optmenu_speaker">Високоговорител</string>
     <string name="optmenu_earphone">Слушалки</string>
     <string name="save">Запазване</string>
-    <string name="toast_sdcard_missing">SD картата ви липсва!</string>
+    <string name="toast_sdcard_missing"> Липсва SD карта!</string>
     <string name="toast_sdcard_insufficient_space">Недостатъчно място в SD картата!</string>
     <string name="toast_recorder_internal_error">В инструмента за запис възникна вътрешна грешка!</string>
     <string name="btn_save_recording">Запазване</string>

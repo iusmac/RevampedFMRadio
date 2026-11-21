@@ -57,7 +57,7 @@
     <string name="favorites">Sevimlilər</string>
     <string name="rename">Adını dəyişdir</string>
     <string name="station_rename_hint">Stansiyanın adını daxil et</string>
-    <string name="remove_favorite">Sevimlini sil</string>
+    <string name="remove_favorite">Sevimlini çıxart</string>
     <string name="toast_record_saved">Yazı saxlandı</string>
     <string name="toast_record_not_saved">Yazı saxlanılmadı</string>
     <string name="toast_listen">DİNLƏ</string>

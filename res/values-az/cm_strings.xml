@@ -15,5 +15,5 @@
      limitations under the License.
 -->
 <resources>
-    <string name="missing_required_permission">İcazə rədd edildi. Onu Ayarlar &gt; \"Tətbiqlər\"də dəyişdirə bilərsiniz.</string>
+    <string name="missing_required_permission">İzin rədd edildi. Onu Ayarlar &gt; \"Tətbiqlər\"də dəyişdirə bilərsiniz.</string>
 </resources>
