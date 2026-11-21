@@ -54,7 +54,7 @@
     <string name="record_notification_message">பதிவுசெய்கிறது</string>
     <string name="stop_record">பதிவுசெய்வதை நிறுத்து</string>
     <string name="save_dialog_title">பதிவுசெய்ததைச் சேமிக்கவா?</string>
-    <string name="favorites">பிடித்தவை</string>
+    <string name="favorites">விரும்பியவை</string>
     <string name="rename">மறுபெயரிடு</string>
     <string name="station_rename_hint">நிலையப் பெயரை உள்ளிடுக</string>
     <string name="remove_favorite">பிடித்தவையிலிருந்து அகற்று</string>

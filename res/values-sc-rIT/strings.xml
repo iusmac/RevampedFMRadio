@@ -15,11 +15,50 @@
      limitations under the License.
 -->
 <resources>
+    <string name="app_name">Ràdiu FM</string>
+    <string name="toast_station_searched">Istatziones a disponimentu agatadas:</string>
+    <string name="toast_cannot_search">Non faghet a chircare is istatziones a disponimentu.</string>
     <string name="optmenu_speaker">Altoparlante</string>
+    <string name="optmenu_earphone">Auricolares</string>
     <string name="save">Sarva</string>
+    <string name="toast_sdcard_missing">Mancat s\'ischeda SD tua!</string>
+    <string name="toast_sdcard_insufficient_space">Non nch\'at bastante logu in s\'ischeda SD.</string>
+    <string name="toast_recorder_internal_error">Errore internu de su registradore.</string>
     <string name="btn_save_recording">Sarva</string>
     <string name="btn_discard_recording">Iscarta</string>
+    <string name="edit_recording_name_hint">Iscrie su nòmine de s\'archìviu inoghe</string>
+    <string name="already_exists">esistit giai</string>
+    <string name="not_available">Immoe no est a disponimentu</string>
+    <string name="talk_prev_station">Istatzione pretzedente</string>
+    <string name="talk_decrease">Mìnima sa frecuèntzia</string>
+    <string name="talk_increase">Cresche sa frecuèntzia</string>
+    <string name="talk_next_station">Istatzione imbeniente</string>
+    <string name="talk_add_favorite">Agiunghe a preferidos</string>
+    <string name="talk_start_recording">Cumintza sa registratzione</string>
+    <string name="more">"Àteru"</string>
     <string name="recording_tips">Registrende…</string>
+    <string name="fm_symbol">FM</string>
+    <string name="fm_turn_on">Riprodui o firma sa ràdiu FM</string>
+    <string name="fm_over_start_record">Cumintza sa registratzione</string>
+    <string name="fm_over_record_list">Registratziones sarvadas</string>
+    <string name="fm_station_list_menu_refresh">Atualiza</string>
+    <string name="fm_no_headset_text">Pro cumintzare a ascurtare, inserta is auricolares (faghent a antenna).</string>
+    <string name="station_title">Istatziones de ràdiu</string>
+    <string name="station_searching_tips">Otenende is istatziones</string>
+    <string name="station_empty_text">Nissuna istatzione agatada</string>
+    <string name="minutes_label">m</string>
+    <string name="seconds_label">s</string>
+    <string name="timer_default">00</string>
     <string name="record_title">Registrende</string>
+    <string name="record_notification_message">Registratzione in cursu</string>
+    <string name="stop_record">FIRMA SA REGISTRATZIONE</string>
+    <string name="save_dialog_title">Boles sarvare sa registratzione?</string>
     <string name="favorites">Preferidos</string>
+    <string name="rename">Torra a nominare</string>
+    <string name="station_rename_hint">Inserta su nòmine de s\'istatzione</string>
+    <string name="remove_favorite">Boga·nche dae preferidos</string>
+    <string name="toast_record_saved">Registratzione sarvada</string>
+    <string name="toast_record_not_saved">Registratzione non sarvada</string>
+    <string name="toast_listen">ASCURTA</string>
+    <string name="toast_station_renamed">Istatzione torrada a nominare</string>
 </resources>
